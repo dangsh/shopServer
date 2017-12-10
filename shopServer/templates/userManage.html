@@ -1,0 +1,167 @@
+{% extends "base.html" %}
+
+{% block css %}
+    <style type="text/css">
+        .form-inline{
+			font-family: "黑体";
+			height: 20px;
+			text-align: center;
+		}
+		.trash , .delete{
+			background-color: #D33A3C;
+		}
+		.plus{
+			background-color: skyblue;
+		}
+		
+		.submit , .edit{
+			background-color: #4FAF4C;
+		}
+		th{
+			background-color: #F2F9FE;
+		}
+		#userTable .nature{
+			background-color: #F2F9FE;
+		}
+		#userTable .ele{
+			background-color: white;
+		}
+		.table{
+			width: 100%;
+		}
+		.count{
+			font:"黑体"
+		}
+		.btn{
+			color: black;
+		}
+		.btn-default{
+			color: white;
+		}
+		#under .bottom{
+			background-color: white;
+			border:1px solid lightgrey;
+		}
+
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <form class="form-inline" role="form">
+            <div class="form-group">
+                <label class="" >用户名:</label>
+                <input type="email" class="form-control" id="exampleUsername" placeholder="请输入用户名">
+            </div>
+            <div class="form-group">
+                <label class="" >手机号:</label>
+                <input type="password" class="form-control" id="exampleInputPhoneNumber" placeholder="请输入手机号">
+            </div>
+            <button type="submit" class="btn btn-default submit"><span class = "glyphicon glyphicon-search">查询会员</span></button>
+        </form>
+        <hr/>			
+            
+        <table  class="table table-bordered">
+            <th colspan="11">
+                
+                    <button class="btn btn-default trash"><span class = "glyphicon glyphicon-trash">批量删除</span></button>
+                    <button class="btn btn-default plus" ><span class = "glyphicon glyphicon-plus">添加会员</span></button>
+                    <label class="count" style="float: right; padding-right: 4%;">共有数据</label>
+                
+            </th>
+            <tr>
+                <td class="info nature"><input type="checkbox"/></td>
+                <td class="info nature">序号</td>
+                <td class="info nature">会员名</td>
+                <td class="info nature">密码</td>
+                <td class="info nature">电话</td>
+                <td class="info nature">微信</td>
+                <td class="info nature">头像</td>
+                <td class="info nature">账户余额</td>
+                <td class="info nature">等级</td>
+                <td class="info nature">激活码</td>
+                <td class="info nature">编辑</td>
+            </tr>
+            
+            <tbody id="userTable">
+
+            </tbody>
+
+
+            <th id="under" colspan="11">
+                
+                    <button class="btn btn-info bottom">首页</button>
+                    <button class="btn btn-info bottom">下一页</button>
+                    <button class="btn btn-info bottom">尾页</button>
+                    <label class="btn btn-info bottom">共7页，当前第1页，共70条数据</label>
+                
+            </th>
+        
+            
+        </table>
+    </div>
+
+{% endblock %}
+
+
+
+{% block contentLeft %}
+
+用户管理
+<small>Version 5.0</small>
+
+{% endblock %}
+
+
+
+{% block contentRight %}
+
+<ol class="breadcrumb">
+        <li>
+            <a href="#"><i class="fa fa-dashboard"></i> Home</a>
+        </li>
+        <li class="active">用户管理</li>
+    </ol>
+
+{% endblock %}
+
+
+{% block script %}
+
+    <script type="text/javascript">
+        var url="http://localhost:8000/userManageJsonSelect/";
+        function dataParse(data){
+            console.log(data)
+            for(i=0 ; i<data.data.length ; i++){
+                mydata =  data.data[i]
+                var userid = mydata["userid"];
+                var username = mydata["username"];
+                var pwd = mydata["pwd"];
+                var phone = mydata["phone"];
+                var wxid = mydata["wxid"];
+                var headimg = mydata["headimg"];
+                var acountmoney = mydata["acountmoney"];
+                var power = mydata["power"];
+                var activecode = mydata["activecode"];
+                var ele = '<tr><td class="info ele"><input type="checkbox"/></td><td class="info ele">' + userid + '</td><td class="info ele">' + username + '</td><td class="info ele">' + pwd + '</td><td class="info ele">' + phone + '</td><td class="info ele">' + wxid + '</td><td class="info ele">' + headimg + '</td><td class="info ele">' + acountmoney + '</td><td class="info ele">' + power + '</td><td class="info ele">' + activecode + '</td><td class="info ele"><button class="btn btn-default edit">编辑</button>     <button class="btn btn-default delete">删除</button></td></tr>'
+                $("#userTable").append(ele)
+            }
+        }
+        $.ajax({
+			        url: url, 
+					type: 'POST', 
+					success:"success",
+			        success: function (result) {
+			            dataParse(result);
+			        }, 
+			        error: function (msg) {
+			        	console.log(msg); //错误信息
+			        }
+			    });    
+
+
+    </script>
+
+{% endblock %}
+
+

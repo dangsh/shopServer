@@ -1,0 +1,155 @@
+{% extends "base.html" %} {% block css%}
+<style type="text/css">
+	tr td {
+		background-color: white;
+	}
+	
+	table {
+		margin-top: 100px;
+	}
+	
+	img {
+		height: 100px;
+		width: 200px;
+	}
+</style>
+{%endblock%} {% block contentRight %}
+
+<ol class="breadcrumb">
+	<li>
+		<a href="http://localhost:8000"><i class="fa fa-dashboard"></i> Home</a>
+	</li>
+	<li>商品列表</li>
+	<li class="active">轮播图</li>
+</ol>
+
+{% endblock %} {% block contentLeft %} 轮播图
+<small>Version 5.0</small> {% endblock %} {% block content %}
+<div class="center-middle">
+	<table class="table table-bordered userTable">
+		<tr>
+			<th colspan="15" style="background-color:#E0EEEE;">商品图片修改</th>
+		</tr>
+		<tr style="background-color: #E0EEEE; text-align: center;vertical-align: middle;">
+			<td width="10%"><b>序号</b></td>
+			<td width="50%"><b>图片</b></td>
+			<td width="20%"><b>顺序</b></td>
+			<td width="20%"><b>编辑</b></td>
+		</tr>
+		
+		<!--<tr>
+			<td style="text-align: center;vertical-align: middle;" width="10%">1</td>
+			<td style="text-align: center;vertical-align: middle;" width="50%"><img src="http://localhost:8000/static/dist/img/photo3.jpg" /></td>
+			<td style="text-align: center;vertical-align: middle;" width="20%">1</td>
+			<td style="text-align: center;vertical-align: middle;" width="20%">
+				<span class="glyphicon glyphicon-pencil"></span>
+				<span class="glyphicon glyphicon-trash" style="margin-left: 10px;"></span>
+			</td>
+		</tr>-->
+		
+		
+		
+		
+		
+	</table>
+</div>
+{% endblock %}
+
+{%block script %}
+	
+	<script type="text/javascript">
+		function getUrlParam(name){
+			var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+			var r = window.location.search.substr(1).match(reg);
+			if (r!=null) return unescape(r[2]); return null;
+			}
+		
+		
+		var url="http://localhost:8000/goodsSelectByid/";
+		var goodsid = getUrlParam("goodsid")
+
+
+
+		$.ajax({
+			url: url, 
+			type: 'POST', 
+			success:"success",
+			data:{goodsid:goodsid},
+			success: function (data) {
+
+
+				
+				for(var i=0;i<data.data.length;i++){
+//					console.log(data.data[i])
+//					console.log(data.data[i].goodsid)
+					if(data.data[i].goodsid == goodsid){
+						
+						var number = 1;
+						var picName = data.data[i].images;
+						var order = 1;
+						var picNames = new Array()
+						picNames =picName.split("---")
+						
+						for(var i=1;i<picNames.length;i++){
+							newPic = picNames[i]
+							var ele = '<tr class="mytr"><td style="text-align: center;vertical-align: middle;" width="10%">'+number+'</td><td class="mytd" style="text-align: center;vertical-align: middle;" width="50%"><img src="http://localhost:8000/static/dist/img/'+ newPic +'" /></td><td style="text-align: center;vertical-align: middle;" width="20%">'+order+'</td><td style="text-align: center;vertical-align: middle;" width="20%"><span class="glyphicon glyphicon-pencil"></span><span class="glyphicon glyphicon-trash delBtn" style="margin-left: 10px;"></span></td></tr>'
+							$(".userTable").append(ele);
+							
+							
+						}
+						
+						$(".delBtn").click(function(){
+								var that = $(this).parents("tr")
+								var a = that.children(".mytd")
+								var b = $(a).children()
+//								console.log(that.children())
+//								console.log(a)
+//								console.log(b)
+								
+//								获取图片链接c
+								c = $(b)[0].src
+//								console.log(c)
+								var urls = new Array()
+								urls =c.split("/")
+								//获取图片名
+								getUrl = urls.pop()
+//								console.log(getUrl)
+								finalUrl = picName.replace('---'+getUrl,'')
+//								console.log(finalUrl)
+//								console.log(goodsid)
+								
+								
+								$.ajax({
+									url: "http://localhost:8000/goodsManageJsonUpdata/", 
+									type: 'POST', 
+									success:"success",
+									data:{"images":finalUrl,"goodsid":goodsid},
+									success: function (data) {
+										
+										console.log("ajax发送请求成功")
+										location.reload() 
+										
+									}, 
+									error: function (msg) {
+										console.log("error 加载数据失败")
+								
+									}
+								});
+								
+						})
+
+					}
+				}
+			}, 
+			error: function (msg) {
+				console.log("error 加载数据失败")
+		
+			}
+		});    
+		
+		
+		
+		
+		
+	</script>
+{% endblock%}

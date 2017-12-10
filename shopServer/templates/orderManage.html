@@ -1,0 +1,101 @@
+{% extends "base.html" %} {% block content %}
+<div class="container-fluid ">
+	<div class="row ">
+
+		<div class="col-md-10" style="text-align: center;">
+			<form class="form-inline" action="#">
+				<div class="form-group">
+					<label for="exampleInputName2">订单号:</label>
+					<input type="text" class="form-control" id="exampleInputName2" placeholder="订单号">
+					<label for="exampleInputName2">收件人:</label>
+					<input type="text" class="form-control" id="exampleInputName2" placeholder="收件人">
+				</div>
+				<button type="submit" class="btn btn-success"><span class="glyphicon glyphicon-search" aria-hidden="true"></span>商品查询</button>
+			</form>
+		</div>
+
+		<div iclass="col-md-2">
+			共有数据：100条
+		</div>
+		<table class="table">
+
+			<caption><strong style="color: #000000;">商品列表</strong></caption>
+			<thead>
+				<tr>
+					<th>序号</th>
+					<th>订单号</th>
+					<th>用户名</th>
+					<th>商品号</th>
+					<th>下单时间</th>
+					<th>状态</th>
+					<th>总价</th>
+					<th>总数</th>
+					<th>修改状态</th>
+					<th>编辑</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<th scope="row">1</th>
+					<td>名称</td>
+					<td>名称</td>
+					<td>名称</td>
+					<td>名称</td>
+					<td>名称</td>
+					<td>名称</td>
+					<td>名称</td>
+					<td><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span></td>
+					<td><span class="glyphicon glyphicon-align-justify" aria-hidden="true"></span></td>
+				</tr>
+				<tr>
+					<th scope="row">2</th>
+					<td>名称</td>
+					<td>名称</td>
+					<td>名称</td>
+					<td>名称</td>
+					<td>名称</td>
+					<td>名称</td>
+					<td>名称</td>
+					<td><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span></td>
+					<td><span class="glyphicon glyphicon-align-justify" aria-hidden="true"></span></td>
+				</tr>
+			</tbody>
+		</table>
+
+		<ul class="pagination pagination-sm ">
+			<li>
+				<a href="# ">&laquo;</a>
+			</li>
+			<li>
+				<a href="# ">1</a>
+			</li>
+			<li>
+				<a href="# ">2</a>
+			</li>
+			<li>
+				<a href="# ">3</a>
+			</li>
+			<li>
+				<a href="# ">4</a>
+			</li>
+			<li>
+				<a href="# ">5</a>
+			</li>
+			<li>
+				<a href="# ">&raquo;</a>
+			</li>
+		</ul>
+
+	</div>
+
+	{% endblock %} {% block contentRight %}
+
+	<ol class="breadcrumb">
+		<li>
+			<a href="#"><i class="fa fa-dashboard"></i> Home</a>
+		</li>
+		<li class="active">订单管理</li>
+	</ol>
+
+	{% endblock %} {% block contentLeft %} 订单管理
+	<small>Version 5.0</small> {% endblock %}

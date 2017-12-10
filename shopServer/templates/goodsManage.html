@@ -1,0 +1,549 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block css %}
+<style type="text/css">
+	.biaojuzhong th {
+		text-align: center;
+	}
+	
+	.biaojuzhong td {
+		text-align: center;
+	}
+	
+	.sumdiv{
+		background-color: #fff;
+		display: inline-block;
+		padding: 6px 12px;
+		margin-bottom: 0;
+		font-size: 14px;
+		font-weight: 400;
+		line-height: 1.42857143;
+		text-align: center;
+		border: 1px solid #ccc;
+		border-radius: 4px;
+	}
+	
+	#bigdiv{
+		background-color: #fff;
+		border: 1px solid #ccc;
+		border-collapse: collapse;
+	}
+
+	.black_overlay {
+		display: none;
+		position: absolute;
+		top: 0%;
+		left: 0%;
+		width: 100%;
+		height: 100%;
+		background-color: black;
+		z-index: 1001;
+		-moz-opacity: 0.8;
+		opacity: .50;
+		filter: alpha(opacity=80);
+	}
+	
+	.white_content {
+		display: none;
+		position: absolute;
+		top: 10%;
+		left: 10%;
+		width: 80%;
+		height: 80%;
+		border: 8px solid lightblue;
+		background-color: white;
+		z-index: 1002;
+		overflow: auto;
+	}
+
+
+</style>
+{% endblock %}
+
+
+{% block content %}
+<div class="row" style="height: 60px;">
+		<div class="col-md-12" style="text-align: center;">
+			<form class="form-inline" action="#">
+				<div class="form-group">
+					<label for="exampleInputName2">商品名称:</label>
+					<input type="text" class="form-control" id="exampleInputName2" placeholder="商品名">
+				</div>
+				<button type="submit" class="btn btn-success" id="goodsSelectBtn"><span class="glyphicon glyphicon-search" aria-hidden="true"></span>商品查询</button>
+			</form>
+		</div>
+	</div>
+	<div class="row" >
+		<div class="row" style="height: 50px;">
+			<div class="col-md-6" style="text-align: left;">
+				<button id="deleteBtn" type="button" class="btn btn-danger"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span>批量删除</button>
+				<a href="/addGoods/" class="btn btn-info"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>添加商品</a>
+			</div>
+			<div class="col-md-6" style="text-align: right;">
+				<p >共有数据:<strong id="goodsNumber">0</strong>条</p>
+			</div>
+		</div>
+
+		<div class=""  id="bigdiv">
+			<table class="table table-bordered" style=" margin-bottom: 0px;">
+				<caption><strong style="color: #000000;">商品列表</strong></caption>
+				<thead>
+					<tr class="biaojuzhong">
+						<th>
+							<input type="checkbox" id="checkbox-all">
+						</th>
+						<th>序号</th>
+						<th>商品名称</th>
+						<th>所属商家</th>
+						<th>商家类别</th>
+						<th>已售件数</th>
+						<th>上架状态</th>
+						<th>上架处理</th>
+						<th>轮播图</th>
+						<th>商品图文信息</th>
+						<th>编辑</th>
+					</tr>
+				</thead>
+				<tbody class="myListTable">
+					<!--<tr class="biaojuzhong">
+						<td>
+							<input type="checkbox" class="checkbox-one">
+						</td>
+						<th scope="row">1</th>
+						<td>手机充电器</td>
+						<td>小米一号店</td>
+						<td>小米手机</td>
+						<td></td>
+						<td>已上架</td>
+						<td>
+							<span class="glyphicon glyphicon-upload up" aria-hidden="true">上架 </span> &nbsp;
+							<span class="glyphicon glyphicon-download down" aria-hidden="true">下架</span>
+						</td>
+						<td>
+							<span class="glyphicon glyphicon-picture demo3" aria-hidden="true"></span> &nbsp;
+							<span class="glyphicon glyphicon-pencil demo4" aria-hidden="true"></span>
+						</td>
+						<td>
+							<span class="glyphicon glyphicon-plus demo5" aria-hidden="true"></span> &nbsp;
+							<span class="glyphicon glyphicon-list-alt demo6"  aria-hidden="true"></span>
+						</td>
+						<td>
+							<span class="glyphicon glyphicon-file demo7"  aria-hidden="true"></span> &nbsp;
+							<span class="glyphicon glyphicon-trash demo8"  aria-hidden="true"></span>
+						</td>
+					</tr>-->
+					
+				</tbody>
+			</table>
+			
+			<div class="row" id="div3" style=" padding: 1% 0;">
+				<div class="col-md-12" style="text-align: left;">
+						<!--<nav aria-label="...">
+							<ul class="pagination">
+								<li class="disabled"><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
+								<li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
+								<li><a href="#">2</a></li>
+								<li><a href="#">3</a></li>
+								<li><a href="#">4</a></li>
+								<li><a href="#">5</a></li>
+								<li><a href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
+								<span class="sumdiv">共2页,当前第一页,共15条数据</span>
+							</ul>
+						</nav>-->
+						<div class="text-center">
+							<ul id="visible-pages-example"></ul>
+						</div>
+				</div>
+			</div>
+		</div>
+
+
+
+		<div id="fade" class="black_overlay">
+		</div>
+		<div id="MyDiv" class="white_content">
+			<div style="text-align: right; cursor: default; height: 40px;" id="move">
+				<span style="font-size: 16px;" onclick="CloseDiv('MyDiv','fade')">关闭</span>
+			</div>
+			<!--目前来说，我还是喜欢这个自己改造的弹出层。自己在项目中也用的是这个。-->
+			<div id="">
+				<div>
+					<h1>商品信息添加：</h1>
+					<script id="editor" type="text/plain" style="width:100%;height:300px;"></script>
+				</div>
+				<div id="btns">
+					<div id="div_Old" style="height: 300px;border: 2px solid red;width: 100%;">						
+					</div>
+					<br />
+					<div align="center">				
+						<form id="uploadForm" method="post" action="http://localhost:8000/adManageJsonAdd/" >  
+								<input type="file" name="imgsFile"></input>  
+								<input id="subbtn" type="submit" >  
+						</form> 
+					</div>
+					<br />
+					<div id="" align="center">
+						<button style="background-color: red;height: 30px;width: 50px;"onclick="addAll()">添加</button>
+					</div>
+				</div>
+			</div>
+			<script type="text/javascript">
+				
+			</script>
+		</div>
+{% endblock %}
+
+
+{% block contentRight %}
+
+<ol class="breadcrumb">
+        <li>
+            <a href="#"><i class="fa fa-dashboard"></i> Home</a>
+        </li>
+        <li class="active">商品列表</li>
+    </ol>
+
+{% endblock %}
+
+
+{% block contentLeft %}
+商品列表
+<small>Version 5.0</small>
+
+{% endblock %}
+
+{% block script %}
+<script>
+var goodsListPages = 3
+var goodsCount = 1
+var thispage = 1
+var addGoodsIdRed = ""
+
+function addAll(goodsid){
+	var url="http://localhost:8000/goodsManageJsonUpdata/";//后台接收处理url
+	data = UE.getEditor('editor').getContent();
+	var objData = "goodsid="+ addGoodsIdRed +"&details=" + data;//post方式传送的数据
+	console.log(objData)
+	$.ajax({
+		url: url, 
+		data: objData, 
+		type: 'POST', 
+		success:"success",
+		success: function (data) {
+			if (data["data"] == "success") {
+				alert("商品详情添加成功。。。");//请求传输成功回调函数
+				location.reload()
+			}
+			else{
+				alert("商品详情添加失败。。。");//请求传输失败回调函数
+			}
+		}, 
+		error: function (msg) {
+			alert(msg); //错误信息
+	
+		}
+	}); 
+	
+}
+$('#uploadForm').on('submit', function(e) {
+	e.preventDefault(); 
+	$(this).ajaxSubmit({
+		success: function (result) {
+			var imageName = result.imagePath;
+			console.log(imageName)
+			addNewDiv(imageName)
+			
+		}
+	})
+});
+function addNewDiv(imageName){
+
+	imageName = "http://localhost:8000/static/myfile/"+imageName;
+	var divE = document.createElement("div");
+	var spanE = document.createElement("span");
+	$(spanE).text(imageName);;
+	var buttonE = document.createElement("button");
+	$(buttonE).text("添加");
+	$(buttonE).click(function () {
+		var imgN = $(this).parent().children("span").text();
+		ue.setContent('<img src=' + imgN +' width=200px height=120px>' , true);
+	});
+	$(divE).append($(spanE));
+	$(divE).append($(buttonE));
+	$("#div_Old").append($(divE));
+} 
+
+var ue = UE.getEditor('editor'); //勿删
+//  <img src="https://gss0.baidu.com/8_BXsjip0QIZ8tyhnq/timg?wh_rate=0&wapiknow&quality=100&size=w250&sec=0&di=e3c3ae2ef7382d567d05f2b09bef85d1&src=http%3A%2F%2Fg.hiphotos.baidu.com%2Fzhidao%2Fwh%253D800%252C450%2Fsign%3Dd6fc97b0b1a1cd1105e37a288922e4c8%2F3801213fb80e7bec7ac77061242eb9389b506b14.jpg>
+function tianjiatupian() {
+	console.log("添加图片按钮")
+	ue.setContent('<img src="https://gss0.baidu.com/8_BXsjip0QIZ8tyhnq/timg?wh_rate=0&wapiknow&quality=100&size=w250&sec=0&di=e3c3ae2ef7382d567d05f2b09bef85d1&src=http%3A%2F%2Fg.hiphotos.baidu.com%2Fzhidao%2Fwh%253D800%252C450%2Fsign%3Dd6fc97b0b1a1cd1105e37a288922e4c8%2F3801213fb80e7bec7ac77061242eb9389b506b14.jpg">', true);
+}
+
+function ShowDiv(show_div, bg_div) {
+	document.getElementById(show_div).style.display = 'block';
+	document.getElementById(bg_div).style.display = 'block';
+	var bgdiv = document.getElementById(bg_div);
+	bgdiv.style.width = document.body.scrollWidth;
+	// bgdiv.style.height = $(document).height();
+	$("#" + bg_div).height($(document).height());
+};
+function CloseDiv(show_div, bg_div) {
+	document.getElementById(show_div).style.display = 'none';
+	document.getElementById(bg_div).style.display = 'none';
+};
+
+
+
+function oneGoods (data) {
+	//console.log(data)
+	var goodsid = data["goodsid"];
+	var rebate = data["rebate"];
+	var lookhistoryid = data["lookhistoryid"];
+	var standard = data["standard"];
+	var images = data["images"];
+	var details = data["details"];
+	var shopname = data["shopname"];
+	var status = data["status"];
+	var uptime = data["uptime"];
+	var downtime = data["downtime"];
+	var price = data["price"];
+	var goodsName = data["goodsname"];
+	var stock = data["stock"];
+
+	var ele = '<tr class="biaojuzhong" goodsid="' + goodsid + '" images="' + images + '"><td><input class="checkbox-one" type="checkbox"></td><th scope="row">3</th><td>' + goodsName + '</td><td>' + shopname + '</td><td>家居</td><td></td><td>已上架</td><td><span class="glyphicon glyphicon-upload up" aria-hidden="true">上架 </span> &nbsp;<span class="glyphicon glyphicon-download down" aria-hidden="true">下架</span></td><td><span class="glyphicon glyphicon-picture demo3" aria-hidden="true"></span> &nbsp;<span class="glyphicon glyphicon-pencil demo4" aria-hidden="true"></span></td><td><span class="glyphicon glyphicon-plus demo5" aria-hidden="true"></span> &nbsp;<span class="glyphicon glyphicon-list-alt demo6"  aria-hidden="true"></span></td><td><span class="glyphicon glyphicon-file demo7"  aria-hidden="true"></span> &nbsp;<span class="glyphicon glyphicon-trash demo8"  aria-hidden="true"></span></td></tr>'
+	$(".myListTable").append(ele)
+	
+}
+
+//解析数据到页面
+function goodsListToPage(data) {
+	for (var i = 0; i < data.length; i++) {
+		//console.log(data[i])
+		oneGoods(data[i])
+	}
+	$(".up").click(function(){
+		console.log("上架按钮点击事件。。。。")
+		
+		var url="http://localhost:8000/goodsManageJsonUpdata/";//后台接收处理url
+		
+		var objData = "goodsid=12311&status=statusup";//post方式传送的数据
+	//				console.log(objData)
+		$.ajax({
+			url: url, 
+			data: objData, 
+			type: 'POST', 
+			success:"success",
+			success: function (data) {
+				if (data["data"] == "success") {
+					alert("上架操作成功。。。");//请求传输成功回调函数
+				}
+				else{
+					alert("上架操作失败。。。");//请求传输失败回调函数
+				}
+			}, 
+			error: function (msg) {
+				alert(msg); //错误信息
+		
+			}
+		});    
+	})
+
+
+	$(".down").click(function(){
+		console.log("下架按钮点击事件。。。。")
+		var url="http://localhost:8000/goodsManageJsonUpdata/";//后台接收处理url
+		var objData = "goodsid=12311&status=statusdown";//post方式传送的数据
+		$.ajax({
+			url: url, 
+			data: objData, 
+			type: 'POST', 
+			success:"success",
+			success: function (data) {
+				if (data["data"] == "success") {
+					alert("下架操作成功。。。");//请求传输成功回调函数
+				}
+				else{
+					alert("下架操作失败。。。");//请求传输失败回调函数
+				}
+			}, 
+			error: function (msg) {
+				alert(msg); //错误信息
+			}
+		});    
+	})
+
+
+	$(".demo3").click(function(){
+		console.log(" 3")
+	});
+	$(".demo4").click(function(){
+		var that = $(this).parents("tr")
+		//console.log(that.attr("goodsid"))
+		//console.log(that.attr("images"))
+		window.location.href="/changePic/?goodsid=" + that.attr("goodsid") + "&images=" + that.attr("images");
+	});
+	$(".demo5").click(function(){
+		addGoodsIdRed = this.parentNode.parentNode.getAttribute("goodsid")
+		console.log(" 5")
+		ShowDiv('MyDiv','fade')
+
+	});
+	$(".demo6").click(function(){
+		console.log(" 6")
+	});
+	$(".demo7").click(function(){
+		console.log(" 7")
+	});
+	$(".demo8").click(function(){
+		var that = $(this).parents("tr")
+		var goodsArr = [that.attr("goodsid")]
+		//console.log("...........", goodsArr)
+		$.ajax({
+			url: "http://localhost:8000/goodsManageJsonDelete/",
+			type: 'POST',
+			data:{goodsids:goodsArr},
+			traditional:true,
+			success: function (data) {
+				if (data["status"] == "ok") {
+					var deleteCount = data['deleteCount']
+					loaddata()
+					alert("删除" + deleteCount + "条记录成功");//请求传输成功回调函数
+			   }
+			   else{
+					 alert("删除失败");//请求传输失败回调函数
+			   }
+			},
+			error: function (msg) {
+				console.log("error")
+				alert(msg); //错误信息
+			}
+		});
+	});
+}
+
+
+$("#goodsSelectBtn").click(function(){
+	var url="http://localhost:8000/commodityQuery/";//后台接收处理url
+	
+	var objData = "commName=xiaomi";//post方式传送的数据
+	$.ajax({
+		url: url, 
+		data: objData, 
+		type: 'POST', 
+		success:"success",
+		success: function (data) {
+			if (data["status"] == "ok") {
+				 alert("查询成功");//请求传输成功回调函数
+			}
+			else{
+				  alert("查询失败");//请求传输失败回调函数
+			}
+		}, 
+		error: function (msg) {
+			alert(msg); //错误信息
+	
+		}
+	});    
+})
+
+
+$('#deleteBtn').click(function () {
+	//console.log("delete")
+	var goodsArr = []
+	var checkboxs = $('.checkbox-one')
+	for (var i = 0; i < checkboxs.length; i++) {
+		if($(checkboxs[i]).is(':checked')) {
+			var goodsidOne = $(checkboxs[i]).parents("tr").attr("goodsid")
+			goodsArr.push(goodsidOne)
+		}
+	}
+	console.log(goodsArr)
+	$.ajax({
+		url: "http://localhost:8000/goodsManageJsonDelete/",
+		type: 'POST',
+		data:{goodsids:goodsArr},
+		traditional:true,
+		//data: JSON.stringify({
+		//	goodsids:goodsArr
+		//}),		
+		//contentType: "application/json; charset=utf-8",
+		success: function (data) {
+			if (data["status"] == "ok") {
+				var deleteCount = data['deleteCount']
+				loaddata()
+				alert("删除" + deleteCount + "条记录成功");//请求传输成功回调函数
+				
+		   }
+		   else{
+				 alert("删除失败");//请求传输失败回调函数
+		   }
+		},
+		error: function (msg) {
+			console.log("error")
+			alert(msg); //错误信息
+	
+		}
+	});
+})
+
+
+$('#checkbox-all').click(function () {
+	if($('#checkbox-all').is(':checked')) {
+		//console.log("get - all")
+		$(".checkbox-one").prop("checked",true);
+	}else{
+		//console.log("close - all")
+		$(".checkbox-one").prop("checked",false);
+	}
+})
+
+
+function loaddata() {
+	$.ajax({
+		url: "http://localhost:8000/goodsManageJsonSelect/?page=" + thispage,
+		success: function (data) {
+			goodsCount = data.goodscount
+			goodsListPages = Math.ceil(parseInt(goodsCount) / 10 )
+			//console.log("-----",goodsListPages)
+			$(".myListTable").children("tr").remove()
+			//解析数据
+			//console.log(data.data)
+			goodsListToPage(data.data)
+			//记录个数'
+			$("#goodsNumber").text(goodsCount);
+			$("#visible-pages-example").children(".sumdiv").remove()
+			var spanele = '<span class="sumdiv">共' + goodsListPages + '页,当前第' + thispage + '页,共' + goodsCount + '条数据</span>'
+			$("#visible-pages-example").append($(spanele))
+			
+			$('#visible-pages-example').twbsPagination({
+				totalPages:goodsListPages,
+				first: "首页",
+				last: "尾页",
+				prev: '上一页',
+				next: '下一页',
+				startPage: 1,
+				visiblePages: goodsListPages>5?5:goodsListPages,
+				version: '1.1',
+				onPageClick: function (event, page) {
+					thispage  = page;
+					loaddata()
+				}
+			});
+			
+		},
+		error: function (msg) {
+			console.log("error:获取数据失败")
+			alert(msg); //错误信息
+	
+		}
+	});
+}
+
+loaddata()
+
+
+</script>
+{% endblock %}
+

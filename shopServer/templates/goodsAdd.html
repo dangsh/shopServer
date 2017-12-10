@@ -1,0 +1,292 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+
+
+<div class="posts">
+	<div class="container">
+		<div class="rt_content">
+			<form class="form-horizontal">
+				<div class="form-group">
+					<label for="goodsname" class="col-sm-4 control-label">商品名称：</label>
+					<div class="col-sm-3">
+						<input type="goodsname" class="form-control" id="goodsid" placeholder="goodsname">
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="shopname" class="col-sm-4 control-label">所属商家：</label>
+					<div class="col-sm-3">
+						<input type="shopname" class="form-control" id="shopid" placeholder="shopname">
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="details" class="col-sm-4 control-label">商品介绍：</label>
+					<div class="col-sm-3">
+						<input type="details" class="form-control" id="goodsid" placeholder="details">
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="details" class="col-sm-4 control-label">单价：</label>
+					<div class="col-sm-3">
+						<input type="details" class="form-control" id="goodsid" placeholder="details">
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label for="details" class="col-sm-4 control-label">                
+			<div class="checkbox">
+		  <label>
+			<input type="checkbox" > 运费：</label>
+
+				</div>
+				</label>
+				<div class="col-sm-3">
+					<input type="details" class="form-control" id="yunfei" placeholder="0" readonly="true">
+				</div>
+				<div class="form-group">
+					<div class="col-sm-offset-5 col-sm-10">
+						<button type="submit" class="btn btn-success"> 更改</button>
+					</div>
+				</div>
+			
+</li>  
+
+		</div>
+	</div>
+</div>
+
+
+	<div class="table-responsive table-bordered ">
+		<table class="table table-bordered table-hover" style="margin-bottom: 0px;">
+			<!--<table class="table table-bordered table-hover" contenteditable="true">-->
+
+			<thead>
+
+				<div class="col-md-12 " style=" background-color: #F2F9FE;
+											padding: 5px;">
+
+					<button type="button" class="btn btn-info"> +添加商品详情</button>
+				</div>
+			</thead>
+			<tr style=" background-color: #F2F9FE;
+											padding-left: 5px;">
+
+				<th colspan="13">商品详情修改</th>
+
+			</tr>
+
+			<tr style=" background-color: #F2F9FE;
+											padding-left: 5px;">
+				<th>序号</th>
+				<th>返利</th>
+				<th>规格</th>
+				<th>配图</th>
+				<th>数量</th>
+				<th>状态</th>
+				<th>详情</th>
+				<th>所属商家</th>
+				<th>上架时间</th>
+				<th>下架时间</th>
+				<th>浏览记录</th>
+				<th>id</th>
+				<th>编辑</th>
+			</tr>
+
+			<tbody>
+				<tr>
+					<th scope="row">1</th>
+					<td>Table cell</td>
+					<td>Table cell</td>
+					<td>Table cell</td>
+					<td>Table cell</td>
+					<td>Table cell</td>
+					<td>Table cell</td>
+					<td>Table cell</td>
+					<td>Table cell</td>
+					<td>Table cell</td>
+					<td>Table cell</td>
+					<td>Table cell</td>
+					<td><span id="bi" class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+
+						<span class="glyphicon glyphicon-trash" aria-hidden="true"></span></span>
+					</td>
+				</tr>
+
+			</tbody>
+		</table>
+	</div>
+
+	<div class="col-md-12" style="background-color: yellow;">
+		<div class="col-md-6">.col--6</div>
+		<div class="col-md-6">.col--6</div>
+		<div class="col-md-6">.col--6</div>
+		<div class="col-md-6">.col--6</div>
+		<div class="col-md-6">.col--6</div>
+		<div class="col-md-6">.col--6</div>
+		<div class="col-md-6">.col--6</div>
+		<div class="col-md-6">.col--6</div>
+		<div class="col-md-6">.col--6</div>
+		<div class="col-md-6">.col--6</div>
+		<div class="col-md-6">.col--6</div>
+		<div class="col-md-6">.col--6</div>
+		<div class="col-md-6">.col--6</div>
+		<div class="col-md-6">.col--6</div>
+		<div class="col-md-6">.col--6</div>
+		<div class="col-md-6">.col--6</div>
+		<div class="col-md-6">.col--6</div>
+		<div class="col-md-6">.col--6</div>
+		<div class="col-md-6">.col--6</div>
+		<div class="col-md-6">.col--6</div>
+		<div class="col-md-6">.col--6</div>
+		<div class="col-md-6">.col--6</div>
+		<div class="col-md-6">.col--6</div>
+		<div class="col-md-6">.col--6</div>
+		<div class="col-md-6">.col--6</div>
+		<div class="col-md-6">.col--6</div>
+		<div class="col-md-6">.col--6</div>
+		<div class="col-md-6">.col--6</div>
+	</div>
+	<div class="col-sm-offset-0 col-sm-10" style="padding-left: 0px;">
+		<button type="submit" class="btn btn-success"> 修改</button>
+	</div>
+
+
+<script type="text/javascript">
+	$(function() {
+
+		var addressArr = window.location.href.split("/");
+		var addressArrLen = addressArr.length;
+
+		var addressFlag = addressArr[addressArrLen - 2];
+		if(addressFlag.indexOf("Manage") > 0) {
+			$("#myNav li").each(function(i, item) {
+				var aEelementId = $(item).children("a").attr("id");
+				if(addressFlag == aEelementId) {
+					$(item).addClass("active")
+				} else {
+					$(item).removeClass("active")
+				}
+			})
+		}
+
+	})
+
+
+</script>
+
+</body>
+<script type="text/javascript">
+
+
+	function check1(){
+		$("#b1").show
+		var reg = /^\s*$/g
+		if(reg.test($("#a1").val())){
+			$("#b1").text("商品名不能为空")
+		}
+		else{
+			$("#b1").text("")
+		}
+	}
+	$(function(){
+		$("#a1").blur(function(){
+		check1();
+		})
+	})
+
+
+
+
+	function check2(){
+		$("#b2").show
+		var reg = /^\d{6}$/
+		if(!reg.test($("#a2").val())){
+			$("#b2").text("商品编号需要为6位数字")
+		}
+		else{
+			$("#b2").text("")
+		}
+	}
+	$(function(){
+		$("#a2").blur(function(){
+		check2();
+		})
+	})
+
+	function check3(){
+		$("#b3").show
+		var reg = /^\d+$/
+		if(!reg.test($("#a3").val())){
+			$("#b3").text("商品单价必须为数字")
+		}
+		else{
+			$("#b3").text("")
+		}
+	}
+	$(function(){
+		$("#a3").blur(function(){
+		check3();
+		})
+	})
+
+	function check4(){
+		$("#b4").show
+		var reg = /^\d+$/
+		if(!reg.test($("#a4").val())){
+			$("#b4").text("商品库存只能为非空数字")
+		}
+		else{
+			$("#b4").text("")
+		}
+	}
+	$(function(){
+		$("#a4").blur(function(){
+		check4();
+		})
+	})
+
+	function check5(){
+		$("#b5").show
+		var reg = /^\s*$/g
+		if(reg.test($("#a5").val())){
+			$("#b5").text("商品详情不能为空")
+		}
+		else{
+			$("#b5").text("")
+		}
+	}
+	$(function(){  
+		$("#a5").blur(function(){
+		check5();
+		})
+	})
+
+
+	$(function() {
+			
+			var addressArr = window.location.href.split("/");
+			var addressArrLen = addressArr.length;
+			
+			var addressFlag = addressArr[addressArrLen - 2];
+			if (addressFlag.indexOf("Manage") > 0) {
+				$("#myNav li").each(function (i , item) {
+					var aEelementId = $(item).children("a").attr("id");
+					if(addressFlag == aEelementId) {
+						$(item).addClass("active")
+					} else {
+						$(item).removeClass("active")
+					}
+				})
+			}
+
+			// 商品管理跳转按钮
+			$("#backTo").click(function() {
+				window.location.href = 'http://localhost:8000/goodsManage/'			
+			})
+
+
+		})
+</script>
+{% endblock %}
