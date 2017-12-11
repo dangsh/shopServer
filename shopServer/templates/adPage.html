@@ -18,9 +18,6 @@
     }
     th{
         text-align: center;
-    }
-    .btn-danger{
-        margin-left: 20px;
     }	
     #imagesdiv{
 			height: 60px;
@@ -29,15 +26,27 @@
         src: static/myfile/1.jpg;
         height: 60px;
     }
+    .sumdiv{
+		background-color: #fff;
+		display: inline-block;
+		padding: 6px 12px;
+		margin-bottom: 0;
+		font-size: 14px;
+		font-weight: 400;
+		line-height: 1.42857143;
+		text-align: center;
+		border: 1px solid #ccc;
+		border-radius: 4px;
+	}
 	</style>
 
 {% endblock %}
 
 {% block content %}
 
-<button type="button" class="btn btn-primary" style="margin:5px;"><span class="glyphicon glyphicon-plus"></span> 添加</button>
-<div id="xxx" class=" col-sm-12" style="padding:0;">
-    <a class="col-sm-12" style="margin:5px; padding-left:0; color: black;margin-right:0;"><strong>轮播图列表</strong></a>
+<button type="button" class="btn btn-primary addBtn" data-toggle="modal" data-target="#myModal" style="margin:5px;"><span class="glyphicon glyphicon-plus"></span> 添加</button>
+<div id="xxx" class=" col-md-12" style="padding:0;">
+    <a class="col-md-12" style="margin:5px; padding-left:0; color: black;margin-right:0;"><strong>广告列表</strong></a>
     <table id="table" class="table table-bordered" >
         <tr name="row">
             <td id="item" style="display:none"></td>
@@ -47,74 +56,199 @@
             <th>广告状态</th>
             <th>编辑</th>
         </tr>
-        <tr name="row">
-            <td id="item"></td>
-            <td>
-                <div id="images">
-                    <img src="{% static 'myfile/1.jpg' %}"/>
-                </div>
-            </td>
-            <td>首页录播图</td>
-            <td>上架</td>
-            <td>
-                <button class="btn btn-success">编 辑</button>
-                <button class="btn btn-danger">删 除</button> 
-            </td>
-        </tr>
-        <tr name="row">
-            <td id="item"></td>
-            <td>
-                <div id="images">
-                    <img src="{% static 'myfile/1.jpg' %}"/>
-                </div>
-            </td>
-            <td>首页录播图</td>
-            <td>上架</td>
-            <td>
-                <button class="btn btn-success">编 辑</button>
-                <button class="btn btn-danger">删 除</button> 
-            </td>
-        </tr>
-        <tr name="row">
-            <td id="item"></td>
-            <td>
-                <div id="images">
-                    <img src="{% static 'myfile/1.jpg' %}"/>
-                </div>
-            </td>
-            <td>首页录播图</td>
-            <td>上架</td>
-            <td>
-                <button class="btn btn-success">编 辑</button>
-                <button class="btn btn-danger">删 除</button> 
-            </td>
-        </tr>
-        <tr name="row">
-            <td id="item"></td>
-            <td>
-                <div id="imagesdiv">
-                    <img src="{% static 'myfile/1.jpg' %}"/>
-                </div>
-            </td>
-            <td>首页录播图</td>
-            <td>上架</td>
-            <td>
-                <button class="btn btn-success">编 辑</button>
-                <button class="btn btn-danger">删 除</button> 
-            </td>
-        </tr>
     </table>
+    <div class="text-center">
+        <ul id="visible-pages-example"></ul>
+    </div>
 </div>
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    添加广告
+                </h4>
+            </div>
+            <div class="modal-body">
+                <form id="myform" action="" enctype="multipart/form-data" method="post">
+                    <div>
+                        <label for="">添加图片:</label>
+                        <input type="file" class="myfile" name="images">
+                    </div>
+                    <div id="img">
+                        <img src="static/myfile/1.jpg" alt="" id="myimages">
+                    </div>
+                    <div style="padding-top:20px">
+                        <label for="">广告ID：</label><input type="text" name="adId" id="location">
+                    </div>
+                </form>
+                
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                </button>
+                <button type="button" class="btn btn-primary" id="submitBtn" onclick="ajaxSubmitForm()">
+                    提交
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+
 {% endblock %}
-
-
 {% block script %}
+<script src="{% static 'js/jquery.form.min.js' %}"></script>
+<script src="{% static 'layer/layer.js' %}" type="text/javascript" charset="utf-8"></script>
 <script type="text/javascript">
-    var rows = document.getElementsByName("row");
-    for (var i = 0;i < rows.length; i++) {
-        var item = $(rows[i]).index();
-        $(rows[i]).children("#item")[0].innerHTML=item;
+	
+    var currpage = 1;
+    var countPages = 0;
+    //添加item函数
+    function adEleFn(data){
+        imgs = data.imgs;
+        adid = data.adid;
+        adtime = data.adtime;
+        var Tr = '<tr name="row" class="myrow"><td>' + adid + '</td><td><div id="imagesdiv"><img src="/static/myfile/'+ imgs +'"/></div></td><td>' + imgs + '</td><td>' + adtime + '</td><td><button class="btn btn-danger delete">删 除</button> </td></tr>';
+        $("#table").append(Tr);
     }
+    
+    //解析数据函数
+    function parseDataFn(result){
+        data = result.data;
+        
+        for (var i = 0; i < data.length; i++){
+            perdata = data[i];
+            adEleFn(perdata);
+        }
+        
+    }
+    //请求数据
+    function ajaxfn(){
+        $.ajax({
+            type: "post",
+            url: 'http://localhost:8000/adManageJsonSelect/?page=' + currpage,
+            success: function (result){
+                console.log(result);
+                parseDataFn(result);
+                adcounts = result.adcounts;
+                countPages = Math.ceil(parseInt(adcounts) / 8 );
+                
+                var spanele = '<span class="sumdiv">共' + countPages + '页,当前第' + countPages + '页,共' + adcounts + '条数据</span>';
+                $("#visible-pages-example").append(spanele);
+                    $('#visible-pages-example').twbsPagination({
+                    totalPages:countPages,
+                    first: "首页",
+                    last: "尾页",
+                    prev: '上一页',
+                    next: '下一页',
+                    startPage: 1,
+                    visiblePages: countPages>5?5:countPages,
+                    version: '1.1',
+                    onPageClick: function (event, page) {
+                        currpage  = page;
+                        $(".myrow").remove();
+                        $(".sumdiv").remove();
+                        ajaxfn();
+                    }
+                });
+            },
+            error: function (err){
+                console.log("请求失败");
+                console.log(err);
+            }
+        });
+    }
+    //调用Ajax 去请求数据
+    ajaxfn();
+    
+    //ajaxform提交弹框表单
+    function ajaxSubmitForm(){
+        console.log("submigtajax");
+        var option = {
+            url : "http://localhost:8000/adManageJsonAdd/",
+            type : 'POST',
+            dataType : 'json',
+            success : function(data)
+            {   
+                $("#myModal").modal("hide");
+                console.log("tjianjiachenggg");
+                var crutime = new Date();
+                var year = crutime.getFullYear();
+                var month = crutime.getMonth()+1;
+                var day = crutime.getDate();
+                var hour = crutime.getHours();
+                var minute = crutime.getMinutes();
+                var second = crutime.getSeconds();
+                currtime = year+'-'+month+'-'+day+' '+hour+':'+minute+':'+second;
+                console.log(currtime);
+                adId = data.adId;
+                imagePath = data.imagePath;
+                $(".myrow").remove();
+                $(".sumdiv").remove();
+                // addAd = '<tr name="row" class="myrow"><td>' + adId + '</td><td><div id="imagesdiv"><img src="/static/myfile/'+ imagePath +'"/></div></td><td>' + imagePath + '</td><td>' + currtime + '</td><td><button class="btn btn-danger delete">删 除</button> </td></tr>';
+                // $("#table").append(addAd);
+                ajaxfn();
+            },
+            error: function(data) {
+                console.log("chucuole ");
+            }
+        };
+        $("#myform").ajaxSubmit(option);
+        return false;
+    }
+    //当modal关闭的时候数据清除
+    $('#myModal').on('hide.bs.modal', function ()
+    {
+        $('#myform')[0].reset();
+        //这个方法来清除缓存
+        $("#myimages").attr("src" , "###")
+    });
+    //图片预览
+    $(".myfile").change(function() {
+        var $img = $("#myimages");
+        console.log($img);
+        console.log("tupianyulan");
+        var $file = $(this);
+        //获得文件内容和信息
+        var fileObj = $file[0];
+        var windowURL = window.URL || window.webkitURL;
+        var dataURL;
+        if(fileObj && fileObj.files && fileObj.files[0]){
+            var filesLen = fileObj.files.length;
+            console.log(fileObj.files);
+
+            dataURL = windowURL.createObjectURL(fileObj.files[0]);
+            console.log(dataURL);
+            $img.attr('src',dataURL);
+            console.log($img.attr("src"));
+        }
+    });
+    $("#table").delegate("button","click",function(){
+        if($(this).html() == "删 除"){
+            dataId= $(this).parent().prev().prev().prev().prev().html();
+            that = this;
+            console.log(dataId);
+            $.ajax({
+                type: "get",
+                url: "http://localhost:8000/adManageJsonDelete/?Id="+dataId,
+                success: function (result){
+                    if (result.status == "ok"){
+                        console.log("shangchuchengg");
+                        $(that).parent().parent().remove();
+                        layer.msg('删除成功');
+                    }
+                },
+                error: function (err){
+                    console.log("请求失败");
+                    console.log(err);
+                }
+            });
+        }
+    });
 </script>
 {% endblock %}
 

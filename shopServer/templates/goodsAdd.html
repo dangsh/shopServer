@@ -5,76 +5,82 @@
 
 
 
-<div class="posts">
+<div class="post">
 	<div class="container">
 		<div class="rt_content">
-			<form class="form-horizontal">
-				<div class="form-group">
-					<label for="goodsname" class="col-sm-4 control-label">商品名称：</label>
+			<form class="form-horizontal" action="/goodsManageJsonAdd/" method="post">
+					<div class="form-group">
+					<label class="col-sm-4 control-label">商品名称：</label>
 					<div class="col-sm-3">
-						<input type="goodsname" class="form-control" id="goodsid" placeholder="goodsname">
+							<input class="form-control only" type="text" name="goodsname" id="goodsname"placeholder="goodsname">
 					</div>
 				</div>
 				<div class="form-group">
-					<label for="shopname" class="col-sm-4 control-label">所属商家：</label>
+					<label  class="col-sm-4 control-label">所属商家：</label>
 					<div class="col-sm-3">
-						<input type="shopname" class="form-control" id="shopid" placeholder="shopname">
+						<input type="text" class="form-control only" name="shopname" id="shopname" placeholder="shopname">
 					</div>
 				</div>
 				<div class="form-group">
-					<label for="details" class="col-sm-4 control-label">商品介绍：</label>
+					<label class="col-sm-4 control-label">单价：</label>
 					<div class="col-sm-3">
-						<input type="details" class="form-control" id="goodsid" placeholder="details">
-					</div>
-				</div>
-				<div class="form-group">
-					<label for="details" class="col-sm-4 control-label">单价：</label>
-					<div class="col-sm-3">
-						<input type="details" class="form-control" id="goodsid" placeholder="details">
+						<input type="details" class="form-control only" id="price" name="price" placeholder="price">
 					</div>
 				</div>
 
 				<div class="form-group">
-					<label for="details" class="col-sm-4 control-label">                
-			<div class="checkbox">
-		  <label>
-			<input type="checkbox" > 运费：</label>
-
+					<label class="col-sm-4 control-label">                
+				<div class="checkbox" >
+		  			<label>
+				<input type="checkbox" id="checkboxread" > 运费：</label>
 				</div>
 				</label>
-				<div class="col-sm-3">
-					<input type="details" class="form-control" id="yunfei" placeholder="0" readonly="true">
-				</div>
-				<div class="form-group">
-					<div class="col-sm-offset-5 col-sm-10">
-						<button type="submit" class="btn btn-success"> 更改</button>
-					</div>
-				</div>
 			
-</li>  
+				<div class="col-sm-3">
+					<input type="text" class="form-control readon" id="transportmoney" name="transportmoney" placeholder="transportmoney" readonly="true">
+				</div>
+				<div class="form-group ">
+					<div class="col-sm-offset-5 col-sm-10">
+						<button type="button" class="btn btn-success" id="updata"> 更改</button>
+						<button type="button" class="btn btn-success" id="endata"> 确定</button>
+					</div>
+				
+
+				
+
+				<!-- <input type="text" name="goodsname" id="goodsname">
+				<input type="text" name="shopname" id="shopname">
+				<input type="text" name="details" id="details">
+				<input type="text" name="status" id="status">
+				<input type="text" name="rebate" id="rebate">
+				<input type="text" name="lookhistoryid" id="lookhistoryid">
+				<input type="text" name="stock" id="stock">
+				<input type="text" name="price" id="price">
+				<input type="text" name="standard" id="standard">
+				<input type="text" name="images" id="images"> -->
+
 
 		</div>
 	</div>
 </div>
 
-
+	
+	<div class="form-group">
 	<div class="table-responsive table-bordered ">
+		
 		<table class="table table-bordered table-hover" style="margin-bottom: 0px;">
-			<!--<table class="table table-bordered table-hover" contenteditable="true">-->
-
+			<!--<table class="table table-bordered table-hover" contenteditable="true">-->								
 			<thead>
 
 				<div class="col-md-12 " style=" background-color: #F2F9FE;
 											padding: 5px;">
 
-					<button type="button" class="btn btn-info"> +添加商品详情</button>
+					<button type="submit" class="btn btn-info"> +添加商品详情</button>
 				</div>
 			</thead>
 			<tr style=" background-color: #F2F9FE;
 											padding-left: 5px;">
-
 				<th colspan="13">商品详情修改</th>
-
 			</tr>
 
 			<tr style=" background-color: #F2F9FE;
@@ -94,199 +100,197 @@
 				<th>编辑</th>
 			</tr>
 
-			<tbody>
-				<tr>
-					<th scope="row">1</th>
-					<td>Table cell</td>
-					<td>Table cell</td>
-					<td>Table cell</td>
-					<td>Table cell</td>
-					<td>Table cell</td>
-					<td>Table cell</td>
-					<td>Table cell</td>
-					<td>Table cell</td>
-					<td>Table cell</td>
-					<td>Table cell</td>
-					<td>Table cell</td>
-					<td><span id="bi" class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+			<tbody class="myListTable">
+				<tr class="datails"><th scope="row">1</th><td>' + rebate + '</td><td>' + standard + '</td><td>'+images+'</td><td>'+stock+'</td><td>'+status+'</td><td>0</td><td>'+shopname+'</td><td>'+uptime+'</td><td>'+downtime+'</td><td>'+ lookhistoryid+'</td><td>'+goodsid+'</td>						<td><button class="button" type="button" id=""data-toggle="modal" data-target="#exampleModal"><span class="glyphicon glyphicon-pencil demo1"aria-hidden="true"></span></button>
+					<!-- <tr class="datails" goodsid="' + goodsid + '" images="' + images + '">
+						<td><input class="checkbox-one" type="checkbox"></td>
+						<th scope="row">3</th>
+						<td>' + goodsName + '</td>
+						<td>' + shopname + '</td>
+						<td>家居</td>
+						<td></td>
+						<td>已上架</td>
+						<td><span class="glyphicon glyphicon-upload up" aria-hidden="true">上架 </span> &nbsp;
+						<span class="glyphicon glyphicon-download down" aria-hidden="true">下架</span></td>\
+						<td><span class="glyphicon glyphicon-picture demo3" aria-hidden="true"></span> &nbsp;
+						<span class="glyphicon glyphicon-pencil demo4" aria-hidden="true"></span></td>
+						<td><span class="glyphicon glyphicon-plus demo5" aria-hidden="true"></span> &nbsp;<span class="glyphicon glyphicon-list-alt demo6"  aria-hidden="true"></span></td>
+						<td><span class="glyphicon glyphicon-file demo7"  aria-hidden="true"></span> &nbsp;<span class="glyphicon glyphicon-trash demo8"  aria-hidden="true"></span></td></tr> -->
+						<!-- <td><button class="button" type="button" id=""data-toggle="modal" data-target="#exampleModal"><span class="glyphicon glyphicon-pencil demo1"aria-hidden="true"></span></button> -->
 
-						<span class="glyphicon glyphicon-trash" aria-hidden="true"></span></span>
+						<!-- <button class="btn btn-default plus btn btn-primary" data-toggle="modal" data-target="#exampleModal"><span class="glyphicon glyphicon-plus">添加会员</span></button> -->
+						<!-- 
+						<span class="glyphicon glyphicon-trash demo2" aria-hidden="true"></span> -->
 					</td>
 				</tr>
 
 			</tbody>
 		</table>
 	</div>
-
-	<div class="col-md-12" style="background-color: yellow;">
-		<div class="col-md-6">.col--6</div>
-		<div class="col-md-6">.col--6</div>
-		<div class="col-md-6">.col--6</div>
-		<div class="col-md-6">.col--6</div>
-		<div class="col-md-6">.col--6</div>
-		<div class="col-md-6">.col--6</div>
-		<div class="col-md-6">.col--6</div>
-		<div class="col-md-6">.col--6</div>
-		<div class="col-md-6">.col--6</div>
-		<div class="col-md-6">.col--6</div>
-		<div class="col-md-6">.col--6</div>
-		<div class="col-md-6">.col--6</div>
-		<div class="col-md-6">.col--6</div>
-		<div class="col-md-6">.col--6</div>
-		<div class="col-md-6">.col--6</div>
-		<div class="col-md-6">.col--6</div>
-		<div class="col-md-6">.col--6</div>
-		<div class="col-md-6">.col--6</div>
-		<div class="col-md-6">.col--6</div>
-		<div class="col-md-6">.col--6</div>
-		<div class="col-md-6">.col--6</div>
-		<div class="col-md-6">.col--6</div>
-		<div class="col-md-6">.col--6</div>
-		<div class="col-md-6">.col--6</div>
-		<div class="col-md-6">.col--6</div>
-		<div class="col-md-6">.col--6</div>
-		<div class="col-md-6">.col--6</div>
-		<div class="col-md-6">.col--6</div>
+	</div>
+	<div class="col-md-12" style="width: 100%;height: 475px;padding-left: 0px;padding-right: 0px;">
+		<div class=row style="color:red";>
+				<div class="col-md-6"> (请在这里输入商品规格参数)</div>
+				<div class="col-md-6"> (退换货说明)</div>
+		</div>
+		<div id=""style="background-color: red;width: 50%;height: 400px;float: left;">
+			<script id="editor" type="text/plain" style="width:100%;height:300px;"></script>
+		</div>
+		<div id=""style="background-color: cadetblue;width: 50%;height: 400px;float: right;">
+			<script id="editor1" type="text/plain" style="width:100%;height:300px;"></script>
+		</div>
 	</div>
 	<div class="col-sm-offset-0 col-sm-10" style="padding-left: 0px;">
-		<button type="submit" class="btn btn-success"> 修改</button>
+		<button type="button" class="btn btn-success"> 修改</button>
 	</div>
 
+	<div id="exampleModal" class="modal fade" tabindex="-1" role="dialog" data-backdrop="false" data-show="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						<h4 class="modal-title">商品详情</h4>
+					</div>
+					<div class="modal-body">
+						<form class="addform" action="" method="post">
+							<div class="form-group ">
+							<label  class="col-sm-2 control-label" style="padding-top: 7px;">返利:</label>
+							<div class="col-sm-10 form-group">
+							<input type="text" class=" form-control" id="rebate" name="rebate"placeholder="返利">
+							</div>
+							</div>
+							<div class="form-group">
+							<label  class="col-sm-2 control-label" style="padding-top: 7px;">规格:</label>
+							<div class="col-sm-10 form-group">
+							<input type="text" class="form-control" name="standard">
+							</div>
+							</div>
+							<div class="form-group">
+							<label  class="col-sm-2 control-label" style="padding-top: 7px;">配图:</label>
+							<div class="col-sm-10 form-group">
+							<input type="text" class="form-control" id="images"name="images">
+							</div>
+							</div>
+							<div class="form-group ">
+							<label  class="col-sm-2 control-label" style="padding-top: 7px;">数量:</label>
+							<div class="col-sm-10 form-group">
+							<input type="text" class=" form-control" id="stock" name="stock"placeholder="数量">
+							</div>
+							</div>
+							<div class="form-group">
+							<label  class="col-sm-2 control-label" style="padding-top: 7px;">状态:</label>
+							<div class="col-sm-10 form-group">
+							<input type="text" class="form-control" name="status" id="status">
+							</div>
+							</div>
+							<div class="form-group">
+							<label  class="col-sm-2 control-label" style="padding-top: 7px;">上架时间:</label>
+							<div class="col-sm-10 form-group">
+							<input type="text" class="form-control" name="uptime"id="uptime">
+							</div>
+							</div>
+							<div class="form-group">
+							<label  class="col-sm-2 control-label" style="padding-top: 7px;">下架时间:</label>
+							<div class="col-sm-10 form-group">
+							<input type="text" class="form-control" name="downtime"id="downtime">
+							</div>
+							</div>
+							<input type="add" class="btn btn-primary addbt" id="addbtn" value="添加">
+						</form>
+					</div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal-dialog -->
+		</div>
+
+
+</form>
+
+
+
+{% endblock %}
+
+
+{% block script %}
+
+
 
 <script type="text/javascript">
-	$(function() {
+	var ue = UE.getEditor('editor');
+	var ue = UE.getEditor('editor1');
+	$('#checkboxread').click(function () {
+	if($('#checkboxread').is(':checked')) {
 
-		var addressArr = window.location.href.split("/");
-		var addressArrLen = addressArr.length;
+		$(".readon").prop("readonly",false);
+	}else{
 
-		var addressFlag = addressArr[addressArrLen - 2];
-		if(addressFlag.indexOf("Manage") > 0) {
-			$("#myNav li").each(function(i, item) {
-				var aEelementId = $(item).children("a").attr("id");
-				if(addressFlag == aEelementId) {
-					$(item).addClass("active")
-				} else {
-					$(item).removeClass("active")
-				}
-			})
-		}
-
-	})
-
-
-</script>
-
-</body>
-<script type="text/javascript">
-
-
-	function check1(){
-		$("#b1").show
-		var reg = /^\s*$/g
-		if(reg.test($("#a1").val())){
-			$("#b1").text("商品名不能为空")
-		}
-		else{
-			$("#b1").text("")
-		}
+		$(".readon").prop("readonly",true);
 	}
-	$(function(){
-		$("#a1").blur(function(){
-		check1();
-		})
-	})
+})
+$('#endata').click(function () {
+	// if($('#readonly')) {
+		$(".only").prop("readonly",true);
 
+})
+$('#updata').click(function () {
+		$(".only").prop("readonly",false);
+})
 
+$('.addbt').click(function oneGoods (data){
+	for (var i = 0; i < data.length; i++) {
 
-
-	function check2(){
-		$("#b2").show
-		var reg = /^\d{6}$/
-		if(!reg.test($("#a2").val())){
-			$("#b2").text("商品编号需要为6位数字")
-		}
-		else{
-			$("#b2").text("")
-		}
+		oneGoods(data[i])
 	}
-	$(function(){
-		$("#a2").blur(function(){
-		check2();
-		})
-	})
+        console.log("jjjjjj");
+	var goodsid = data["goodsid"];
+	var rebate = data["rebate"];
+	var lookhistoryid = data["lookhistoryid"];
+	var standard = data["standard"];
+	var images = data["images"];
+	var details = data["details"];
+	var shopname = data["shopname"];
+	var status = data["status"];
+	var uptime = data["uptime"];
+	var downtime = data["downtime"];
+	var price = data["price"];
+	var goodsName = data["goodsname"];
+	var stock = data["stock"];
+	var transportmoney=data["goodsname"]
+	// var ele = '<tr class="datails" goodsid="' + goodsid + '" images="' + images + '"><td><input class="checkbox-one" type="checkbox"></td><th scope="row">3</th><td>' + goodsName + '</td><td>' + shopname + '</td><td>家居</td><td></td><td>已上架</td><td><span class="glyphicon glyphicon-upload up" aria-hidden="true">上架 </span> &nbsp;<span class="glyphicon glyphicon-download down" aria-hidden="true">下架</span></td><td><span class="glyphicon glyphicon-picture demo3" aria-hidden="true"></span> &nbsp;<span class="glyphicon glyphicon-pencil demo4" aria-hidden="true"></span></td><td><span class="glyphicon glyphicon-plus demo5" aria-hidden="true"></span> &nbsp;<span class="glyphicon glyphicon-list-alt demo6"  aria-hidden="true"></span></td><td><span class="glyphicon glyphicon-file demo7"  aria-hidden="true"></span> &nbsp;<span class="glyphicon glyphicon-trash demo8"  aria-hidden="true"></span></td></tr>'
+	var ele='<tr class="datails"><th scope="row">1</th><td>' + rebate + '</td><td>' + standard + '</td><td>'+images+'</td><td>'+stock+'</td><td>'+status+'</td><td>0</td><td>'+shopname+'</td><td>'+uptime+'</td><td>'+downtime+'</td><td>'+ lookhistoryid+'</td><td>'+goodsid+'</td>						<td><button class="button" type="button" id=""data-toggle="modal" data-target="#exampleModal"><span class="glyphicon glyphicon-pencil demo1"aria-hidden="true"></span></button>'
+		$(".myListTable").remove(ele)
+	$(".myListTable").append(ele)
+	// $(".myListTable").remove(ele)
+}
 
-	function check3(){
-		$("#b3").show
-		var reg = /^\d+$/
-		if(!reg.test($("#a3").val())){
-			$("#b3").text("商品单价必须为数字")
-		}
-		else{
-			$("#b3").text("")
-		}
-	}
-	$(function(){
-		$("#a3").blur(function(){
-		check3();
-		})
-	})
-
-	function check4(){
-		$("#b4").show
-		var reg = /^\d+$/
-		if(!reg.test($("#a4").val())){
-			$("#b4").text("商品库存只能为非空数字")
-		}
-		else{
-			$("#b4").text("")
-		}
-	}
-	$(function(){
-		$("#a4").blur(function(){
-		check4();
-		})
-	})
-
-	function check5(){
-		$("#b5").show
-		var reg = /^\s*$/g
-		if(reg.test($("#a5").val())){
-			$("#b5").text("商品详情不能为空")
-		}
-		else{
-			$("#b5").text("")
-		}
-	}
-	$(function(){  
-		$("#a5").blur(function(){
-		check5();
-		})
-	})
+    );
 
 
-	$(function() {
-			
-			var addressArr = window.location.href.split("/");
-			var addressArrLen = addressArr.length;
-			
-			var addressFlag = addressArr[addressArrLen - 2];
-			if (addressFlag.indexOf("Manage") > 0) {
-				$("#myNav li").each(function (i , item) {
-					var aEelementId = $(item).children("a").attr("id");
-					if(addressFlag == aEelementId) {
-						$(item).addClass("active")
-					} else {
-						$(item).removeClass("active")
-					}
-				})
-			}
+// $('#demo1').click('shown.bs.modal', function () {
+//   $('#demo1').focus()
 
-			// 商品管理跳转按钮
-			$("#backTo").click(function() {
-				window.location.href = 'http://localhost:8000/goodsManage/'			
-			})
+// })
+
+// 	$(".demo1").click(function(){
+// 	console.log(" 1")
+
+// });
+// $(".demo2").click(function(){
+// 	console.log(" 2")
+
+// });
+// $(".demo5").click(function(){
+// 		addGoodsIdRed = this.parentNode.parentNode.getAttribute("goodsid")
+// 		console.log(" 5")
+// 		('MyDiv','fade')
+
+// });
+// $('#demo2').on('shown.bs.modal', function () {
+//   $('#myInput').focus()
+//   console.log(" 2")
+// })
 
 
-		})
 </script>
 {% endblock %}

@@ -4,11 +4,12 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title></title>
 <meta http-equiv = "X-UA-Compatible" content = "IE = edge" />
-<link rel="stylesheet" type="text/css" href="static/css/comm.css"/>
-<link rel="stylesheet" type="text/css" href="static/css/login.css"/>
-<script type="text/javascript" src="static/js/jquery.js"></script>
-<script type="text/javascript" src="static/js/jquery.flexslider-min.js"></script>
-
+<link rel="stylesheet" type="text/css" href="../static/css/comm.css"/>
+<link rel="stylesheet" type="text/css" href="../static/css/login.css"/>
+<script type="text/javascript" src="../static/js/jquery.js"></script>
+<script type="text/javascript" src="../static/js/jquery.flexslider-min.js"></script>
+<script src="http://apps.bdimg.com/libs/jquery/2.1.1/jquery.min.js"></script>
+<script type="text/javascript" src="../static/js/jquery.form.min.js"></script>
 </head>
 
 <body >
@@ -35,27 +36,37 @@
 	<div class="login_bg">
 		<div id="loadingPicBlock" class="login_banner"><img src="static/myfile/login.png" ></div>
 		<div class="login_box" id="LoginForm">
-			<form id="loginForm" class="registerform" method="post" action="loginApi/">
+			<form id="loginForm" class="loginform" method="post" action="http://localhost:8000/loginApi/">
 				<p ><b style="float:left">会员登录</b><span class="rapidregister"><a style="color:#e23c40">快速注册</a></span><span  >还不是微分销会员?</span></p>
 				<ul>				
 					<li class="click">
 					<input class="text_password" name="username" type="text" placeholder="用户名"/> <i class="login_user"></i>
 				</li>
+	
 				<li>
 					<input class="text_password" name="password" type="password" placeholder="输入登录密码"/> <i class="login_password"></i>
 				</li>
-				<p style="width:100%;height:20px;clear:both"><p>
+				
+				<li>
+					<input class="text_password" name="code" type="text" placeholder="输入验证码"/> <i class="login_password"></i>
+				</li>
+				<li>
+						<img id="imgclick" style="width:150px;height:50px" src="../static/myfile/code.jpg" alt="" srcset="">
+				</li>
+
+
 				<li class="login_more">
 					<dd ><input type="checkbox" style="vertical-align: middle;"/> 记住密码</dd>
 					<dd style=" text-align:right">忘记密码?</dd>
 				</li>
 				<p style="width:100%;height:20px;clear:both"><p>
-					<li class="end"><input id="login" name="submit" type="button" value="登录" class="login_login" > </li>
+					
+					<li class="end"><input type="submit" id="submit" name="submit" value="登录" class="login_login"></li>
 				</ul>
 			</form>
 		</div>
 		<div class="login_box register_box" id="LoginForm" style="display:none">
-			<form id="registerForm" class="registerform" method="post" action="register/" onsubmit="registerFn()">
+			<form id="registerForm" class="registerform" method="post" action="http://localhost:8000/userManageJsonAdd/">
 				<p style="margin-left:110px;"><b style="float:left">会员注册</b></p>
 				<ul>				
 					<li class="click">
@@ -68,7 +79,8 @@
 				</p>
 				<a href="" style="color:red; float:right;">已有账号>>>>></a>	
 				<p style="width:100%;height:20px;clear:both"></p>
-					<li class="end"><input id="register" name="submit" type="button" value="注册" class="login_login" > </li>
+				
+					<li class="end"><input type="submit" id="register" name="submit"  value="注册" class="login_login"> </li>
 				</ul>
 			</form>
 		</div>
@@ -115,6 +127,50 @@
 		$(".login_box").css("display" , "none")
 		$(".register_box").css("display" , "block")
 	});
+	$('#imgclick').click(function(e){
+		// e.preventDefault();
+		console.log("1111111") 
 
+		changeCode();
+		
+	})
+
+	changeCode();
+
+	// 刷新验证码的方法
+	function changeCode() {
+		$.ajax({url:"http://localhost:8000/identificode/" , success:function (result) {
+			console.log(result);			
+			$("#imgclick").attr("src" , "http://localhost:8000/" + result.imgPath + "?aaa=" + Math.random()*35)
+		}});
+	}
+	$('#loginForm').on('submit', function(e) {
+		var aa="";
+		e.preventDefault(); 
+		$(this).ajaxSubmit({
+			success: function (result) {
+				aa=result.status;
+				console.log(aa);
+				if (aa=="ok"){
+					console.log("789797979797")
+					window.parent.location.href="https://www.baidu.com/"
+				}
+				else{
+					alert("账号或密码输入错误！");
+				}
+				console.log(result);
+			}
+		})
+		});
+	$('.registerform').on('submit', function(e) {
+	console.log("jjjjjj");
+	e.preventDefault(); 
+	$(this).ajaxSubmit({
+		success: function (result) {
+			console.log("89999999999999ng ");
+			console.log(result);
+			}
+		})
+	});
 </script>
 </html>

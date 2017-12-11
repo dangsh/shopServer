@@ -2,19 +2,30 @@
 <div class="container-fluid ">
 	<div class="row ">
 
-		<div class="col-md-10" style="text-align: center;">
+		<div class="col-md-11" style="text-align: center;">
 			<form class="form-inline" action="#">
 				<div class="form-group">
 					<label for="exampleInputName2">订单号:</label>
-					<input type="text" class="form-control" id="exampleInputName2" placeholder="订单号">
-					<label for="exampleInputName2">收件人:</label>
-					<input type="text" class="form-control" id="exampleInputName2" placeholder="收件人">
+					<input type="text" class="form-control" name = "orderid" id="orderid" placeholder="订单号">
+					<label for="exampleInputName2">用户名:</label>
+					<input type="text" class="form-control"id="userid" placeholder="用户名">
+					<label for="exampleInputName2">订单状态:</label>
+					<select name="status" class="form-control" id = "myStatus">
+						<option value="1">待审核</option>
+						<option value="2">已审核</option>
+						<option value = "3">待支付</option>
+						<option value = "4">已支付</option>
+						<option value = "5">代发货</option>
+						<option value = "6">待收货</option>
+						<option value = "7">已取消</option>
+						<option value = "8">已完成</option>
+					</select>
 				</div>
-				<button type="submit" class="btn btn-success"><span class="glyphicon glyphicon-search" aria-hidden="true"></span>商品查询</button>
+				<button type="submit" id = "tijiao"  class="btn btn-success mybtn" ><span class="glyphicon glyphicon-search" aria-hidden="true"></span>订单查询</button>
 			</form>
 		</div>
 
-		<div iclass="col-md-2">
+		<div iclass="col-md-1">
 			共有数据：100条
 		</div>
 		<table class="table">
@@ -34,31 +45,8 @@
 					<th>编辑</th>
 				</tr>
 			</thead>
-			<tbody>
-				<tr>
-					<th scope="row">1</th>
-					<td>名称</td>
-					<td>名称</td>
-					<td>名称</td>
-					<td>名称</td>
-					<td>名称</td>
-					<td>名称</td>
-					<td>名称</td>
-					<td><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span></td>
-					<td><span class="glyphicon glyphicon-align-justify" aria-hidden="true"></span></td>
-				</tr>
-				<tr>
-					<th scope="row">2</th>
-					<td>名称</td>
-					<td>名称</td>
-					<td>名称</td>
-					<td>名称</td>
-					<td>名称</td>
-					<td>名称</td>
-					<td>名称</td>
-					<td><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span></td>
-					<td><span class="glyphicon glyphicon-align-justify" aria-hidden="true"></span></td>
-				</tr>
+			<tbody id="mytbody">
+
 			</tbody>
 		</table>
 
@@ -98,4 +86,69 @@
 	</ol>
 
 	{% endblock %} {% block contentLeft %} 订单管理
-	<small>Version 5.0</small> {% endblock %}
+	<small>Version 5.0</small> {% endblock %} {% block script %}
+	<script>
+		//将数据字段添加到标签内 data 为字典
+
+		function addToHtml(data) {
+
+			userid = data["userid"]
+			orderid = data["orderid"]
+			price = data["price"]
+			ordertime = data["ordertime"]
+			isaudit = data["isaudit"]
+			ispass = data["ispass"]
+			iscancel = data["iscancel"]
+			ispay = data["ispay"]
+			issend = data["issend"]
+			ispaydone = data["ispaydone"]
+			isclose = data["isclose"]
+			var myHtml = '<tr><th scope="row">1</th><td>' + orderid + '</td><td>' + userid + '</td><td>数据库不存在</td><td>' + ordertime + '</td><td>需要判断的状态</td><td>数据库不存在</td><td>数据库不存在</td><td><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span></td><td ><span class="glyphicon glyphicon-trash deletespan" aria-hidden="true"></span></td></tr>'
+			$("#mytbody").append(myHtml)
+		}
+
+		//解析数据 data为数组
+		function parseFn(data) {
+			for(var i = 0; i < data.length; i++) {
+				addToHtml(data[i])
+			
+			}
+			//为编辑添加删除事件
+			$(".deletespan").click(function() {
+				//console.log(this)
+				var trEle = $(this).parents("tr")
+				//				console.log($(trEle.children("td")[0]).text());
+				var mydelete = $(trEle.children("td")[0]).text()
+				$.ajax({
+					url: "http://localhost:8000/ordertableDelete/" + mydelete + "/",
+					context: document.body,
+					success: function(result) {
+						console.log(result)
+					}
+				});
+			});
+		}
+		
+		
+		
+		$('#tijiao').bind("click", function(){
+			var orderid = $('#orderid').val();
+			var userid = $('#userid').val();
+			var status = $("#myStatus").find("option:selected").val();
+			console.log("((((((((");
+			console.log(userid,orderid , status),
+			// console.log(userid , orderid , status)
+			$.ajax({
+			
+			url: "http://localhost:8000/ordertableManageJsonSelete/?orderid="+orderid+"&userid="+userid+"&status="+status+"",
+			success: function(result) {
+				console.log("aaa")
+				console.log(result)
+
+			}
+		});
+			
+		});
+
+	</script>
+	{% endblock %}

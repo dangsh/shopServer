@@ -339,7 +339,7 @@
 									<a href="/userManage/"><i class="fa fa-dashboard"></i> 会员管理</a>
 								</li>
 								<li class="active">
-									<a href="###"><i class="fa fa-dashboard"></i> 商家管理</a>
+									<a href="/activeManage/"><i class="fa fa-dashboard"></i> 活动管理</a>
 								</li>
 							</ul>
 						</li>
@@ -370,13 +370,13 @@
 							</a>
 							<ul class="treeview-menu">
 								<li>
-									<a href="index.html"><i class="fa fa-flag"></i> 店铺列表</a>
+									<a href="/cartsManage/"><i class="fa fa-flag"></i>购物车</a>
 								</li>
 								<li class="active">
-									<a href="index2.html"><i class="fa fa-flag"></i> 店铺分类</a>
+									<a href="/redpack/"><i class="fa fa-flag"></i> 红包设置</a>
 								</li>
 								<li class="active">
-									<a href="index2.html"><i class="fa fa-flag"></i> 店铺消费记录</a>
+									<a href="/cartsManage/"><i class="fa fa-flag"></i> 店铺消费记录</a>
 								</li>
 							</ul>
 						</li>
@@ -570,64 +570,65 @@
 					<!-- Settings tab content -->
 					<div class="tab-pane" id="control-sidebar-settings-tab">
 						<form method="post">
-							<h3 class="control-sidebar-heading">General Settings</h3>
+							<h3 class="control-sidebar-heading"><a href="##" style="color:white">红包设置</a></h3>
 
 							<div class="form-group">
-								<label class="control-sidebar-subheading">
+								<!-- <label class="control-sidebar-subheading">
               Report panel usage
               <input type="checkbox" class="pull-right" checked>
             </label>
 
 								<p>
 									Some information about this general settings option
-								</p>
+								</p> -->
 							</div>
 							<!-- /.form-group -->
 
 							<div class="form-group">
-								<label class="control-sidebar-subheading">
-              Allow mail redirect
+								<!-- <label class="control-sidebar-subheading">
+              返利设置
               <input type="checkbox" class="pull-right" checked>
             </label>
 
 								<p>
 									Other sets of options are available
-								</p>
+								</p> -->
 							</div>
 							<!-- /.form-group -->
 
 							<div class="form-group">
-								<label class="control-sidebar-subheading">
-              Expose author name in posts
+								<!-- <label class="control-sidebar-subheading">
+              返利设置
               <input type="checkbox" class="pull-right" checked>
             </label>
 
 								<p>
 									Allow the user to show his name in blog posts
-								</p>
+								</p> -->
 							</div>
 
-							<h3 class="control-sidebar-heading">Chat Settings</h3>
+							<h3 class="control-sidebar-heading" href="###"><a href="##" style="color:white">返利设置</a></h3>
 
 							<div class="form-group">
-								<label class="control-sidebar-subheading">
+								<!-- <label class="control-sidebar-subheading">
               Show me as online
               <input type="checkbox" class="pull-right" checked>
-            </label>
+            </label> -->
 							</div>
 
 							<div class="form-group">
-								<label class="control-sidebar-subheading">
+								<!-- <label class="control-sidebar-subheading">
               Turn off notifications
               <input type="checkbox" class="pull-right">
-            </label>
+            </label> -->
 							</div>
 							<div class="form-group">
-								<label class="control-sidebar-subheading">
+								<!-- <label class="control-sidebar-subheading">
               Delete chat history
               <a href="javascript:void(0)" class="text-red pull-right"><i class="fa fa-trash-o"></i></a>
-            </label>
+            </label> -->
 							</div>
+							<h3 class="control-sidebar-heading" href="###"><a href="##" style="color:white">福袋设置</a></h3>
 						</form>
 					</div>
 				</div>
@@ -653,6 +654,7 @@
 		<script src="{% static 'js/jquery.form.min.js' %}"></script>
 
 		<script src="{% static 'js/jquery.twbsPagination.js' %}"></script>
+
 		<!--<script src="{% static 'dist/js/demo.js' %}"></script>-->
 
 		{% block script %}{% endblock %}

@@ -1,0 +1,264 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block css %}
+<style type="text/css">
+	.biaojuzhong th {
+		text-align: center;
+	}
+	
+	.biaojuzhong td {
+		text-align: center;
+	}
+
+	.purchase-btn:hover {
+    background-color:rgb(197, 26, 26); /* Green */
+    color: white;
+	}
+	
+	.sumdiv{
+		background-color: #fff;
+		display: inline-block;
+		padding: 6px 12px;
+		margin-bottom: 0;
+		font-size: 14px;
+		font-weight: 400;
+		line-height: 1.42857143;
+		text-align: center;
+		border: 1px solid #ccc;
+		border-radius: 4px;
+	}
+	
+	#bigdiv{
+		background-color: #fff;
+		border: 1px solid #ccc;
+		border-collapse: collapse;
+	}
+
+	.black_overlay {
+		display: none;
+		position: absolute;
+		top: 0%;
+		left: 0%;
+		width: 100%;
+		height: 100%;
+		background-color: black;
+		z-index: 1001;
+		-moz-opacity: 0.8;
+		opacity: .50;
+		filter: alpha(opacity=80);
+	}
+	
+	.white_content {
+		display: none;
+		position: absolute;
+		top: 10%;
+		left: 10%;
+		width: 80%;
+		height: 80%;
+		border: 8px solid lightblue;
+		background-color: white;
+		z-index: 1002;
+		overflow: auto;
+	}
+
+
+</style>
+{% endblock %}
+
+
+{% block content %}
+<div class="row" style="height: 60px;">
+		<div class="col-md-12" style="text-align: center;">
+		</div>
+	</div>
+	<div class="row" >
+		<div class="row" style="height: 50px;">
+			<!-- <div class="col-md-6" style="text-align: left;">
+				<button id="deleteBtn" type="button" class="btn btn-danger" style="margin:10px"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span>批量删除</button>
+				<button id="buyBtn" type="button" class="btn purchase-btn" style="margin:5px">立即购买</button>
+			</div> -->
+			<div class="col-md-6" style="text-align: right;">
+				<p >共有数据:<strong id="goodsNumber">0</strong>条</p>
+			</div>
+		</div>
+		
+		
+		<div class=""  id="bigdiv">
+			
+			<table id="table" class="table table-bordered" >
+					<tr name="row">
+						<td id="item" style="display:none"></td>
+						<th>自然序号</th>
+						<th>商品名称</th>
+						<th>商品图文信息</th>
+						<th>所属商家</th>
+						<th>商家类别</th>
+						<th>单价</th>
+						<th>数量</th>
+						<th>金额</th>
+						<th>操作</th>
+					</tr>
+					<tr name="row">
+						<td id="item">1</td>
+						<td>商品名</td>
+						<td>商品图片</td>
+						<td>店铺名称</td>
+						<td>商家类别</td>
+						<td>单价</td>
+						<td>
+							<div class="item-amount">
+								<a href="#" class="J_Minus no-minus">-</a>
+								<input type="text" value="1" class="text text-amount J_ItemAmount" data-max="281" data-now="1" autocomplete="off">
+								<a href="#" class="J_Plus plus">+</a>
+							</div>
+						</td>
+						<td>金额</td>
+						<td>
+							<button class="btn btn-success">购 买</button>
+							<button class="btn btn-danger">删 除</button> 
+						</td>
+					</tr>
+					<tr name="row">
+						<td id="item">2</td>
+						<td>商品名</td>
+						<td>商品图片</td>
+						<td>店铺名称</td>
+						<td>商家类别</td>
+						<td>单价</td>
+						<td>
+							<div class="item-amount">
+								<a href="#" class="J_Minus no-minus">-</a>
+								<input type="text" value="1" class="text text-amount J_ItemAmount" data-max="281" data-now="1" autocomplete="off">
+								<a href="#" class="J_Plus plus">+</a>
+							</div>
+						</td>
+						<td>金额</td>
+						<td>
+							<button class="btn btn-success">购 买</button>
+							<button class="btn btn-danger">删 除</button> 
+						</td>
+					</tr>
+					<tr name="row">
+						<td id="item">3</td>
+						<td>商品名</td>
+						<td>商品图片</td>
+						<td>店铺名称</td>
+						<td>商家类别</td>
+						<td>单价</td>
+						<td>
+							<div class="item-amount">
+								<a href="#" class="J_Minus no-minus">-</a>
+								<input type="text" value="1" class="text text-amount J_ItemAmount" data-max="281" data-now="1" autocomplete="off">
+								<a href="#" class="J_Plus plus">+</a>
+							</div>
+						</td>
+						<td>金额</td>
+						<td>
+							<button class="btn btn-success">购 买</button>
+							<button class="btn btn-danger">删 除</button> 
+						</td>
+					</tr>
+					<tr name="row">
+						<td id="item">4</td>
+						<td>商品名</td>
+						<td>商品图片</td>
+						<td>店铺名称</td>
+						<td>商家类别</td>
+						<td>单价</td>
+						<td>
+							<div class="item-amount">
+								<a href="#" class="J_Minus no-minus">-</a>
+								<input type="text" value="1" class="text text-amount J_ItemAmount" data-max="281" data-now="1" autocomplete="off">
+								<a href="#" class="J_Plus plus">+</a>
+							</div>
+						</td>
+						<td>金额</td>
+						<td>
+							<button class="btn btn-success">购 买</button>
+							<button class="btn btn-danger">删 除</button> 
+						</td>
+					</tr>
+				</table>
+							
+				
+			
+
+			<div class="row" id="div3" style=" padding: 1% 0;">
+				<div class="col-md-12" style="text-align: left;">
+						
+						<div class="text-center">
+							<ul id="visible-pages-example"></ul>
+						</div>
+				</div>
+			</div>
+		</div>
+		
+		
+
+		<div id="fade" class="black_overlay">
+		</div>
+		<div id="MyDiv" class="white_content">
+			<div style="text-align: right; cursor: default; height: 40px;" id="move">
+				<span style="font-size: 16px;" onclick="CloseDiv('MyDiv','fade')">关闭</span>
+			</div>
+			<div id="">
+				<div>
+					<h1>商品信息添加：</h1>
+					<script id="editor" type="text/plain" style="width:100%;height:300px;"></script>
+				</div>
+				<div id="btns">
+					<div id="div_Old" style="height: 300px;border: 2px solid red;width: 100%;">						
+					</div>
+					<br />
+					<div align="center">				
+						<form id="uploadForm" method="post" action="http://localhost:8000/adManageJsonAdd/" >  
+								<input type="file" name="imgsFile"></input>  
+								<input id="subbtn" type="submit" >  
+						</form> 
+					</div>
+					<br />
+					<div id="" align="center">
+						<button style="background-color: red;height: 30px;width: 50px;"onclick="addAll()">添加</button>
+					</div>
+				</div>
+				
+			</div>
+			
+			
+			<script type="text/javascript">
+				
+			</script>
+		</div>
+		
+		
+{% endblock %}
+
+
+{% block contentRight %}
+
+<ol class="breadcrumb">
+        <li>
+            <a href="#"><i class="fa fa-dashboard"></i> Home</a>
+        </li>
+        <li class="active">购物车列表</li>
+    </ol>
+
+{% endblock %}
+
+
+{% block contentLeft %}
+购物车列表
+<small>Version 5.0</small>
+
+{% endblock %}
+
+{% block script %}
+<script>
+
+
+
+
+</script>
+{% endblock %}
+

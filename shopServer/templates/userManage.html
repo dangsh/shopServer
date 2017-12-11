@@ -11,8 +11,9 @@
 			background-color: #D33A3C;
 		}
 		.plus{
-			background-color: skyblue;
-		}
+			background-color: #00c0ef;
+            border-color: #00acd6;
+        }
 		
 		.submit , .edit{
 			background-color: #4FAF4C;
@@ -51,7 +52,7 @@
         <form class="form-inline" role="form">
             <div class="form-group">
                 <label class="" >用户名:</label>
-                <input type="email" class="form-control" id="exampleUsername" placeholder="请输入用户名">
+                <input type="text" class="form-control" id="exampleUsername" placeholder="请输入用户名">
             </div>
             <div class="form-group">
                 <label class="" >手机号:</label>
@@ -59,18 +60,19 @@
             </div>
             <button type="submit" class="btn btn-default submit"><span class = "glyphicon glyphicon-search">查询会员</span></button>
         </form>
-        <hr/>			
+        <hr/>
+	
             
         <table  class="table table-bordered">
             <th colspan="11">
                 
                     <button class="btn btn-default trash"><span class = "glyphicon glyphicon-trash">批量删除</span></button>
-                    <button class="btn btn-default plus" ><span class = "glyphicon glyphicon-plus">添加会员</span></button>
-                    <label class="count" style="float: right; padding-right: 4%;">共有数据</label>
+                    <button class="btn btn-default plus btn btn-primary" data-toggle="modal" data-target="#plusModal" ><span class = "glyphicon glyphicon-plus">添加会员</span></button>
+                    <label id="userNumber" class="count" style="float: right; padding-right: 4%;">共有数据</label>
                 
             </th>
             <tr>
-                <td class="info nature"><input type="checkbox"/></td>
+                <td class="info nature"><input type="checkbox" id = "checkbox-all"></td>
                 <td class="info nature">序号</td>
                 <td class="info nature">会员名</td>
                 <td class="info nature">密码</td>
@@ -86,52 +88,99 @@
             <tbody id="userTable">
 
             </tbody>
-
-
-            <th id="under" colspan="11">
-                
-                    <button class="btn btn-info bottom">首页</button>
-                    <button class="btn btn-info bottom">下一页</button>
-                    <button class="btn btn-info bottom">尾页</button>
-                    <label class="btn btn-info bottom">共7页，当前第1页，共70条数据</label>
-                
-            </th>
-        
-            
+                   
         </table>
-    </div>
+        <div class="row" id="div3" style=" padding: 1% 0;">
+            <div class="col-md-12" style="text-align: left;">
+                    
+                    <div class="text-center">
+                        <ul id="visible-pages-example"></ul>
+                    </div>
+            </div>
+        </div>
+        
+
+
+        <div id="plusModal" class="modal fade" tabindex="-1" role="dialog" data-backdrop="false" data-show="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						<h4 class="modal-title">添加会员</h4>
+					</div>
+					<div class="modal-body">
+						<form class="addform" action="http://localhost:8000/userManageJsonAdd/" method="post">
+                            <div class="form-group">
+                            <label for="recipient-name" class="control-label">用户昵称:</label>
+                            <input type="text" class="form-control" name="username">
+                            </div>
+                            <div class="form-group">
+                            <label for="recipient-name" class="control-label">用户密码:</label>
+                            <input type="text" class="form-control" name="pwd">
+                            </div>
+                            <input type="submit" class="btn btn-primary" value="添加">
+                        </form>
+					</div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal-dialog -->
+        </div>
+
+
+        
+        <!-- Small modal -->
+        
+        <div class="myModal">
+           
+        </div>
+        
 
 {% endblock %}
 
-
-
-{% block contentLeft %}
-
-用户管理
-<small>Version 5.0</small>
-
-{% endblock %}
-
-
-
-{% block contentRight %}
-
-<ol class="breadcrumb">
-        <li>
-            <a href="#"><i class="fa fa-dashboard"></i> Home</a>
-        </li>
-        <li class="active">用户管理</li>
-    </ol>
-
-{% endblock %}
 
 
 {% block script %}
+<!-- <script>
+$(".addform").on('submit', function(e){
+    aaa=$(".tijiao")
+    console.log(aaa);
+    e.preventDefault();
+    // success:function(aaa){
+    //     console.log("111111111");
+    // }
+});
+</script> -->
+    
 
     <script type="text/javascript">
+    $('.addform').on('submit', function(e) {
+        console.log("jjjjjj");
+        e.preventDefault(); 
+        $(this).ajaxSubmit({
+            success: function (result) {
+                console.log(result);
+                window.location.reload();
+                parent.$("#plusModal").hide();
+            }
+        })
+    });
+
+    
+
         var url="http://localhost:8000/userManageJsonSelect/";
+        $.ajax({
+			        url: url, 
+					type: 'POST', 
+					success:"success",
+			        success: function (result) {
+                        dataParse(result);            
+			        }, 
+			        error: function (msg) {
+			        	console.log(msg); //错误信息
+                    }    
+                });
         function dataParse(data){
-            console.log(data)
             for(i=0 ; i<data.data.length ; i++){
                 mydata =  data.data[i]
                 var userid = mydata["userid"];
@@ -143,23 +192,97 @@
                 var acountmoney = mydata["acountmoney"];
                 var power = mydata["power"];
                 var activecode = mydata["activecode"];
-                var ele = '<tr><td class="info ele"><input type="checkbox"/></td><td class="info ele">' + userid + '</td><td class="info ele">' + username + '</td><td class="info ele">' + pwd + '</td><td class="info ele">' + phone + '</td><td class="info ele">' + wxid + '</td><td class="info ele">' + headimg + '</td><td class="info ele">' + acountmoney + '</td><td class="info ele">' + power + '</td><td class="info ele">' + activecode + '</td><td class="info ele"><button class="btn btn-default edit">编辑</button>     <button class="btn btn-default delete">删除</button></td></tr>'
-                $("#userTable").append(ele)
+                var ele = '<tr userid = "' + userid + '" username = "' + username + '" pwd = "' + pwd + '" phone = "' + phone + '" wxid = "' + wxid + '" heading = "' + headimg + '" acountmoney = "' + acountmoney + '" headimg="' + headimg +'"  power = "' + power + '" activecode = "' + activecode + '"><td class="info ele"><input class="checkbox-one" type="checkbox"/></td><td class="info ele">' + userid + '</td><td class="info ele">' + username + '</td><td class="info ele">' + pwd + '</td><td class="info ele">' + phone + '</td><td class="info ele">' + wxid + '</td><td class="info ele">' + headimg + '</td><td class="info ele">' + acountmoney + '</td><td class="info ele">' + power + '</td><td class="info ele">' + activecode + '</td><td class="info ele"><button class="btn btn-default edit btn-primary" data-toggle="modal" data-target="#editModal' + userid + '">编辑</button>     <button class="btn btn-default delete">删除</button></td></tr>'
+                $(".myModal").empty();
+                $("#userTable").append(ele);
+             
             }
+            $(".delete").click(function(){
+                var that = $(this).parents('tr');
+                var objData = that.attr('userid')
+                var url = "http://localhost:8000/userManageJsonDelete/";
+                console.log(objData)
+                ajaxFn(url , objData , function(){
+                    $(that).remove();
+                })
+            })
+            $(".edit").click(function(){
+                // console.log("jklajskldf");
+
+                var that = $(this).parents("tr");
+                console.log(that)
+                var userid = that.attr('userid');
+                aaa = userid;
+                var username = that.attr('username');
+                var pwd = that.attr('pwd');
+                var phone = that.attr('phone');
+                var wxid = that.attr('wxid');
+                var headimg = that.attr('headimg');
+                var acountmoney = that.attr('acountmoney');
+                var power = that.attr('power');
+                var activecode = that.attr('activecode');
+                console.log(username);
+                var ele = '<div class="modal fade bs-example-modal-sm theEditModal" id="editModal' + userid + '" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel"><div class="modal-dialog" role="document"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button><h4 class="modal-title">修改会员资料</h4></div><div class="modal-header" id="updetaModal"><form class="editFormContent" action="http://localhost:8000/userManageJsonUpdate/" method="post"><div class="form-group"><label for="recipient-name" class="control-label">序号：</label><input type="text" class="form-control" name="userid" value="' + userid + '" readonly="readonly"></div><div class="form-group"><label for="recipient-name" class="control-label">会员名:</label><input type="text" class="form-control" name="username" value="' + username + '"></div><div class="form-group"><label for="recipient-name" class="control-label">密码:</label><input type="text" class="form-control" name="pwd" value="' + pwd + '"></div><div class="form-group"><label for="recipient-name" class="control-label">电话:</label><input type="text" class="form-control" name="phone" value="' + phone + '"></div><div class="form-group"><label for="recipient-name" class="control-label">微信:</label><input type="text" class="form-control" name="wxid" value="' + wxid + '"></div><div class="form-group"><label for="recipient-name" class="control-label">头像:</label><input type="text" class="form-control" name="headimg" value="' + headimg + '"></div><div class="form-group"><label for="recipient-name" class="control-label">账户余额:</label><input type="text" class="form-control" name="acountmoney" value="' + acountmoney + '"></div><div class="form-group"><label for="recipient-name" class="control-label">等级:</label><input type="text" class="form-control" name="power" value="' + power + '"></div><div class="form-group"><label for="recipient-name" class="control-label">激活码:</label><input type="text" class="form-control" name="activecode" value="' + activecode +'"></div><input type="submit" class="btn btn-primary" value="更新"></form></div></form></div></div></div></div>'
+                $(".myModal").empty();
+                
+                $(".myModal").append(ele)
+
+                $(".editFormContent").eq(0).on("submit" , function(e){
+                    console.log("jkajskdjkflkd");
+                    e.preventDefault();
+                    $(this).ajaxSubmit({
+                        success:function(result){
+                            console.log('post数据成功')
+                            window.location.reload();
+                            parent.$(".theEditModal").hide();
+                            $(".editFormContent").on("submit" , "")
+                        }
+                    })
+                })
+            })
+            $("#userNumber").text("共有数据" + data.data.length + "条");
         }
-        $.ajax({
-			        url: url, 
-					type: 'POST', 
-					success:"success",
-			        success: function (result) {
-			            dataParse(result);
-			        }, 
-			        error: function (msg) {
-			        	console.log(msg); //错误信息
-			        }
-			    });    
+        
 
 
+        $('#checkbox-all').click(function () {
+            if($('#checkbox-all').is(':checked')) {
+                console.log("get - all")
+                $(".checkbox-one").prop("checked",true);
+            }else{
+                console.log("close - all")
+                $(".checkbox-one").prop("checked",false);
+            }
+        })
+        $('#visible-pages-example').twbsPagination({
+            totalPages:35,
+            first: "首页",
+            last: "尾页",
+            prev: '上一页',
+            next: '下一页',
+            startPage: 1,
+            visiblePages: 5,
+            version: '1.1',
+            onPageClick: function (event, page) {   
+            }
+        });
+
+        function ajaxFn(urlString , postdata , fn){
+            var xmlhttp=new XMLHttpRequest();
+            xmlhttp.onreadystatechange=function()
+            {
+                if (xmlhttp.readyState==4 && xmlhttp.status==200)
+                {
+                    result = xmlhttp.responseText;
+                    console.log(result)
+                    fn(result);
+                }
+            }
+            xmlhttp.open("POST",urlString,true);
+            xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
+            xmlhttp.send("data = " + postdata);
+        }       
+        
     </script>
 
 {% endblock %}
