@@ -1,215 +1,287 @@
-{% extends "base.html" %}
+{% extends "base.html" %} {% load staticfiles %} {% block css %}
+
+
+<style type="text/css">
+			.a-upload {
+				position: relative;
+				overflow: hidden;
+			}
+			
+			.a-upload input {
+				position: absolute;
+				font-size: 100px;
+				right: 0;
+				top: 0;
+				opacity: 0;
+				display: inline-block;
+				filter: alpha(opacity=0);
+				cursor: pointer;
+				border: 1px solid blue;
+			}
+			
+			.a-upload:hover {
+				color: #444;
+				background: #eee;
+				border-color: #ccc;
+				text-decoration: none
+			}
+			
+			.biaojuzhong th {
+				text-align: center;
+			}
+			
+			.biaojuzhong td {
+				text-align: center;
+			}
+			
+			.biaojuzhong td button {
+				padding: 2px 8px;
+				background-color: white;
+			}
+			
+			.sumdiv {
+				background-color: #fff;
+				display: inline-block;
+				padding: 6px 12px;
+				margin-bottom: 0;
+				font-size: 14px;
+				font-weight: 400;
+				line-height: 1.42857143;
+				text-align: center;
+				border: 1px solid #ccc;
+				border-radius: 4px;
+			}
+			
+			#bigdiv {
+				background-color: #fff;
+				border: 1px solid #ccc;
+				border-collapse: collapse;
+			}
+			
+			.black_overlay {
+				display: none;
+				position: absolute;
+				top: 0%;
+				left: 0%;
+				width: 100%;
+				height: 100%;
+				background-color: black;
+				z-index: 1001;
+				-moz-opacity: 0.8;
+				opacity: .50;
+				filter: alpha(opacity=80);
+			}
+			
+			.white_content {
+				display: none;
+				position: absolute;
+				top: 10%;
+				left: 10%;
+				width: 80%;
+				height: 80%;
+				border: 8px solid lightblue;
+				background-color: white;
+				z-index: 1002;
+				overflow: auto;
+			}
+		</style>
+{% endblock %} 
+{% block contentRight %}
+
+	<ol class="breadcrumb">
+		<li>
+			<a href="#"><i class="fa fa-dashboard"></i> Home</a>
+		</li>
+		<li class="active">添加商品</li>
+	</ol>
+
+	{% endblock %} {% block contentLeft %} 商品添加
+	<small>Version 5.0</small> {% endblock %} 
 
 {% block content %}
-
-
-
-
-<div class="post">
-	<div class="container">
-		<div class="rt_content">
-			<form class="form-horizontal" action="/goodsManageJsonAdd/" method="post">
-					<div class="form-group">
-					<label class="col-sm-4 control-label">商品名称：</label>
-					<div class="col-sm-3">
-							<input class="form-control only" type="text" name="goodsname" id="goodsname"placeholder="goodsname">
-					</div>
-				</div>
-				<div class="form-group">
-					<label  class="col-sm-4 control-label">所属商家：</label>
-					<div class="col-sm-3">
-						<input type="text" class="form-control only" name="shopname" id="shopname" placeholder="shopname">
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-sm-4 control-label">单价：</label>
-					<div class="col-sm-3">
-						<input type="details" class="form-control only" id="price" name="price" placeholder="price">
-					</div>
-				</div>
-
-				<div class="form-group">
-					<label class="col-sm-4 control-label">                
-				<div class="checkbox" >
-		  			<label>
-				<input type="checkbox" id="checkboxread" > 运费：</label>
-				</div>
-				</label>
-			
-				<div class="col-sm-3">
-					<input type="text" class="form-control readon" id="transportmoney" name="transportmoney" placeholder="transportmoney" readonly="true">
-				</div>
-				<div class="form-group ">
-					<div class="col-sm-offset-5 col-sm-10">
-						<button type="button" class="btn btn-success" id="updata"> 更改</button>
-						<button type="button" class="btn btn-success" id="endata"> 确定</button>
-					</div>
-				
-
-				
-
-				<!-- <input type="text" name="goodsname" id="goodsname">
-				<input type="text" name="shopname" id="shopname">
-				<input type="text" name="details" id="details">
-				<input type="text" name="status" id="status">
-				<input type="text" name="rebate" id="rebate">
-				<input type="text" name="lookhistoryid" id="lookhistoryid">
-				<input type="text" name="stock" id="stock">
-				<input type="text" name="price" id="price">
-				<input type="text" name="standard" id="standard">
-				<input type="text" name="images" id="images"> -->
-
-
-		</div>
-	</div>
-</div>
-
-	
-	<div class="form-group">
-	<div class="table-responsive table-bordered ">
 		
-		<table class="table table-bordered table-hover" style="margin-bottom: 0px;">
-			<!--<table class="table table-bordered table-hover" contenteditable="true">-->								
-			<thead>
+<div class="post">
+		<div class="container">
+			<div class="rt_content">
+				<form class="form-horizontal" action="/goodsManageJsonAdd/" method="post">
+					<div class="form-group">
+						<label class="col-sm-4 control-label">商品名称：</label>
+						<div class="col-sm-3">
+							<input class="form-control only"  name="goodsname" id="goodsname" placeholder="goodsname">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-4 control-label">所属商家：</label>
+						<div class="col-sm-3">
+							<input class="form-control only" name="shopname" id="shopname" placeholder="shopname">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-4 control-label">商品介绍：</label>
+						<div class="col-sm-3">
+							<input  class="form-control only" id="standard" name="standard" placeholder="standard">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-4 control-label">颜色/口味：</label>
+						<div class="col-sm-3">
+							<input  class="form-control only" name="color" id="color" placeholder="color">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-4 control-label">尺寸/参数：</label>
+						<div class="col-sm-3">
+							<input  class="form-control only" id="size" name="size" placeholder="size">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-4 control-label">数量：</label>
+						<div class="col-sm-3">
+							<input class="form-control only"  name="counts" id="counts" placeholder="counts ">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-4 control-label">本金：</label>
+						<div class="col-sm-3">
+							<input class="form-control only"  name="principal " id="principal" placeholder="principal ">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-4 control-label">单价：</label>
+						<div class="col-sm-3">
+							<input class="form-control only" id="price" name="price" placeholder="price">
+						</div>
+					</div><div class="form-group">
+						<label class="col-sm-4 control-label">促销价格：</label>
+						<div class="col-sm-3">
+							<input class="form-control only" name="proprice" id="proprice" placeholder="proprice">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-4 control-label">促销开始日期：</label>
+						<div class="col-sm-3">
+							<input  class="form-control only" name="prostart" id="prostart" placeholder="prostart">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-4 control-label">促销结束日期：</label>
+						<div class="col-sm-3">
+							<input  class="form-control only" id="proend" name="proend" placeholder="proend">
+						</div>
+					</div>
+					<div class="form-group">
+							<label class="col-sm-4 control-label">返利</label>
+							<div class="col-sm-3">
+								<input  class="form-control only" id="rebate" name="rebate" placeholder="proend">
+							</div>
+						</div>
+					<div class="form-group">
+						<label class="col-sm-4 control-label">                
+			<div class="checkbox" >
+				  <label>
+			<input type="checkbox" id="checkboxread" > 运费：</label>
+					</div>
+					</label>
 
-				<div class="col-md-12 " style=" background-color: #F2F9FE;
-											padding: 5px;">
+					<div class="col-sm-3">
+						<input  class="form-control readon" id="transportmoney" name="transportmoney" placeholder="transportmoney" readonly="true">
+					</div>
+			</div>
+		</div>
 
-					<button type="submit" class="btn btn-info"> +添加商品详情</button>
-				</div>
-			</thead>
-			<tr style=" background-color: #F2F9FE;
-											padding-left: 5px;">
-				<th colspan="13">商品详情修改</th>
-			</tr>
+		<div class="form-group">
+			<div class="table-responsive table-bordered ">
 
-			<tr style=" background-color: #F2F9FE;
-											padding-left: 5px;">
-				<th>序号</th>
-				<th>返利</th>
-				<th>规格</th>
-				<th>配图</th>
-				<th>数量</th>
-				<th>状态</th>
-				<th>详情</th>
-				<th>所属商家</th>
-				<th>上架时间</th>
-				<th>下架时间</th>
-				<th>浏览记录</th>
-				<th>id</th>
-				<th>编辑</th>
-			</tr>
+				<table class="table table-bordered " style="margin-bottom: 0px;">
+					<!--<table class="table table-bordered table-hover" contenteditable="true">-->
+					<thead>
 
-			<tbody class="myListTable">
-				<tr class="datails"><th scope="row">1</th><td>' + rebate + '</td><td>' + standard + '</td><td>'+images+'</td><td>'+stock+'</td><td>'+status+'</td><td>0</td><td>'+shopname+'</td><td>'+uptime+'</td><td>'+downtime+'</td><td>'+ lookhistoryid+'</td><td>'+goodsid+'</td>						<td><button class="button" type="button" id=""data-toggle="modal" data-target="#exampleModal"><span class="glyphicon glyphicon-pencil demo1"aria-hidden="true"></span></button>
-					<!-- <tr class="datails" goodsid="' + goodsid + '" images="' + images + '">
-						<td><input class="checkbox-one" type="checkbox"></td>
-						<th scope="row">3</th>
-						<td>' + goodsName + '</td>
-						<td>' + shopname + '</td>
-						<td>家居</td>
-						<td></td>
-						<td>已上架</td>
-						<td><span class="glyphicon glyphicon-upload up" aria-hidden="true">上架 </span> &nbsp;
-						<span class="glyphicon glyphicon-download down" aria-hidden="true">下架</span></td>\
-						<td><span class="glyphicon glyphicon-picture demo3" aria-hidden="true"></span> &nbsp;
-						<span class="glyphicon glyphicon-pencil demo4" aria-hidden="true"></span></td>
-						<td><span class="glyphicon glyphicon-plus demo5" aria-hidden="true"></span> &nbsp;<span class="glyphicon glyphicon-list-alt demo6"  aria-hidden="true"></span></td>
-						<td><span class="glyphicon glyphicon-file demo7"  aria-hidden="true"></span> &nbsp;<span class="glyphicon glyphicon-trash demo8"  aria-hidden="true"></span></td></tr> -->
-						<!-- <td><button class="button" type="button" id=""data-toggle="modal" data-target="#exampleModal"><span class="glyphicon glyphicon-pencil demo1"aria-hidden="true"></span></button> -->
+						<div class="col-md-12 " style=" background-color: #F2F9FE;
+										padding: 5px;">
 
-						<!-- <button class="btn btn-default plus btn btn-primary" data-toggle="modal" data-target="#exampleModal"><span class="glyphicon glyphicon-plus">添加会员</span></button> -->
-						<!-- 
-						<span class="glyphicon glyphicon-trash demo2" aria-hidden="true"></span> -->
-					</td>
-				</tr>
+							<button type="submit" class="btn btn-info"> +添加</button>
+						</div>
+					</thead>
+					<tr style=" background-color: #F2F9FE;
+										padding-left: 5px;">
+						<th colspan="13">商品详情</th>
+					</tr>
 
-			</tbody>
-		</table>
-	</div>
-	</div>
-	<div class="col-md-12" style="width: 100%;height: 475px;padding-left: 0px;padding-right: 0px;">
-		<div class=row style="color:red";>
+					<tr style=" background-color: #F2F9FE;
+										padding-left: 5px;">
+						<th>序号</th>
+						<th>返利</th>
+						<th>规格</th>
+						<th>配图</th>
+						<th>数量</th>
+						<th>状态</th>
+						<th>详情</th>
+						<th>所属商家</th>
+						<th>浏览记录</th>
+						<th>id</th>
+						<th>编辑</th>
+					</tr>
+
+					<tbody class="myListTable">
+						<!-- <tr class="datails">
+							<th scope="row">1</th>
+							<td>' + rebate + '</td>
+							<td>' + standard + '</td>
+							<td>'+images+'</td>
+							<td>'+stock+'</td>
+							<td>'+status+'</td>
+							<td>0</td>
+							<td>'+shopname+'</td>
+
+							<td>'+ lookhistoryid+'</td>
+							<td>'+goodsid+'</td> -->
+							<!--<td><button class="button" type="button" id="" data-toggle="modal" data-target="#exampleModal"><span class="glyphicon glyphicon-pencil demo1"aria-hidden="true"></span></button>-->
+								<!-- <td><button class="button" type="button" id=""data-toggle="modal" data-target="#exampleModal"><span class="glyphicon glyphicon-pencil demo1"aria-hidden="true"></span></button></td> -->
+
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div class="col-md-12" style="width: 100%;height: 350px;padding-left: 0px;padding-right: 0px;">
+			<div class=row style="color:red" ;>
 				<div class="col-md-6"> (请在这里输入商品规格参数)</div>
 				<div class="col-md-6"> (退换货说明)</div>
-		</div>
-		<div id=""style="background-color: red;width: 50%;height: 400px;float: left;">
-			<script id="editor" type="text/plain" style="width:100%;height:300px;"></script>
-		</div>
-		<div id=""style="background-color: cadetblue;width: 50%;height: 400px;float: right;">
-			<script id="editor1" type="text/plain" style="width:100%;height:300px;"></script>
-		</div>
-	</div>
-	<div class="col-sm-offset-0 col-sm-10" style="padding-left: 0px;">
-		<button type="button" class="btn btn-success"> 修改</button>
-	</div>
-
-	<div id="exampleModal" class="modal fade" tabindex="-1" role="dialog" data-backdrop="false" data-show="true">
-			<div class="modal-dialog" role="document">
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-						<h4 class="modal-title">商品详情</h4>
-					</div>
-					<div class="modal-body">
-						<form class="addform" action="" method="post">
-							<div class="form-group ">
-							<label  class="col-sm-2 control-label" style="padding-top: 7px;">返利:</label>
-							<div class="col-sm-10 form-group">
-							<input type="text" class=" form-control" id="rebate" name="rebate"placeholder="返利">
-							</div>
-							</div>
-							<div class="form-group">
-							<label  class="col-sm-2 control-label" style="padding-top: 7px;">规格:</label>
-							<div class="col-sm-10 form-group">
-							<input type="text" class="form-control" name="standard">
-							</div>
-							</div>
-							<div class="form-group">
-							<label  class="col-sm-2 control-label" style="padding-top: 7px;">配图:</label>
-							<div class="col-sm-10 form-group">
-							<input type="text" class="form-control" id="images"name="images">
-							</div>
-							</div>
-							<div class="form-group ">
-							<label  class="col-sm-2 control-label" style="padding-top: 7px;">数量:</label>
-							<div class="col-sm-10 form-group">
-							<input type="text" class=" form-control" id="stock" name="stock"placeholder="数量">
-							</div>
-							</div>
-							<div class="form-group">
-							<label  class="col-sm-2 control-label" style="padding-top: 7px;">状态:</label>
-							<div class="col-sm-10 form-group">
-							<input type="text" class="form-control" name="status" id="status">
-							</div>
-							</div>
-							<div class="form-group">
-							<label  class="col-sm-2 control-label" style="padding-top: 7px;">上架时间:</label>
-							<div class="col-sm-10 form-group">
-							<input type="text" class="form-control" name="uptime"id="uptime">
-							</div>
-							</div>
-							<div class="form-group">
-							<label  class="col-sm-2 control-label" style="padding-top: 7px;">下架时间:</label>
-							<div class="col-sm-10 form-group">
-							<input type="text" class="form-control" name="downtime"id="downtime">
-							</div>
-							</div>
-							<input type="add" class="btn btn-primary addbt" id="addbtn" value="添加">
-						</form>
-					</div>
-				</div>
-				<!-- /.modal-content -->
 			</div>
-			<!-- /.modal-dialog -->
+			<div id="" style="background-color: red;width: 50%;height: 250px;float: left;">
+				<script id="editor" type="text/plain" style="width:100%;height:250px;"></script>
+			</div>
+			<div id="" style="background-color: cadetblue;width: 50%;height: 250px;float: right;">
+				<script id="editor1" type="text/plain" style="width:100%;height:250px;"></script>
+			</div>
+		</div>
+		
+		<div class="col-sm-offset-0 col-sm-10" style="padding-left: 0px;">
+			<button type="button" class="btn btn-success"style="margin-top: 75px;"> 修改</button>
+		</div>
+		<div class="form-group " style:"padding:">
+			<div class="col-sm-offset-5 col-md-12">
+				<button type="button" class="btn btn-success" id="updata"> 更改</button>
+				<button type="button" class="btn btn-success" id="endata"> 确定</button>
+			</div>
+		
 		</div>
 
+	
 
-</form>
+		</form>
+
+			
+		</div>
+							
+				
 
 
 
-{% endblock %}
+
+
+
+		{% endblock %} 
+		
 
 
 {% block script %}
@@ -237,34 +309,40 @@ $('#updata').click(function () {
 		$(".only").prop("readonly",false);
 })
 
-$('.addbt').click(function oneGoods (data){
-	for (var i = 0; i < data.length; i++) {
+a = localStorage.getItem("data")
+console.log(typeof(JSON.parse(a)))
 
-		oneGoods(data[i])
-	}
-        console.log("jjjjjj");
-	var goodsid = data["goodsid"];
-	var rebate = data["rebate"];
-	var lookhistoryid = data["lookhistoryid"];
-	var standard = data["standard"];
-	var images = data["images"];
-	var details = data["details"];
-	var shopname = data["shopname"];
-	var status = data["status"];
-	var uptime = data["uptime"];
-	var downtime = data["downtime"];
-	var price = data["price"];
-	var goodsName = data["goodsname"];
-	var stock = data["stock"];
-	var transportmoney=data["goodsname"]
-	// var ele = '<tr class="datails" goodsid="' + goodsid + '" images="' + images + '"><td><input class="checkbox-one" type="checkbox"></td><th scope="row">3</th><td>' + goodsName + '</td><td>' + shopname + '</td><td>家居</td><td></td><td>已上架</td><td><span class="glyphicon glyphicon-upload up" aria-hidden="true">上架 </span> &nbsp;<span class="glyphicon glyphicon-download down" aria-hidden="true">下架</span></td><td><span class="glyphicon glyphicon-picture demo3" aria-hidden="true"></span> &nbsp;<span class="glyphicon glyphicon-pencil demo4" aria-hidden="true"></span></td><td><span class="glyphicon glyphicon-plus demo5" aria-hidden="true"></span> &nbsp;<span class="glyphicon glyphicon-list-alt demo6"  aria-hidden="true"></span></td><td><span class="glyphicon glyphicon-file demo7"  aria-hidden="true"></span> &nbsp;<span class="glyphicon glyphicon-trash demo8"  aria-hidden="true"></span></td></tr>'
-	var ele='<tr class="datails"><th scope="row">1</th><td>' + rebate + '</td><td>' + standard + '</td><td>'+images+'</td><td>'+stock+'</td><td>'+status+'</td><td>0</td><td>'+shopname+'</td><td>'+uptime+'</td><td>'+downtime+'</td><td>'+ lookhistoryid+'</td><td>'+goodsid+'</td>						<td><button class="button" type="button" id=""data-toggle="modal" data-target="#exampleModal"><span class="glyphicon glyphicon-pencil demo1"aria-hidden="true"></span></button>'
-		$(".myListTable").remove(ele)
-	$(".myListTable").append(ele)
-	// $(".myListTable").remove(ele)
-}
 
-    );
+
+
+
+// $('#addbt').bind('click',function(e){
+
+//         console.log("jjjjjj");
+// 		// e.preventDefault(); 
+// 	function oneGoods(data) {
+// 	var goodsid = data["goodsid"];
+// 	var rebate = data["rebate"];
+// 	var lookhistoryid = data["lookhistoryid"];
+// 	var standard = data["standard"];
+// 	var images = data["images"];
+// 	var details = data["details"];
+// 	var shopname = data["shopname"];
+// 	var status = data["status"];
+// 	var uptime = data["uptime"];
+// 	var downtime = data["downtime"];
+// 	var price = data["price"];
+// 	var goodsName = data["goodsname"];
+// 	var stock = data["stock"];
+// 	var transportmoney=data["goodsname"]
+// 	var ele = '<tr class="datails" goodsid="' + goodsid + '" images="' + images + '"><td><input class="checkbox-one" type="checkbox"></td><th scope="row">3</th><td>' + goodsName + '</td><td>' + shopname + '</td><td>家居</td><td></td><td>已上架</td><td><span class="glyphicon glyphicon-upload up" aria-hidden="true">上架 </span> &nbsp;<span class="glyphicon glyphicon-download down" aria-hidden="true">下架</span></td><td><span class="glyphicon glyphicon-picture demo3" aria-hidden="true"></span> &nbsp;<span class="glyphicon glyphicon-pencil demo4" aria-hidden="true"></span></td><td><span class="glyphicon glyphicon-plus demo5" aria-hidden="true"></span> &nbsp;<span class="glyphicon glyphicon-list-alt demo6"  aria-hidden="true"></span></td><td><span class="glyphicon glyphicon-file demo7"  aria-hidden="true"></span> &nbsp;<span class="glyphicon glyphicon-trash demo8"  aria-hidden="true"></span></td></tr>'
+// 	// var ele='<tr class="datails"><th scope="row">1</th><td>' + rebate + '</td><td>' + standard + '</td><td>'+images+'</td><td>'+stock+'</td><td>'+status+'</td><td>0</td><td>'+shopname+'</td><td>'+uptime+'</td><td>'+downtime+'</td><td>'+ lookhistoryid+'</td><td>'+goodsid+'</td>						<td><button class="button" type="button" id=""data-toggle="modal" data-target="#exampleModal"><span class="glyphicon glyphicon-pencil demo1"aria-hidden="true"></span></button>'
+// 		// $(".myListTable").remove(ele)
+// 	$(".myListTable").append(ele)
+// 	// $(".myListTable").remove(ele)
+// }
+
+// });
 
 
 // $('#demo1').click('shown.bs.modal', function () {

@@ -161,7 +161,6 @@
 							<span class="glyphicon glyphicon-trash demo8"  aria-hidden="true"></span>
 						</td>
 					</tr>-->
-
 			</tbody>
 
 		</table>
@@ -204,7 +203,7 @@
 					</div>-->
 				<br />
 				<div align="center">
-					<form style="text-align: center;" id="uploadForm" method="post" action="http://localhost:8000/adManageJsonAdd/">
+					<form style="text-align: center;" id="uploadForm" method="post" action="http://localhost:8000/saveOneImageToServer/">
 
 						<!--<input type="file" name="imgsFile" style="display: inline-block;"></input>-->
 
@@ -251,14 +250,18 @@ var thispage = 1
 var addGoodsIdRed = ""
 var commName = ""
 
+
+var mainData = "";
+
 function addAll(goodsid) {
 	var url = "http://localhost:8000/goodsManageJsonUpdata/"; //后台接收处理url
 	data = UE.getEditor('editor').getContent();
 	var objData = "goodsid=" + addGoodsIdRed + "&details=" + data; //post方式传送的数据
 	console.log(objData)
+	data = encodeURIComponent(data);
 	$.ajax({
 		url: url,
-		data: objData,
+		data: {"goodsid":addGoodsIdRed , "details":data},
 		type: 'POST',
 		success: "success",
 		success: function(data) {
@@ -313,9 +316,8 @@ function ShowDiv(show_div, bg_div) {
 			for(var i = 0; i < data.data.length; i++) {
 				if(data.data[i].goodsid == addGoodsIdRed) {
 					var detailsAll = data.data[i].details;
-					console.log(detailsAll)
-					ue.setContent(detailsAll);
-					//						
+					detailsAll = decodeURIComponent(detailsAll)
+					ue.setContent(detailsAll);					
 				}
 			}
 		},
@@ -469,9 +471,15 @@ function goodsListToPage(data) {
 		console.log(" 6")
 	});
 	$(".demo7").click(function(){
-		console.log(" 7")
+		currentIndex = $(this).parents("tr").index();
+        currentItem = mainData[currentIndex];
+        localStorage.setItem("data" , currentItem)
+		setTimeout(function () {
+			window.location.href = "http://localhost:8000/addGoods/"
+		} , 1000)
 	});
 	$(".demo8").click(function(){
+		console.log('*********');
 		var that = $(this).parents("tr")
 		var goodsArr = [that.attr("goodsid")]
 		//console.log("...........", goodsArr)
@@ -570,8 +578,10 @@ function loaddata() {
 			console.log("-----",goodsListPages)
 			$(".myListTable").children("tr").remove()
 			//解析数据
-			//console.log(data.data)
-			goodsListToPage(data.data)
+			console.log("**************************");
+			console.log(data.data)
+			mainData = data.data;
+			goodsListToPage(mainData)
 			//记录个数'
 			$("#goodsNumber").text(goodsCount);
 			$("#visible-pages-example").children(".sumdiv").remove()

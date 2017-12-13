@@ -1,0 +1,61 @@
+{% extends "base.html" %} {% block content %}
+<div class="container-fluid ">
+	<div class="row ">
+
+		<div class="col-md-12" style="text-align: center;">
+			<form class="form-inline" action="#">
+				<div class="form-group">
+					<label for="exampleInputName2">用户名:</label>
+					<input type="text" class="form-control" name = "orderid" id="orderid" placeholder="用户名">
+				</div>
+				<button type="submit" id = "tijiao"  class="btn btn-success mybtn" ><span class="glyphicon glyphicon-search" aria-hidden="true"></span>记录查询</button>
+			</form>
+		</div>
+		<table class="table">
+			<caption><strong style="color: #000000;">历史记录</strong></caption>
+			<thead>
+				<tr>
+                    <th>序号</th>
+					<th>用户名</th>
+					<th>记录编号</th>
+					<th>商品编号</th>
+					<th>浏览时间</th>
+				</tr>
+			</thead>
+			<tbody id="mytbody">
+
+			</tbody>
+        </table>
+
+	{% endblock %} {% block contentRight %}
+
+	<ol class="breadcrumb">
+		<li>
+			<a href="#"><i class="fa fa-dashboard"></i> Home</a>
+		</li>
+        <li class="active">用户管理</li>
+        <li class="active">历史记录</li>
+	</ol>
+
+	{% endblock %} {% block contentLeft %} 用户管理
+	<small>Version 5.0</small> {% endblock %} {% block script %}
+	<script>
+        $.ajax({
+            url: "http://localhost:8000/lookhistoryManage/",
+            context: document.body,
+            success: function(result) {
+                for(var i = 0; i < result.length; i++) {
+                addToHtml(result[i])
+                }
+            }
+        });
+		function addToHtml(data) {
+			userid = data["userId"]
+			lookid = data["lookId"]
+			goodsid = data["goodsId"]
+			looktime = data["looktime"]
+			var myHtml = '<tr><td>1</td><td>' + userid + '</td><td>' + lookid + '</td><td>' + goodsid + '</td><td>' + looktime + '</td></tr>'
+			$("#mytbody").append(myHtml)
+        }
+	</script>
+	{% endblock %}

@@ -33,6 +33,8 @@ urlpatterns = [
     url(r'^loginApi/$' , loginApi),  # 登录接口 
     url(r'^register/$' , userManageJsonAdd), # 添加用户接口 
 
+    # url(r'^saveOneImageToServer/$' , saveOneImageToServer),  # 添加一张图片到服务器 不和数据库产生联系
+
     url(r'^userManageJsonAdd/$' , userManageJsonAdd), # 添加用户接口
     url(r'^userManageJsonSelect/$' , userManageJsonSelect), # 查询用户接口
     url(r'^userManageJsonDelete/$' , userManageJsonDelete), #删除用户接口
@@ -41,9 +43,13 @@ urlpatterns = [
     url(r'^lookhistorytableManageJsonSelect/$' , lookhistorytableManageJsonSelect),#浏览记录查询接口(GET)
     url(r'^lookhistorytableManageJsonDelete/$' , lookhistorytableManageJsonDelete),#浏览记录删除接口(GET)
     url(r'^lookhistorytableManageJsonUpdata/$' , lookhistorytableManageJsonUpdata),#浏览记录更改接口(POST)
+    # url(r'^lookhistorytableManage/$' , lookhistorytableManage),#浏览记录列表
+    # url(r'^lookhistoryManage/$' , lookhistoryManage),#浏览记录列表接口
     url(r'^activeManage/$' , activeManage),
     
     url(r'^addGoodsImage/$' , addGoodsImage),
+    
+    url(r'^ordertabalelistJaon/$' , ordertabalelistJaon),
     
 
     url(r'^adManageJsonAdd/$' , adManageJsonAdd), # 广告添加的接口
