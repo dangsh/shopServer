@@ -770,22 +770,6 @@ def orderSpilit(request):
         raise e   
         return HttpResponse(json.dumps({'data':myData, 'status':'error' , 'ordercount':str(ordercount)}), content_type="application/json");
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # 商品修改列表修改接口 有待测试 黄景召
 def goodsManageJsonUpdata(request):
     
@@ -1308,4 +1292,89 @@ def cartstableManageJsonSelect(request):
         myData.append(tempDic)
 
     return HttpResponse(json.dumps(myData) , content_type="application/json");
+
+#添加地址接口
+def addAddress(request):
+
+    # addid= request.POST["addid"]
+    # userid= request.POST["userid"]
+    # username= request.POST["username"]
+    # tel= request.POST["tel"]
+    # address= request.POST["address"]
+    # mailcode= request.POST["mailcode"]
+    # flag= request.POST["flag"]
+
+    cursor = connection.cursor()
+    addid = "003"
+    userid = "0111"
+    username = "王五"
+    tel = "18538749356"
+    address = "软件学院"
+    mailcode = "450007"
+    flag = "1"
+    try:
+        cursor.execute("INSERT INTO address (addid , userid , username , tel , address , mailcode , flag) VALUES ('%s' , '%s' , '%s' , '%s' , '%s' , '%s' , '%s' )" % (addid , userid , username , tel , address , mailcode , flag))
+        statusDis={"status":"ok","message":"添加成功"};
+        return HttpResponse(json.dumps(statusDis),content_type="application/json");
+    except:
+        statusDis={"status":"error","message":"添加失败"};
+        return HttpResponse(json.dumps(statusDis),content_type="application/json");
+
+#删除地址接口
+def delAddress(request):
+    cursor = connection.cursor()
+    # addid = request.POST["addid"]
+    addid = "123"
+    
+    try:
+        cursor.execute("DELETE FROM address WHERE addid=\"%s\""%addid)
+        statusDis={"status":"ok","message":"删除成功"};
+        return HttpResponse(json.dumps(statusDis),content_type="application/json");
+    except:
+        statusDis={"status":"error","message":"删除失败"};
+        return HttpResponse(json.dumps(statusDis),content_type="application/json");
+
+#更新地址接口
+def updateAddress(request):
+    cursor = connection.cursor()
+    datas = request.GET
+
+    try:
+        for key in list(datas):
+            cursor.execute("update address set %s='%s' where addid='%s'"%(key , datas[key] , datas["addid"]))
+            statusDis = {'data':'修改成功', 'status':'ok'}
+        return HttpResponse(json.dumps(statusDis) , content_type="application/json")
+
+    except Exception as identifier:
+        return HttpResponse(json.dumps({"message":"修改失败","status":"error"}),content_type="application/json")
+
+    # cursor = connection.cursor()
+    # cursor.execute("update address set tel='444444' where addid=003")
+    # return HttpResponse("a")
+
+#查找地址接口
+def findAddress(request):
+    cursor = connection.cursor()
+    # addid = request.POST["addid"]
+    addid = "003"
+    myData = []
+    try:
+        cursor.execute('SELECT * FROM address WHERE addid=\"%s\"' % addid)
+        datas = cursor.fetchall()
+        for data in datas:
+            addid = data[0]
+            userid = data[1]
+            username = data[2]
+            tel = data[3]
+            address = data[4]
+            mailcode = data[5]
+            tempDic = {"addid":addid , "userid":userid , "username":username , "tel":tel , "address":address , "mailcode":mailcode}
+            myData.append(tempDic)
+
+        return HttpResponse(json.dumps(myData) , content_type="application/json");
+
+    except:
+        statusDis={"status":"error","message":"查找失败"};
+        return HttpResponse(json.dumps(statusDis),content_type="application/json");
+    pass
 

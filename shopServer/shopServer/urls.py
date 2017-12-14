@@ -83,6 +83,15 @@ urlpatterns = [
     url(r'cartstableManageJsonUpdate/$' , cartstableManageJsonUpdate), #购物车修改接口
     url(r'cartstableManageJsonSelect/$' , cartstableManageJsonSelect), #购物车查询接口
     
+    url(r'^addAddress/$',addAddress),   #添加地址接口
+    url(r'^delAddress/$',delAddress),   #删除地址接口
+    url(r'^updateAddress/$',updateAddress),   #修改地址接口
+    url(r'^findAddress/$',findAddress),   #查找地址接口
+
+
+
+
+
     url(r'^personal/$' , personal),      
 
     url(r'^$' , home),
