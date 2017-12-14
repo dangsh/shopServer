@@ -734,6 +734,57 @@ def commodityQuery(request):
         raise e   
         return HttpResponse(json.dumps({'data':myData, 'status':'error', 'goodscount':'0'}), content_type="application/json");
 
+#订单分页
+def orderSpilit(request):
+    print("******************************************")
+    myData = []
+    cursor = connection.cursor()
+    mypage = 0
+    mypage = (int(request.GET["page"]) - 1) * 10
+    cursor.execute("SELECT * FROM ordertable LIMIT %d , 10;" % mypage);
+    datas = cursor.fetchall()
+    try:
+        for row in datas:
+            goods = {
+                'userid':row[0],
+                'orderid':row[1],
+                'price':row[2],
+                'ordertime':row[3].strftime('%Y-%m-%d %H:%M:%S'),
+                'isaudit':row[4],
+                'ispass':row[5],
+                'iscancel':row[6],
+                'ispay':row[7],
+                'issend':row[8],
+                'ispaydone':row[9],
+                'isclose':row[10],
+            }
+            myData.append(goods);
+        cursor.close();
+        cursor = connection.cursor();
+        cursor.execute("SELECT COUNT(*) FROM ordertable")
+        ordercount  = cursor.fetchall();
+        ordercount = ordercount[0][0]
+        return HttpResponse(json.dumps({'data':myData, 'status':'ok' , 'ordercount':str(ordercount)}), content_type="application/json")
+    
+    except Exception as e: 
+        raise e   
+        return HttpResponse(json.dumps({'data':myData, 'status':'error' , 'ordercount':str(ordercount)}), content_type="application/json");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # 商品修改列表修改接口 有待测试 黄景召
 def goodsManageJsonUpdata(request):

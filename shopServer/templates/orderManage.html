@@ -25,7 +25,7 @@
 			</form>
 		</div>
 
-		<div iclass="col-md-1">
+		<div iclass="col-md-1" id="orderCount">
 			共有数据：100条
 		</div>
 		<table class="table">
@@ -49,34 +49,14 @@
 					<th>编辑</th>
 				</tr>
 			</thead>
-			<tbody id="mytbody">
+			<tbody id="mytbody" class="myListTable">
 
 			</tbody>
 		</table>
 
-		<ul class="pagination pagination-sm ">
-			<li>
-				<a href="# ">&laquo;</a>
-			</li>
-			<li>
-				<a href="# ">1</a>
-			</li>
-			<li>
-				<a href="# ">2</a>
-			</li>
-			<li>
-				<a href="# ">3</a>
-			</li>
-			<li>
-				<a href="# ">4</a>
-			</li>
-			<li>
-				<a href="# ">5</a>
-			</li>
-			<li>
-				<a href="# ">&raquo;</a>
-			</li>
-		</ul>
+		<div class="text-center">
+			<ul id="visible-pages-example"></ul>
+		</div>
 
 	</div>
 
@@ -92,43 +72,21 @@
 	{% endblock %} {% block contentLeft %} 订单管理
 	<small>Version 5.0</small> {% endblock %} {% block script %}
 	<script>
-		//将数据字段添加到标签内 data 为字典
-        
-		function ShowDiv(show_div, bg_div) {
-			var commName = ""
 
-			var url = "http://localhost:8000/ordertabalelistJaon/"; //后台接收处理url
-			// data =data;
-			// var objData = "goodsid=" + addGoodsIdRed; //post方式传送的数据
-			// console.log(objData)
-			$.ajax({
-				url: url,
-				type: 'POST',
-				success: "success",
-				data: {"userid":"aaa","orderid":"vvv"},
-				success: function(data) {
-					console.log(data.data)
-					
-					
-					for(var i = 0; i < data.data.length; i++) {
-						// if(data.data[i].goodsid == addGoodsIdRed) {
-						addToHtml(data.data[i]);
-							// ue.setContent(detailsAll);
-							//						
-						// }
-					}
-				},
-				error: function(msg) {
-					console.log("error 加载数据失败")
-				}
-			});
+        var thispage = 1
+
+
+		//解析数据到页面
+		function orderListToPage(data) {
+			for (var i = 0; i < data.length; i++) {
+				console.log(data[i])
+				oneOrder(data[i])
+			}
 		}
-		ShowDiv();
-		function addToHtml(data) {
-			console.log("++++++++++++++++++++++++")
-			userid = data["userid"]
-			// orderid=data.orderid;
+
+		function oneOrder(data) {
 			orderid = data["orderid"]
+			userid = data["userid"]
 			price = data["price"]
 			ordertime = data["ordertime"]
 			isaudit = data["isaudit"]
@@ -138,11 +96,101 @@
 			issend = data["issend"]
 			ispaydone = data["ispaydone"]
 			isclose = data["isclose"]
-			console.log(data)
 			var myHtml = '<tr><th scope="row">1</th><td>' + orderid + '</td><td>' + userid + '</td><td>' + price + '</td><td>'+ordertime+'</td><td>' + isaudit + '</td><td>'+ispass+'</td><td>'+iscancel+'</td><td>'+ispay+'</td><td>'+issend+'</td><td>'+ispaydone+'</td><td>'+isclose+'</td><td><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span></td><td ><span class="glyphicon glyphicon-trash deletespan" aria-hidden="true"></span></td></tr>'
-			$("#mytbody").append(myHtml)
+			$(".myListTable").append(myHtml)
+			
+		}	
+
+		function loadData(){
+			$.ajax({
+				url: "http://localhost:8000/orderSpilit/?page=" + thispage,
+				type:"POST",
+				success:function(data){
+					ordercount = data.ordercount
+					orderListPages = Math.ceil(parseInt(ordercount) / 10 )
+					$(".myListTable").children("tr").remove()
+					mainData = data.data;
+					orderListToPage(mainData)
+					$("#orderCount").text(ordercount)
+					$("#visible-pages-example").children(".sumdiv").remove()
+					var spanele = '<span class="sumdiv">共' + orderListPages + '页,当前第' + thispage + '页,共' + ordercount + '条数据</span>'
+					$("#visible-pages-example").append($(spanele))
+					
+					$('#visible-pages-example').twbsPagination({
+						totalPages:orderListPages,
+						first: "首页",
+						last: "尾页",
+						prev: '上一页',
+						next: '下一页',
+						startPage: 1,
+						visiblePages: orderListPages>5?5:orderListPages,
+						version: '1.1',
+						onPageClick: function (event, page) {
+							thispage  = page;
+							loadData()
+						}
+					});
+				},
+				error:function(msg){
+					console.log("加载数据error")
+				}
+			})
 		}
-		// addToHtml();
+		
+		
+		loadData()
+		
+
+
+
+		// function ShowDiv(show_div, bg_div) {
+		// 	var commName = ""
+
+		// 	var url = "http://localhost:8000/ordertabalelistJaon/"; //后台接收处理url
+		// 	// data =data;
+		// 	// var objData = "goodsid=" + addGoodsIdRed; //post方式传送的数据
+		// 	// console.log(objData)
+		// 	$.ajax({
+		// 		url: url,
+		// 		type: 'POST',
+		// 		success: "success",
+		// 		data: {"userid":"aaa","orderid":"vvv"},
+		// 		success: function(data) {
+		// 			// console.log(data.data)
+					
+					
+		// 			for(var i = 0; i < data.data.length; i++) {
+		// 				// if(data.data[i].goodsid == addGoodsIdRed) {
+		// 				addToHtml(data.data[i]);
+		// 					// ue.setContent(detailsAll);
+		// 					//						
+		// 				// }
+		// 			}
+		// 		},
+		// 		error: function(msg) {
+		// 			console.log("error 加载数据失败")
+		// 		}
+		// 	});
+		// }
+
+		// ShowDiv();
+		function addToHtml(data) {
+			// userid = data["userid"]
+			// // orderid=data.orderid;
+			// orderid = data["orderid"]
+			// price = data["price"]
+			// ordertime = data["ordertime"]
+			// isaudit = data["isaudit"]
+			// ispass = data["ispass"]
+			// iscancel = data["iscancel"]
+			// ispay = data["ispay"]
+			// issend = data["issend"]
+			// ispaydone = data["ispaydone"]
+			// isclose = data["isclose"]
+			// var myHtml = '<tr><th scope="row">1</th><td>' + orderid + '</td><td>' + userid + '</td><td>' + price + '</td><td>'+ordertime+'</td><td>' + isaudit + '</td><td>'+ispass+'</td><td>'+iscancel+'</td><td>'+ispay+'</td><td>'+issend+'</td><td>'+ispaydone+'</td><td>'+isclose+'</td><td><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span></td><td ><span class="glyphicon glyphicon-trash deletespan" aria-hidden="true"></span></td></tr>'
+			// $("#mytbody").append(myHtml)
+		}
+		addToHtml();
 
 		//解析数据 data为数组
 		function parseFn(data) {
@@ -170,7 +218,7 @@
             context: document.body,
             success: function(result) {
                 for(var i = 0; i < result.length; i++) {
-				console.log(result)
+				// console.log(result)
                 addToHtml(result)
                 }
             }
@@ -182,8 +230,8 @@
 			var orderid = $('#orderid').val();
 			var price = $('#price').val();
 			var status = $("#myStatus").find("option:selected").val();
-			console.log("((((((((");
-			console.log(price,orderid , status),
+			// console.log("((((((((");
+			// console.log(price,orderid , status),
 			// console.log(userid , orderid , status)
 			$.ajax({
 			

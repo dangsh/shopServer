@@ -76,12 +76,13 @@ urlpatterns = [
     url(r'^ordertableManageJsonAdd/$' , ordertableManageJsonAdd), # 订单添加接口
     url(r'^ordertableDelete/(\d+)/$' , ordertableDelete), # 订单删除接口
     url(r'^ordertableManageJsonSelete/$' , ordertableManageJsonSelete), # 订单列表接口
+    url(r'^orderSpilit/$',orderSpilit), #订单分页接口
 
     url(r'cartstableManageJsonAdd/$' , cartstableManageJsonAdd), #购物车添加接口
     url(r'cartstableManageJsonDelete/$' , cartstableManageJsonDelete), #购物车删除接口
     url(r'cartstableManageJsonUpdate/$' , cartstableManageJsonUpdate), #购物车修改接口
     url(r'cartstableManageJsonSelect/$' , cartstableManageJsonSelect), #购物车查询接口
-
+    
     url(r'^personal/$' , personal),      
 
     url(r'^$' , home),
