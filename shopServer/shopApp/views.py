@@ -250,11 +250,25 @@ def userManageJsonDelete(request):
     for key in request.POST:
         userid = request.POST.getlist(key)[0]
 
+    #删除头像图片
     cursor=connection.cursor();
-    # print(cursor)
+    headimg = ""
+    cursor.execute("SELECT * FROM user WHERE userid= %s "%(userid));
+    datas = cursor.fetchall()
+    for data in datas:
+        headimg = data[2]  
+    # print(headimg)
+    aa = os.listdir("../shopServer/shopApp/static/myfile/")
+    for item in aa:
+        if item == headimg:
+            os.remove("../shopServer/shopApp/static/myfile/"+headimg);
+    cursor.close();
+
+
+    cursor=connection.cursor();
     try:
         cursor.execute("DELETE  FROM user WHERE userid = %s"%(userid))
-        # connection.commit();
+        connection.commit();
         cursor.close();
         return HttpResponse(json.dumps({'message': '删除成功','status':'ok'}), content_type="application/json");
             
