@@ -232,6 +232,7 @@
 		<li class="active">商品列表</li>
 	</ol>
 
+
 	{% endblock %} {% block contentLeft %} 商品列表
 	<small>Version 5.0</small> {% endblock %}
 {% block script %}
@@ -254,29 +255,19 @@ var commName = ""
 var mainData = "";
 
 function addAll(goodsid) {
-	var url = "http://localhost:8000/goodsManageJsonUpdata/"; //后台接收处理url
 	data = UE.getEditor('editor').getContent();
 	var objData = "goodsid=" + addGoodsIdRed + "&details=" + data; //post方式传送的数据
 	console.log(objData)
 	data = encodeURIComponent(data);
-	$.ajax({
-		url: url,
-		data: {"goodsid":addGoodsIdRed , "details":data},
-		type: 'POST',
-		success: "success",
-		success: function(data) {
-			if(data["data"] == "success") {
+	myPost("goodsManageJsonUpdata" ,{"goodsid":addGoodsIdRed , "details":data} ,function(data){
+		console.log("11111111111111111")
+		if(data["data"] == "success") {
 				alert("商品详情添加成功。。。"); //请求传输成功回调函数
 				location.reload()
 			} else {
 				alert("商品详情添加失败。。。"); //请求传输失败回调函数
 			}
-		},
-		error: function(msg) {
-			alert(msg); //错误信息
-
-		}
-	});
+	})
 }
 
 $('#uploadForm').on('submit', function(e) {
@@ -302,29 +293,39 @@ function tianjiatupian() {
 function ShowDiv(show_div, bg_div) {
 	var commName = ""
 
-	var url = "http://localhost:8000/goodsSelectByid/"; //后台接收处理url
 	data = UE.getEditor('editor').getContent();
 	var objData = "goodsid=" + addGoodsIdRed; //post方式传送的数据
 	console.log(objData)
-	$.ajax({
-		url: url,
-		type: 'POST',
-		success: "success",
-		data: objData,
-		success: function(data) {
-			console.log(data.data)
-			for(var i = 0; i < data.data.length; i++) {
+	myPost("goodsSelectByid" ,objData , function(data){
+		console.log(data.data)
+		for(var i = 0; i < data.data.length; i++) {
 				if(data.data[i].goodsid == addGoodsIdRed) {
 					var detailsAll = data.data[i].details;
 					detailsAll = decodeURIComponent(detailsAll)
 					ue.setContent(detailsAll);					
 				}
 			}
-		},
-		error: function(msg) {
-			console.log("error 加载数据失败")
-		}
-	});
+
+	} )
+	// $.ajax({
+	// 	url: url,
+	// 	type: 'POST',
+	// 	success: "success",
+	// 	data: objData,
+	// 	success: function(data) {
+	// 		console.log(data.data)
+	// 		for(var i = 0; i < data.data.length; i++) {
+	// 			if(data.data[i].goodsid == addGoodsIdRed) {
+	// 				var detailsAll = data.data[i].details;
+	// 				detailsAll = decodeURIComponent(detailsAll)
+	// 				ue.setContent(detailsAll);					
+	// 			}
+	// 		}
+	// 	},
+	// 	error: function(msg) {
+	// 		console.log("error 加载数据失败")
+	// 	}
+	// });
 
 	document.getElementById(show_div).style.display = 'block';
 	document.getElementById(bg_div).style.display = 'block';
@@ -390,65 +391,71 @@ function goodsListToPage(data) {
 		console.log("上架按钮点击事件。。。。")
 		var that = this
 		goodsid = $(that).parents("tr").attr("goodsid")
-		var url="http://localhost:8000/goodsManageJsonUpdata/";//后台接收处理url
-		$.ajax({
-			url: url,
-			type: 'POST',
-			data:{"status":1,"goodsid":goodsid},
-			success:"success",
-			success: function (data) {
-				if (data["data"] == "success") {
-					var goodsStatus = $(that).parents("tr").children(".goodsStatus")
-					goodsStatus.text("已上架")
-					$(that).parents("td").children(".down").removeAttr("disabled").val()
-					$(that).parents("td").children(".up").attr("disabled","").val()
-					goodsStatus.attr("style", "color:green");
+		myPost("goodsManageJsonUpdata" , {"status":1,"goodsid":goodsid} , function (data) {
+			console.log(data);
+			if (data["data"] == "success") {
+				var goodsStatus = $(that).parents("tr").children(".goodsStatus")
+				goodsStatus.text("已上架")
+				$(that).parents("td").children(".down").removeAttr("disabled").val()
+				$(that).parents("td").children(".up").attr("disabled","").val()
+				goodsStatus.attr("style", "color:green");
 //					alert("上架操作成功。。。");//请求传输成功回调函数
-					layer.msg('上架成功');
-				}
-				else{
-//					alert("上架操作失败。。。");//请求传输失败回调函数
-					layer.msg('上架失败');
-				}
-			},
-			error: function (msg) {
-				alert(msg); //错误信息
-		
+				layer.msg('上架成功');
 			}
-		});    
+			else{
+//					alert("上架操作失败。。。");//请求传输失败回调函数
+				layer.msg('上架失败');
+			}
+		});
+
+
+// 		$.ajax({
+// 			url: url,
+// 			type: 'POST',
+// 			data:{"status":1,"goodsid":goodsid},
+// 			success:"success",
+// 			success: function (data) {
+// 				if (data["data"] == "success") {
+// 					var goodsStatus = $(that).parents("tr").children(".goodsStatus")
+// 					goodsStatus.text("已上架")
+// 					$(that).parents("td").children(".down").removeAttr("disabled").val()
+// 					$(that).parents("td").children(".up").attr("disabled","").val()
+// 					goodsStatus.attr("style", "color:green");
+// //					alert("上架操作成功。。。");//请求传输成功回调函数
+// 					layer.msg('上架成功');
+// 				}
+// 				else{
+// //					alert("上架操作失败。。。");//请求传输失败回调函数
+// 					layer.msg('上架失败');
+// 				}
+// 			},
+// 			error: function (msg) {
+// 				alert(msg); //错误信息
+		
+// 			}
+// 		});    
 	});
-
-
 	$(".down").click(function(){
 		console.log("下架按钮点击事件。。。。")
 		var that = this
 		goodsid = $(that).parents("tr").attr("goodsid")
-		var url="http://localhost:8000/goodsManageJsonUpdata/";//后台接收处理url
-		$.ajax({
-			url: url,
-			type: 'POST',
-			data:{"status":0,"goodsid":goodsid},
-			success:"success",
-			success: function (data) {
-				if (data["data"] == "success") {
-					var goodsStatus = $(that).parents("tr").children(".goodsStatus")
-					goodsStatus.text("未上架")
-					//console.log($(that).parents("tr").children(".up"))
-					$(that).parents("td").children(".up").removeAttr("disabled").val()
-					$(that).parents("td").children(".down").attr("disabled", "").val()
-					goodsStatus.attr("style", "color:red");
-//					alert("下架操作成功。。。");//请求传输成功回调函数
-					layer.msg('下架成功');
-				}
-				else{
-//					alert("下架操作失败。。。");//请求传输失败回调函数
-					layer.msg('下架失败');
-				}
-			}, 
-			error: function (msg) {
-				alert(msg); //错误信息
+		myPost("goodsManageJsonUpdata" , {"status":0,"goodsid":goodsid} , function (data) {
+			console.log(data);
+			if (data.status == "ok") {
+				var goodsStatus = $(that).parents("tr").children(".goodsStatus")
+				goodsStatus.text("未上架")
+				//console.log($(that).parents("tr").children(".up"))
+				$(that).parents("td").children(".up").removeAttr("disabled").val()
+				$(that).parents("td").children(".down").attr("disabled", "").val()
+				goodsStatus.attr("style", "color:red");
+				layer.msg('下架成功');
 			}
-		});    
+			else{
+				layer.msg('下架失败');
+			}
+		});
+
+		 
 	});
 
 
@@ -494,37 +501,39 @@ function goodsListToPage(data) {
 			}
 		}
 		var details = decodeURIComponent(oneDeleteData.details);
+		console.log("&&&&&&&&&&&&&&&&");
 		console.log(details);
 		
 		var imgReg = /<img.*?(?:>|\/>)/gi;
 		var srcReg = /src=[\'\"]?([^\'\"]*)[\'\"]?/i;
 		var arr = details.match(imgReg);
-		console.log('所有已成功匹配图片的数组：' + arr);
-		for(var i = 0; i < arr.length; i++) {
-			var src = arr[i].match(srcReg);
-			//获取图片地址
-			if(src[1]) {
-				myimageName = src[1].split("/")
-				for (var name = 0;name < myimageName.length;name++){
-					if (myimageName[name].indexOf("20")==0){
-						imageArr.push(myimageName[name])
+		if (arr == null || arr == undefined) {
+			console.log("商品详情中没有图片.....");
+		} else {
+			for(var i = 0; i < arr.length; i++) {
+				var src = arr[i].match(srcReg);
+				//获取图片地址
+				if(src[1]) {
+					myimageName = src[1].split("/")
+					for (var name = 0;name < myimageName.length;name++){
+						if (myimageName[name].indexOf("20")==0){
+							imageArr.push(myimageName[name])
+						}
 					}
+					
 				}
-				
 			}
 		}
-		console.log(imageArr)
+		console.log('所有已成功匹配图片的数组：' + arr);
+		
+		// console.log(imageArr)
 		
 		
 		var goodsArr = [that.attr("goodsid")]
 		//console.log("...........", goodsArr)
-		$.ajax({
-			url: "http://localhost:8000/goodsManageJsonDelete/",
-			type: 'POST',
-			data:{goodsids:goodsArr , images:imageArr},
-			traditional:true,
-			success: function (data) {
-				if (data["status"] == "ok") {
+		myPost("goodsManageJsonDelete",{goodsids:goodsArr , images:imageArr} , function(data){
+			console.log("****************")
+			if (data["status"] == "ok") {
 					var deleteCount = data['deleteCount']
 					loaddata()
 //					alert("删除" + deleteCount + "条记录成功");//请求传输成功回调函数
@@ -534,12 +543,31 @@ function goodsListToPage(data) {
 //					 alert("删除失败");//请求传输失败回调函数
 					layer.msg('删除失败');
 			   }
-			},
-			error: function (msg) {
-				console.log("error")
-				alert(msg); //错误信息
-			}
-		});
+
+		})
+
+// 		$.ajax({
+// 			url: "http://localhost:8000/goodsManageJsonDelete/",
+// 			type: 'POST',
+// 			data:{goodsids:goodsArr , images:imageArr},
+// 			traditional:true,
+// 			success: function (data) {
+// 				if (data["status"] == "ok") {
+// 					var deleteCount = data['deleteCount']
+// 					loaddata()
+// //					alert("删除" + deleteCount + "条记录成功");//请求传输成功回调函数
+// 					layer.msg('删除' + deleteCount + "条记录成功");
+// 			   }
+// 			   else{
+// //					 alert("删除失败");//请求传输失败回调函数
+// 					layer.msg('删除失败');
+// 			   }
+// 			},
+// 			error: function (msg) {
+// 				console.log("error")
+// 				alert(msg); //错误信息
+// 			}
+// 		});
 	
 	
 	
@@ -557,7 +585,8 @@ $("#goodsSelectBtn").click(function(){
 
 
 $('#deleteBtn').click(function () {
-	//console.log("delete")
+	
+	console.log("delete")
 	var goodsArr = []
 	var checkboxs = $('.checkbox-one')
 	for (var i = 0; i < checkboxs.length; i++) {
@@ -567,33 +596,38 @@ $('#deleteBtn').click(function () {
 		}
 	}
 	console.log(goodsArr)
-	$.ajax({
-		url: "http://localhost:8000/goodsManageJsonDelete/",
-		type: 'POST',
-		data:{goodsids:goodsArr},
-		traditional:true,
-		//data: JSON.stringify({
-		//	goodsids:goodsArr
-		//}),		
-		//contentType: "application/json; charset=utf-8",
-		success: function (data) {
-			if (data["status"] == "ok") {
-				var deleteCount = data['deleteCount']
-				loaddata()
-//				alert("删除" + deleteCount + "条记录成功");//请求传输成功回调函数
-				layer.msg("删除" + deleteCount + "条记录成功");
-		   }
-		   else{
-//				 alert("删除失败");//请求传输失败回调函数
-				 layer.msg("删除失败")
-		   }
-		},
-		error: function (msg) {
-			console.log("error")
-			alert(msg); //错误信息
-	
+
+	myPost("goodsManageJsonDelete" , {goodsids:goodsArr} , function (data) {
+		console.log("------------------------");
+		if (data["status"] == "ok") {
+			var deleteCount = data['deleteCount']
+			loaddata()
+			layer.msg("删除" + deleteCount + "条记录成功");
+		}
+		else{
+			layer.msg("删除失败")
 		}
 	});
+	// $.ajax({
+	// 	url: "http://localhost:8000/goodsManageJsonDelete/",
+	// 	type: 'POST',
+	// 	data:{goodsids:goodsArr},
+	// 	traditional:true,
+	// 	success: function (data) {
+	// 		if (data["status"] == "ok") {
+	// 			var deleteCount = data['deleteCount']
+	// 			loaddata()
+	// 			layer.msg("删除" + deleteCount + "条记录成功");
+	// 	   }
+	// 	   else{
+	// 			 layer.msg("删除失败")
+	// 	   }
+	// 	},
+	// 	error: function (msg) {
+	// 		alert(msg); //错误信息
+	
+	// 	}
+	// });
 })
 
 
@@ -609,6 +643,7 @@ $('#checkbox-all').click(function () {
 
 
 function loaddata() {
+
 	$.ajax({
 		url: "http://localhost:8000/commodityQuery/?page=" + thispage + "&commName=" + commName,
 		success: function (data) {

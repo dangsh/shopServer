@@ -44,10 +44,10 @@ urlpatterns = [
     url(r'^lookhistorytableManageJsonSelect/$' , lookhistorytableManageJsonSelect),#浏览记录查询接口
     url(r'^lookhistorytableManageJsonDelete/$' , lookhistorytableManageJsonDelete),#浏览记录删除接口
     url(r'^lookhistorytableManageJsonUpdata/$' , lookhistorytableManageJsonUpdata),#浏览记录更改接口
-    url(r'^favoritetableManageJsonAdd/$' , favoritetableManageJsonAdd),#收藏功能添加接口
-    url(r'^favoritetableManageJsonSelect/$' , favoritetableManageJsonSelect),#收藏功能查询接口
-    url(r'^favoritetableManageJsonDelete/$' , favoritetableManageJsonDelete),#收藏功能删除接口
-    url(r'^favoritetableManageJsonUpdata/$' , favoritetableManageJsonUpdata),#收藏功能更改接口
+    # url(r'^favoritetableManageJsonAdd/$' , favoritetableManageJsonAdd),#收藏功能添加接口
+    # url(r'^favoritetableManageJsonSelect/$' , favoritetableManageJsonSelect),#收藏功能查询接口
+    # url(r'^favoritetableManageJsonDelete/$' , favoritetableManageJsonDelete),#收藏功能删除接口
+    # url(r'^favoritetableManageJsonUpdata/$' , favoritetableManageJsonUpdata),#收藏功能更改接口
     # url(r'^lookhistorytableManage/$' , lookhistorytableManage),#浏览记录列表
     # url(r'^lookhistoryManage/$' , lookhistoryManage),#浏览记录列表接口
     url(r'^activeManage/$' , activeManage),
@@ -93,7 +93,10 @@ urlpatterns = [
     url(r'^updateAddress/$',updateAddress),   #修改地址接口
     url(r'^findAddress/$',findAddress),   #查找地址接口
 
-
+    url(r'^addShare/$',addShare),   #添加分享记录接口
+    url(r'^delShare/$',delShare),   #删除分享记录接口
+    url(r'^updateShare/$',updateShare),   #修改分享记录接口
+    url(r'^findShare/$',findShare),   #查找分享记录接口
 
 
 

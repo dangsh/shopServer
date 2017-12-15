@@ -139,6 +139,7 @@ def login(request):
     
     return render(request , "login.html");
 
+
 # 登录接口 (ok)
 def loginApi(request):
     print("************************")
@@ -190,6 +191,7 @@ def userManageJsonAdd(request):
     else :
         statusDic = {"status" : "error" , "message" : "添加用户失败"};
     return HttpResponse(json.dumps(statusDic) , content_type = "application/json");
+
 
 # 用户查询接口  有待测试 尚德勋
 def userManageJsonSelect(request):
@@ -386,7 +388,7 @@ def adManageJsonSelect(request):
             adid = data[0];#图片
             imgs = data[1];#广告id
             adtime = data[2];#时间
-            tempDic = {"imgs":imgs , "adid":adid , "adtime":str(adtime) }
+            tempDic = {"imgs":imgs , "adid":adid , "adtime":str(adtime)}
             myData.append(tempDic)
         #查出总共有多少条数据
         cursor.execute("SELECT COUNT(*) FROM ad")
@@ -443,47 +445,23 @@ def goodsManageJsonAdd(request):
         proend = datas["proend"]
         rebate = datas["rebate"]
         transportmoney = datas["transportmoney"]
-        # details=datas["details"]
         cursor = connection.cursor()     
-        # print(goodsid,goodsname,shopname,standard,color,size,counts,principal,prostart,proend,rebate,transportmoney)
+        print(goodsid,goodsname,shopname,standard,color,size,counts,principal,prostart,proend,rebate,transportmoney,details)
 
-    # goodsid = request.POST["goodsid"]
-
-    rebate = request.POST["rebate"]
-
-    # lookhistoryid = request.POST["lookhistoryid"]
-
-    standard = request.POST["standard"]
-
-    images = request.POST["images"]
-
-    # details = request.POST["details"]
-
-    shopname = request.POST["shopname"]
-
-    status = request.POST["status"]
-
-    price = request.POST["price"]
-
-    goodsname = request.POST["goodsname"]
-
-    stock = request.POST["stock"]
-
-    transportmoney=request.POST["transportmoney"]
-
-    cursor = connection.cursor()
-    try:
-        result = cursor.execute("INSERT INTO goods (goodsid , rebate , lookhistoryid , standard , images , details ,shopname , status , price , goodsname , stock, transportmoney) VALUES('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s')" % (goodsid , rebate , lookhistoryid , standard , images , details ,shopname , status , price , goodsname , stock, transportmoney))
-
-        if result == 1 :
-            statusDic = {"status" : "ok" , "message" : "添加成功"};
-            return HttpResponse(json.dumps(statusDic) , content_type = "application/json");
-        else:
-            statusDic = {"status" : "error" , "message" : "添加失败"};
-            return HttpResponse(json.dumps(statusDic) , content_type = "application/json");
-    except Exception as e:    
-        return HttpResponse(json.dumps({'message':"添加失败", 'status':'error'}), content_type="application/json");
-
+        param=(goodsid,goodsname,shopname,standard,color,size,counts,principal,prostart,proend,rebate,transportmoney,details)
+        try:
+ 
+            sql="INSERT INTO goods (goodsid,goodsname,shopname,standard,color,size,counts,principal,prostart,proend,rebate,transportmoney,details) VALUES('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s')"
+            result = cursor.execute(sql%param)      
+            if result == 1 :
+                statusDic = {"status" : "ok" , "message" : "添加成功"};
+                return HttpResponse(json.dumps(statusDic) , content_type = "application/json");
+            else:
+                statusDic = {"status" : "error" , "message" : "添加失败"};
+                return HttpResponse(json.dumps(statusDic) , content_type = "application/json");
+        except Exception as e:
+            raise e  
+            return HttpResponse(json.dumps({'message':"添加失败", 'status':'error'}), content_type="application/json");
 # 商品列表接口
 def goodsManageJsonSelect(request):
     myData=[];
@@ -663,41 +641,6 @@ def commodityQuery(request):
         raise e   
         return HttpResponse(json.dumps({'data':myData, 'status':'error', 'goodscount':'0'}), content_type="application/json");
 
-#订单分页
-def orderSpilit(request):
-    print("******************************************")
-    myData = []
-    cursor = connection.cursor()
-    mypage = 0
-    mypage = (int(request.GET["page"]) - 1) * 10
-    cursor.execute("SELECT * FROM ordertable LIMIT %d , 10;" % mypage);
-    datas = cursor.fetchall()
-    try:
-        for row in datas:
-            goods = {
-                'userid':row[0],
-                'orderid':row[1],
-                'price':row[2],
-                'ordertime':row[3].strftime('%Y-%m-%d %H:%M:%S'),
-                'isaudit':row[4],
-                'ispass':row[5],
-                'iscancel':row[6],
-                'ispay':row[7],
-                'issend':row[8],
-                'ispaydone':row[9],
-                'isclose':row[10],
-            }
-            myData.append(goods);
-        cursor.close();
-        cursor = connection.cursor();
-        cursor.execute("SELECT COUNT(*) FROM ordertable")
-        ordercount  = cursor.fetchall();
-        ordercount = ordercount[0][0]
-        return HttpResponse(json.dumps({'data':myData, 'status':'ok' , 'ordercount':str(ordercount)}), content_type="application/json")
-    
-    except Exception as e: 
-        raise e   
-        return HttpResponse(json.dumps({'data':myData, 'status':'error' , 'ordercount':str(ordercount)}), content_type="application/json");
 
 # 商品修改列表修改接口 有待测试 黄景召
 def goodsManageJsonUpdata(request):
@@ -1327,7 +1270,7 @@ def delAddress(request):
 #更新地址接口
 def updateAddress(request):
     cursor = connection.cursor()
-    datas = request.GET
+    datas = request.POST
 
     try:
         for key in list(datas):
@@ -1338,9 +1281,6 @@ def updateAddress(request):
     except Exception as identifier:
         return HttpResponse(json.dumps({"message":"修改失败","status":"error"}),content_type="application/json")
 
-    # cursor = connection.cursor()
-    # cursor.execute("update address set tel='444444' where addid=003")
-    # return HttpResponse("a")
 
 #查找地址接口
 def findAddress(request):
@@ -1402,11 +1342,160 @@ def uploadHeadImg(request):
     return HttpResponse(json.dumps(statusDic) , content_type = "application/json");
 
 
+#添加分享接口
+def addShare(request):
+
+    # shareid = request.POST["shareid"]
+    # goodsid = request.POST["goodsid"]
+    # userid = request.POST["userid"]
+    # friendid = request.POST["friendid"]
+
+    cursor = connection.cursor()
+    shareid = "1111"
+    goodsid = "2221"
+    userid = "3331"
+    friendid = "4441"
+    try:
+        cursor.execute("INSERT INTO share (shareid , goodsid , userid , friendid) VALUES ('%s' , '%s' , '%s' , '%s')" % (shareid , goodsid , userid , friendid))
+        statusDis={"status":"ok","message":"添加成功"};
+        return HttpResponse(json.dumps(statusDis),content_type="application/json");
+    except:
+        statusDis={"status":"error","message":"添加失败"};
+        return HttpResponse(json.dumps(statusDis),content_type="application/json");
+
+#删除分享接口
+def delShare(request):
+    cursor = connection.cursor()
+    # shareid = request.POST["shareid"]
+    shareid = "001"
+    
+    try:
+        cursor.execute("DELETE FROM share WHERE shareid=\"%s\""%shareid)
+        statusDis={"status":"ok","message":"删除成功"};
+        return HttpResponse(json.dumps(statusDis),content_type="application/json");
+    except:
+        statusDis={"status":"error","message":"删除失败"};
+        return HttpResponse(json.dumps(statusDis),content_type="application/json");
+
+#更新分享接口
+def updateShare(request):
+    
+    cursor = connection.cursor()
+    datas = request.POST
+
+    try:
+        for key in list(datas):
+            cursor.execute("update share set %s='%s' where shareid='%s'"%(key , datas[key] , datas["shareid"]))
+            statusDis = {'data':'修改成功', 'status':'ok'}
+        return HttpResponse(json.dumps(statusDis) , content_type="application/json")
+
+    except Exception as identifier:
+        return HttpResponse(json.dumps({"message":"修改失败","status":"error"}),content_type="application/json")
+
+
+#查找分享接口
+def findShare(request):
+    cursor = connection.cursor()
+    # shareid = request.POST["shareid"]
+    shareid = "111"
+    myData = []
+    try:
+        cursor.execute('SELECT * FROM share WHERE shareid=\"%s\"' % shareid)
+        datas = cursor.fetchall()
+        for data in datas:
+            shareid = data[0]
+            goodsid = data[1]
+            userid = data[2]
+            friendid = data[3]
+            tempDic = {"shareid":shareid , "goodsid":goodsid , "userid":userid , "friendid":friendid}
+            myData.append(tempDic)
+
+        return HttpResponse(json.dumps(myData) , content_type="application/json");
+
+    except:
+        statusDis={"status":"error","message":"查找失败"};
+        return HttpResponse(json.dumps(statusDis),content_type="application/json");
+
+
+#订单分页
+def orderSpilit(request):
+    print("******************************************")
+    myData = []
+    cursor = connection.cursor()
+    mypage = 0
+    mypage = (int(request.GET["page"]) - 1) * 10
+    cursor.execute("SELECT * FROM ordertable LIMIT %d , 10;" % mypage);
+    datas = cursor.fetchall()
+    try:
+        for row in datas:
+            goods = {
+                'userid':row[0],
+                'orderid':row[1],
+                'price':row[2],
+                'ordertime':row[3].strftime('%Y-%m-%d %H:%M:%S'),
+                'isaudit':row[4],
+                'ispass':row[5],
+                'iscancel':row[6],
+                'ispay':row[7],
+                'issend':row[8],
+                'ispaydone':row[9],
+                'isclose':row[10],
+            }
+            myData.append(goods);
+        cursor.close();
+        cursor = connection.cursor();
+        cursor.execute("SELECT COUNT(*) FROM ordertable")
+        ordercount  = cursor.fetchall();
+        ordercount = ordercount[0][0]
+        return HttpResponse(json.dumps({'data':myData, 'status':'ok' , 'ordercount':str(ordercount)}), content_type="application/json")
+    
+    except Exception as e: 
+        raise e   
+        return HttpResponse(json.dumps({'data':myData, 'status':'error' , 'ordercount':str(ordercount)}), content_type="application/json");
+
+
+
+
+#添加抽奖余额接口
+def drawJsonAdd(request):
+    
+    cursor = connection.cursor()
+    userid = "0111";
+    balance = "96318"
+    try:
+        cursor.execute("INSERT INTO draw (userid , balance) VALUES ('%s' , '%s')" % (userid , balance))
+        statusDis={"status":"ok","message":"添加成功"};
+        return HttpResponse(json.dumps(statusDis),content_type="application/json");
+    except:
+        statusDis={"status":"error","message":"添加失败"};
+        return HttpResponse(json.dumps(statusDis),content_type="application/json");
+
+
+#删除抽奖余额接口
+def drawJsonDel(request):
+    cursor = connection.cursor()
+    userid = "999"
+    
+    try:
+        cursor.execute("DELETE FROM draw WHERE userid=\"%s\""%userid)
+        statusDis={"status":"ok","message":"删除成功"};
+        return HttpResponse(json.dumps(statusDis),content_type="application/json");
+    except:
+        statusDis={"status":"error","message":"删除失败"};
+        return HttpResponse(json.dumps(statusDis),content_type="application/json");
 
 
 
 
 
+
+
+
+
+
+
+
+    
 
 
 

@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base.html" %}{% load staticfiles %}
 
 {% block css %}
     <style type="text/css">
@@ -149,6 +149,7 @@
 
 
 {% block script %}
+<script src="{% static 'layer/layer.js' %}" type="text/javascript" charset="utf-8"></script>
 <!-- <script>
 $(".addform").on('submit', function(e){
     aaa=$(".tijiao")
@@ -160,6 +161,7 @@ $(".addform").on('submit', function(e){
 });
 </script> -->
     
+    
 
     <script type="text/javascript">
 
@@ -169,6 +171,7 @@ $(".addform").on('submit', function(e){
         $(this).ajaxSubmit({
             success: function (result) {
                 console.log(result);
+                layer.msg('添加成功');
                 window.location.reload();
                 parent.$("#plusModal").hide();
             }
@@ -213,6 +216,8 @@ $(".addform").on('submit', function(e){
                 console.log(objData)
                 ajaxFn(url , objData , function(){
                     $(that).remove();
+                    layer.msg('删除成功');
+
                 })
             })
             $(".edit").click(function(){
@@ -242,6 +247,7 @@ $(".addform").on('submit', function(e){
                     $(this).ajaxSubmit({
                         success:function(result){
                             console.log('post数据成功')
+                            layer.msg('更新成功');
                             window.location.reload();
                             parent.$(".theEditModal").hide();
                             $(".editFormContent").on("submit" , "")
@@ -262,6 +268,7 @@ $(".addform").on('submit', function(e){
                     console.log(objData)
                     ajaxFn(url , objData , function(){
                         $(that).remove();
+                        layer.msg('删除成功');
                     })
                 }
             });
