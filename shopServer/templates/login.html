@@ -66,21 +66,21 @@
 			</form>
 		</div>
 		<div class="login_box register_box" id="LoginForm" style="display:none">
-			<form id="registerForm" class="registerform" method="post" action="http://localhost:8000/userManageJsonAdd/">
+			<form id="registerForm" class="registerform" >
 				<p style="margin-left:110px;"><b style="float:left">会员注册</b></p>
 				<ul>				
 					<li class="click">
-					<input class="text_password" name="username" type="text" placeholder="用户名"/> <i class="login_user"></i>
+					<input class="text_password ss" name="username" type="text" placeholder="用户名"/> <i class="login_user"></i>
 					</li>
 				<li>
-					<input class="text_password" name="password" type="password" placeholder="输入登录密码"/> <i class="login_password"></i>
+					<input class="text_password ss" name="password" type="password" placeholder="输入登录密码"/> <i class="login_password"></i>
 				</li>
 				<p style="width:100%;height:20px;clear:both">
 				</p>
 				<a href="" style="color:red; float:right;">已有账号>>>>></a>	
 				<p style="width:100%;height:20px;clear:both"></p>
 				
-					<li class="end"><input type="submit" id="register" name="submit"  value="注册" class="login_login"> </li>
+					<li class="end"><input id="register" name="submit"  value="注册" class="login_login"> </li>
 				</ul>
 			</form>
 		</div>
@@ -102,12 +102,12 @@
 			data: data,
 			success: function (data)
 			{
-				console.log(data);
+//				console.log(data);
 				alert("成功了/////////");
 			},
 			error: function(err)
 			{
-				console.log(err);
+//				console.log(err);
 				alert("失败了");
 			}
 		});
@@ -119,8 +119,10 @@
 	});
 	//调用注册按钮
 	$("#register").click(function(){
+		console.log("jlkajsdl");
 		console.log("register");
-		ajaxFn("register/" , $("#registerForm").serialize())
+		ajaxFn("http://localhost:8000/register/" , $("#registerForm").serialize())
+
 	});  
 	//登陆切换按钮切换
 	$(".rapidregister").click(function (){
@@ -162,15 +164,15 @@
 			}
 		})
 		});
-	$('.registerform').on('submit', function(e) {
-	console.log("jjjjjj");
-	e.preventDefault(); 
-	$(this).ajaxSubmit({
-		success: function (result) {
-			console.log("89999999999999ng ");
-			console.log(result);
-			}
-		})
-	});
+//	$('.registerform').on('submit', function(e) {
+//	console.log("jjjjjj");
+//	e.preventDefault(); 
+//	$(this).ajaxSubmit({
+//		success: function (result) {
+//			console.log("89999999999999ng ");
+//			console.log(result);
+//			}
+//		})
+//	});
 </script>
 </html>

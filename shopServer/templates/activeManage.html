@@ -1,10 +1,261 @@
 {% extends "base.html" %}
 
+{% load staticfiles %}
+
+{% block css %}
+<style type="text/css">
+    img{
+        height: 60px;
+    }
+    #table{
+        padding-right: 0;
+        margin-bottom: 0; 
+        text-align: center;
+        vertical-align: middle;
+    }
+    #table td {
+        vertical-align: middle;  
+    }
+    th{
+        text-align: center;
+    }	
+    #imagesdiv{
+			height: 60px;
+	}
+    #img{
+        src: static/myfile/1.jpg;
+        height: 60px;
+    }
+    .sumdiv{
+		background-color: #fff;
+		display: inline-block;
+		padding: 6px 12px;
+		margin-bottom: 0;
+		font-size: 14px;
+		font-weight: 400;
+		line-height: 1.42857143;
+		text-align: center;
+		border: 1px solid #ccc;
+		border-radius: 4px;
+	}
+	</style>
+
+{% endblock %}
+
 {% block content %}
-<div class="posts">
-    我是活动管理街门面
+
+<button type="button" class="btn btn-primary addBtn" data-toggle="modal" data-target="#myModal" style="margin:5px;"><span class="glyphicon glyphicon-plus"></span>添加</button>
+<div id="xxx" class=" col-sm-12" style="padding:0;">
+    <a class="col-sm-12" style="margin:5px; padding-left:0; color: black;margin-right:0;"><strong>轮播图列表</strong></a>
+    <table id="table" class="table table-bordered" >
+        <tr name="row">
+            <td id="item" style="display:none"></td>
+            <th>标题</th>
+            <th>开始时间</th>
+            <th>截止日期</th>
+            <th>详情</th>
+            <th>图片</th>
+            <th>编辑</th>
+        </tr>
+    </table>
+    <div class="text-center">
+        <ul id="visible-pages-example"></ul>
+    </div>
 </div>
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    添加活动
+                </h4>
+            </div>
+            <div class="modal-body">
+                <form id="myform" action="" enctype="multipart/form-data" method="post">
+                    <div>
+                        <label for="">添加图片:</label>
+                        <input type="file" class="myfile" name="images">
+                    </div>
+                    <div id="img">
+                        <img src="static/myfile/1.jpg" alt="" id="myimages">
+                    </div>
+                    <div style="padding-top:20px">
+                        <label for="">位置：</label><input type="text" name="location" id="location">
+                    </div>
+                </form>
+                
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                </button>
+                <button type="button" class="btn btn-primary" id="submitBtn" onclick="ajaxSubmitForm()">
+                    提交
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+
+{% endblock %}
+{% block script %}
+<script src="{% static 'js/jquery.form.min.js' %}"></script>
 <script type="text/javascript">
-	console.log("我是活动界面的js");
+
+    var currpage = 1;
+    var countPages = 0;
+
+    //添加item函数
+    function adEleFn(data){
+        imgs = data.imgs;
+        activeid = data.activeid;
+        starttime = data.starttime;
+        stoptime = data.stoptime;
+        activedetail = data.activedetail;
+        activetitle = data.activetitle;
+        var Tr = '<tr name="row" class="myrow"><td>' + activetitle + '</td><td>' + starttime + '</td><td>' + stoptime + '</td><td>' + activedetail + '</td><td><div id="imagesdiv"><img src="{% static 'myfile/1.jpg' %}"/></div></td><td><button class="btn btn-success edit">编 辑</button>  <button class="btn btn-danger delete">删 除</button> </td></tr>';
+        $("#table").append(Tr);
+    }
+    //当modal关闭的时候数据清除
+    $('#myModal').on('hide.bs.modal', function ()
+    {
+        $('#myform')[0].reset();
+        //这个方法来清除缓存
+        $(this).find("img").remove();
+    });
+    //解析数据函数
+    function parseDataFn(result){
+        data = result.data;
+        
+        for (var i = 0; i < data.length; i++){
+            perdata = data[i];
+            adEleFn(perdata);
+        }
+        
+    }
+    //请求数据
+    function ajaxfn(){
+        $.ajax({
+            type: "post",
+            url: 'http://localhost:8000/activeManageJsonSelect/?page=' + currpage,
+            success: function (result){
+                console.log(result);
+                parseDataFn(result);
+                adcounts = result.adcounts;
+                countPages = Math.ceil(parseInt(adcounts) / 8 );
+                
+                var spanele = '<span class="sumdiv">共' + countPages + '页,当前第' + countPages + '页,共' + adcounts + '条数据</span>';
+                $("#visible-pages-example").append(spanele);
+                    $('#visible-pages-example').twbsPagination({
+                    totalPages:countPages,
+                    first: "首页",
+                    last: "尾页",
+                    prev: '上一页',
+                    next: '下一页',
+                    startPage: 1,
+                    visiblePages: countPages>5?5:countPages,
+                    version: '1.1',
+                    onPageClick: function (event, page) {
+                        currpage  = page;
+                        $(".myrow").remove();
+                        $(".sumdiv").remove();
+                        ajaxfn();
+                    }
+                });
+            },
+            error: function (err){
+                console.log("请求失败");
+                console.log(err);
+            }
+        });
+    }
+    ajaxfn();
+    
+    
+    //ajaxform提交表单
+    function ajaxSubmitForm(){
+        console.log("submigtajax");
+        var option = {
+            url : "http://localhost:8000/activeManageJsonAdd/",
+            type : 'POST',
+            dataType : 'json',
+            success : function(data) 
+            {
+                console.log("调用添加item函数");
+            },
+            error: function(data) {
+                alert("企业用户升级失败,请联系管理员！");
+            }
+        };
+        $("#myform").ajaxSubmit(option);
+        return false;
+    }
+    //图片预览
+    $(".myfile").change(function() {
+        var $file = $(this);
+        //获得文件内容和信息
+        var fileObj = $file[0];
+        var windowURL = window.URL || window.webkitURL;
+        var dataURL;
+        var $img = $("#myimages");
+        if(fileObj && fileObj.files && fileObj.files[0]){
+        dataURL = windowURL.createObjectURL(fileObj.files[0]);
+        $img.attr('src',dataURL);
+        }
+    });
+    $(document).ready(function(){
+        $("#table").delegate("button","click",function(){
+            if($(this).html() == '编 辑'){
+
+                $("#myModal").modal("show");
+                var loc = $(this).parent().prev().prev().html();
+                document.getElementById("location").value=loc;
+                var imgsrc = $(this).parent().prev().prev().prev().children().children().attr("src");
+                console.log(imgsrc);
+                $("#myimages").attr('src',imgsrc);
+            }
+            if($(this).html() == "删 除"){
+                console.log("hahhah");
+                // dataId = {"id":""};
+                dataId= $(this).parent().prev().prev().prev().prev().html();
+                that = this;
+                console.log(dataId);
+                $.ajax({
+                    type: "get",
+                    url: "http://localhost:8000/activeManageJsonDelete/?Id="+dataId,
+                    success: function (result){
+                        if (result.status == "ok"){
+                            console.log("shangchuchengg");
+                            $(that).parent().parent().remove();
+                        }
+                    },
+                    error: function (err){
+                        console.log("请求失败");
+                        console.log(err);
+                    }
+                });
+            }
+        });
+    });
+
+
+
 </script>
+{% endblock %}
+
+{% block contentLeft %}
+活动管理
+<small>Version 5.0</small>
+{% endblock %}
+
+{% block contentRight %}
+<ol class="breadcrumb">
+        <li>
+            <a href="#"><i class="fa fa-dashboard"></i> Home</a>
+        </li>
+        <li class="active">活动管理</li>
+    </ol>
 {% endblock %}

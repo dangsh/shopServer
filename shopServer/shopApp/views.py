@@ -139,7 +139,6 @@ def login(request):
     
     return render(request , "login.html");
 
-
 # 登录接口 (ok)
 def loginApi(request):
     print("************************")
@@ -173,84 +172,17 @@ def loginApi(request):
 
 # 用户添加接口
 def userManageJsonAdd(request):
-    # userid = request.POST["userid"]
-    # username = request.POST["username"]
-    # headimg = request.POST["headimg"]
-    # phone = request.POST["phone"]
-    # pwd = request.POST["pwd"]
-    # wxid = request.POST["wxid"]
-    # acountmoney = request.POST["acountmoney"]
-    # rewardmoney = request.POST["rewardmoney"]
-    # activecode = request.POST["activecode"]
-    # redpack = request.POST["redpack"]
-    # upperson = request.POST["upperson"]
-    # downperson = request.POST["downperson"]
-    # rebate = request.POST["rebate"]
-    # integral = request.POST["integral"]
-    # bankcard = request.POST["bankcard"]
-    # power = request.POST["power"]
-    # address = request.POST["address"]
-
-    # userid = None;
-    username = "";
-    headimg = "";
-    phone = "";
-    pwd = "";
-    wxid = "";
-    acountmoney = "";
-    rewardmoney = "";
-    activecode = "";
-    redpack = "";
-    upperson = "";
-    downperson = "";
-    rebate = "";
-    integral = "";
-    bankcard = "";
-    power = "";
-    address = "";
     if request.POST["username"]:
         username = request.POST["username"]
-    # if request.POST["pwd"]:
-    #     username = request.POST["pwd"]
-    # if request.POST["headimg"]:
-    #     headimg = request.POST["headimg"]
-    # if request.POST["phone"]:
-    #     phone = request.POST["phone"]
     if request.POST["password"]:
         pwd = request.POST["password"]
-    print(username);
-    # if request.POST["wxid"]:
-    #     wxid = request.POST["wxid"]
-    # if request.POST["acountmoney"]:
-    #     acountmoney = request.POST["acountmoney"]
-    # if request.POST["rewardmoney"]:
-    #     rewardmoney = request.POST["rewardmoney"]
-    # if request.POST["activecode"]:
-    #     activecode = request.POST["activecode"]
-    # if request.POST["redpack"]:
-    #     redpack = request.POST["redpack"]
-    # if request.POST["upperson"]:
-    #     upperson = request.POST["upperson"]
-    # if request.POST["downperson"]:
-    #     downperson = request.POST["downperson"]
-    # if request.POST["rebate"]:
-    #     rebate = request.POST["rebate"]
-    # if request.POST["integral"]:
-    #     integral = request.POST["integral"]
-    # if request.POST["bankcard"]:
-    #     bankcard = request.POST["bankcard"]
-    # if request.POST["power"]:
-    #     power = request.POST["power"]
-    # if request.POST["address"]:
-    #     address = request.POST["address"]
-
+    print(username , pwd);
+    userid = randomString()
+    print(userid)
 
     cursor = connection.cursor();
-    # cursor.execute("ALTER TABLE yyy.user MODIFY COLUMN username VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;");
-    result = cursor.execute("INSERT INTO user(username , pwd)VALUES('%s' , '%s')"%(username , pwd))
-    # result = cursor.execute("INSERT INTO user(userId , username , headimg , phone , pwd , wxid , acountmoney , rewardmoney , activecode , redpack , upperson , downperson , rebate , integral , bankcard , power , address) VALUES('%s' , '%s' , '%s' , '%s' ,'%s' , '%s' , '%s' , '%s' ,'%s' , '%s' , '%s' , '%s' ,'%s' , '%s' , '%s' , '%s' , '%s')"%(userid , username , headimg , phone , pwd , wxid , acountmoney , rewardmoney , activecode , redpack , upperson , downperson , rebate , integral , bankcard , power , address));
+    result = cursor.execute("INSERT INTO user(userid , username , pwd)VALUES('%s' , '%s' , '%s')"%(userid , username , pwd))
     cursor.close()
-   
     print("9999999");
     statusDic = "";
     if result == 1:
@@ -261,10 +193,25 @@ def userManageJsonAdd(request):
 
 # 用户查询接口  有待测试 尚德勋
 def userManageJsonSelect(request):
+    if request.POST and (request.POST['username'] !="" or request.POST['phone'] != ""):
+        username = request.POST['username'];
+        phone = request.POST['phone'];
+
+        # if username =="" and phone == "":
+        #     return HttpResponse(json.dumps({'data':allUsertables, 'status':'用户名和手机号为空'}), content_type="application/json");
+        if username == "":
+            sql = "SELECT * FROM user where phone like '%s%%'" % phone;
+        elif phone == "":
+            sql = "SELECT * FROM user where username like '%%%s%%'" % username;
+        else:
+            sql = "SELECT * FROM user where username like '%s%%' and phone like '%%%s%%'" % (username, phone);
+    else:
+        sql = "SELECT * FROM user" ;
 
     cursor=connection.cursor()
+    print (sql);
 
-    sql = 'SELECT * FROM user'
+    
     allUsertables = []
 
     try:
@@ -429,11 +376,11 @@ def saveOneImageToServer(request):
 def adManageJsonSelect(request):
     try:
         myData=[];
-        mypage = 0
         mypage = (int(request.GET["page"]) - 1) * 8
-        print(request.GET["page"]);
         cursor = connection.cursor();
-        cursor.execute("SELECT * FROM ad LIMIT %d , 8"%mypage);
+        #以八条数据为一页返回第mypage页,并且按时间排序
+        cursor.execute("SELECT * FROM ad order by adtime desc LIMIT %d , 8"%mypage);
+        #取出数据
         datas=cursor.fetchall();
         for data in datas:
             adid = data[0];#图片
@@ -441,10 +388,10 @@ def adManageJsonSelect(request):
             adtime = data[2];#时间
             tempDic = {"imgs":imgs , "adid":adid , "adtime":str(adtime) }
             myData.append(tempDic)
+        #查出总共有多少条数据
         cursor.execute("SELECT COUNT(*) FROM ad")
         adcounts  = cursor.fetchall();
         adcounts = adcounts[0][0];
-        print (adcounts);
         cursor.close();
         return HttpResponse(json.dumps({'data':myData, 'status':'ok' , 'adcounts':str(adcounts)}) , content_type="application/json");
     except Exception as e: 
@@ -480,43 +427,25 @@ def adManageJsonDelete(request):
 
 # 商品添加接口
 def goodsManageJsonAdd(request):
-    goodsid =randomString()
-    # rebate = "2222"
-    lookhistoryid = "222"
-    # standard = "2222"
-    # images = "2222"
-    details = "2222"
-    # shopname = "222"
-    # status = "333"
-    # price = "333"
-    # goodsname = "333"
-    # stock = "333"         #库存
-    # transportmoney="333"        #运费
-    
-    # if request.POST["goodsid"]:
-    #     goodsid = request.POST["goodsid"]
-    # if request.POST["rebate"]:
-    #     rebate = request.POST["rebate"]
-    # if request.POST["lookhistoryid"]:
-    #     lookhistoryid = request.POST["lookhistoryid"]
-    # if request.POST["standard"]:
-    #     standard = request.POST["standard"]
-    # if request.POST["images"]:
-    #     images = request.POST["images"]
-    # if request.POST["details"]:
-    #     details = request.POST["details"]
-    # if request.POST["shopname"]:
-    #     shopname = request.POST["shopname"]
-    # if request.POST["status"]:
-    #     status = request.POST["status"]
-    # if request.POST["price"]:
-    #     price = request.POST["price"]
-    # if request.POST["goodsname"]:
-    #     goodsname = request.POST["goodsname"]
-    # if request.POST["stock"]:
-    #     stock = request.POST["stock"]
-    # if request.POST["transportmoney"]:
-    #     transportmoney=request.POST["transportmoney"]
+    datas = request.POST
+    print(datas)  
+    for key in list(datas):
+        goodsid = datas["goodsid"]
+        goodsid = randomString()
+        goodsname = datas["goodsname"]
+        shopname= datas["shopname"]
+        standard = datas["standard"]
+        color = datas["color"]
+        size = datas["size"]
+        counts = datas["counts"]
+        principal = datas["principal"]
+        prostart = datas["prostart"]
+        proend = datas["proend"]
+        rebate = datas["rebate"]
+        transportmoney = datas["transportmoney"]
+        # details=datas["details"]
+        cursor = connection.cursor()     
+        # print(goodsid,goodsname,shopname,standard,color,size,counts,principal,prostart,proend,rebate,transportmoney)
 
     # goodsid = request.POST["goodsid"]
 
@@ -1212,6 +1141,67 @@ def lookhistorytableManageJsonUpdata(request):
         cursor.execute("update lookhistory set %s='%s' where userid='%s'"%(key , datas[key] , datas["userid"]))
     data = {'data':'success', 'status':'ok'}
     return HttpResponse(json.dumps(data) , content_type="application/json");
+#收藏功能添加接口  韩乐天  有待测试(ok)
+def favoritetableManageJsonAdd(request):
+    userid = request.POST["userid"];
+    favoriteid = request.POST["favoriteid"];
+    goodsid = request.POST["goodsid"];
+    cursor=connection.cursor()
+    try:
+        # print(userid , favoriteid , goodsid)
+        cursor.execute("INSERT INTO favorite (userid,favoriteid,goodsid) VALUES(%s,%s,%s)"% (userid,favoriteid,goodsid))
+        statusDis={"status":"ok","message":"添加成功"};
+        # print("555555555555555555")
+        cursor.close()
+        return HttpResponse(json.dumps(statusDis), content_type = "application/json");
+    except Exception as e :
+        statusDis={"status":"error","message":"添加失败"};
+        return HttpResponse(json.dumps(statusDis), content_type = "application/json");
+#收藏功能查询接口  韩乐天 有待测试(ok)
+def favoritetableManageJsonSelect(request):
+    myData=[]
+    userid = request.POST["userid"];
+    
+    cursor=connection.cursor()
+    cursor.execute("SELECT userid,favoriteid,goodsid,favtime FROM favorite where userid='%s'"%userid)
+    print(userid)
+    try:
+        print("55")
+        for data in cursor.fetchall():
+            print(data)
+            userid=data[0];
+            favoriteid=data[1];
+            goodsid =data[2]
+            favtime=data[3].strftime('%Y-%m-%d %H:%M:%S');
+            tempDic={"userid":userid,"favoriteid,":favoriteid,"goodsid":goodsid,"favtime":favtime}
+            myData.append(tempDic);
+            print(userid , favoriteid , goodsid , favtime)
+        cursor.close()
+        print(myData)
+        return HttpResponse(json.dumps({'data':myData, 'status':'ok'}),  content_type = "application/json");
+       
+    except Exception as e:   
+        return HttpResponse(json.dumps({"data":myData , "status":"error"}) , content_type = "application/json");
+
+#收藏功能删除接口 有待测试 韩乐天(ok)
+def favoritetableManageJsonDelete(request):
+    userid = request.POST["userid"];
+    cursor=connection.cursor()
+    try:
+        cursor.execute("DELETE FROM favorite where userId = '%s'"%userid);
+        cursor.close();
+        return HttpResponse(json.dumps({'message': '删除成功','status':'ok'}),  content_type = "application/json");
+    except Exception as e:   
+        # connection.rollback();
+        return HttpResponse(json.dumps({"message":'删除失败' , "status":"error"}) ,  content_type = "application/json");
+#收藏功能修改接口  有待测试 韩乐天
+def favoritetableManageJsonUpdata(request):
+    datas = request.POST
+    for key in list(datas):
+        cursor = connection.cursor()
+        cursor.execute("update favorite set %s='%s' where userid='%s'"%(key , datas[key] , datas["userid"]))
+    data = {'data':'success', 'status':'ok'}
+    return HttpResponse(json.dumps(data) ,  content_type = "application/json");
 
 # 问题接口:  商品修改列表修改接口(黄景召)    存在参数给的不对的问题,自己代码思路问题
 #           活动添加接口(刘斌)      不清楚时间是什么时间, 结束时间？开始时间？ 存在不明确的问,
@@ -1377,4 +1367,48 @@ def findAddress(request):
         statusDis={"status":"error","message":"查找失败"};
         return HttpResponse(json.dumps(statusDis),content_type="application/json");
     pass
+
+
+def uploadHeadImg(request):
+    print ("请求成功");
+    #前台传过来的图片
+    headImgs = request.FILES["headImg"];
+    #随机字符串存取图片名字
+    headImgsName = randomString() + ".jpg";
+    #当上传头像的时候必然会传过来用户的Id,方法根据前台来决定
+    imgUserName= request.POST["imgUserName"]
+    imgUserName = str(imgUserName)
+    # print ("",)
+    # imagePath = imgsName;
+    filepath = "./shopApp/static/myfile/";
+    #路径组合
+    filepath = os.path.join(filepath,headImgsName)
+    #在路径中创建图片名字
+    fileobj = open(filepath , "wb");
+    #并把前端传过来的数据写到文件中
+    fileobj.write(headImgs.__dict__["file"].read());
+    #关闭文件
+    fileobj.close();
+    #定义数据库游标
+    cursor = connection.cursor();
+    #通过userId来给用户添加headimg数据
+    result = cursor.execute("UPDATE user set headimg='%s' where username='%s'" % (headImgsName,imgUserName));
+    # print ("",);
+    statusDic = "";
+    if result == 1:
+        statusDic = {"status" : "ok" , "message" : "添加成功" , "imgUserName":imgUserName};
+    else :
+        statusDic = {"status" : "error" , "message" : "添加失败"};
+    return HttpResponse(json.dumps(statusDic) , content_type = "application/json");
+
+
+
+
+
+
+
+
+
+
+
 

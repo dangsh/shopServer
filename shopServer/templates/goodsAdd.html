@@ -104,75 +104,81 @@
 		<div class="container">
 			<div class="rt_content">
 				<form class="form-horizontal" action="/goodsManageJsonAdd/" method="post">
+					<div class="form-group hidden" >
+						<label class="col-sm-4 control-label">商品id：</label>
+						<div class="col-sm-3">
+							<input class="form-control only "  onkeyup="myfun();"name="goodsid" id="goodsid" value="" placeholder="goodsid" readonly="">
+						</div>
+					</div>
 					<div class="form-group">
 						<label class="col-sm-4 control-label">商品名称：</label>
 						<div class="col-sm-3">
-							<input class="form-control only"  name="goodsname" id="goodsname" placeholder="goodsname">
+							<input class="form-control only"  onkeyup="myfun(this);"name="goodsname" id="goodsname" value="" placeholder="goodsname">
 						</div>
 					</div>
 					<div class="form-group">
 						<label class="col-sm-4 control-label">所属商家：</label>
 						<div class="col-sm-3">
-							<input class="form-control only" name="shopname" id="shopname" placeholder="shopname">
+							<input class="form-control only" onkeyup="myfun(this);"name="shopname" id="shopname" value="" placeholder="shopname">
 						</div>
 					</div>
 					<div class="form-group">
 						<label class="col-sm-4 control-label">商品介绍：</label>
 						<div class="col-sm-3">
-							<input  class="form-control only" id="standard" name="standard" placeholder="standard">
+							<input  class="form-control only" onkeyup="myfun(this);"id="standard" name="standard" value="" placeholder="standard">
 						</div>
 					</div>
 					<div class="form-group">
 						<label class="col-sm-4 control-label">颜色/口味：</label>
 						<div class="col-sm-3">
-							<input  class="form-control only" name="color" id="color" placeholder="color">
+							<input  class="form-control only" onkeyup="myfun(this);"name="color" id="color" value="" placeholder="color">
 						</div>
 					</div>
 					<div class="form-group">
 						<label class="col-sm-4 control-label">尺寸/参数：</label>
 						<div class="col-sm-3">
-							<input  class="form-control only" id="size" name="size" placeholder="size">
+							<input  class="form-control only" onkeyup="myfun(this);"id="size" name="size" value="" placeholder="size">
 						</div>
 					</div>
 					<div class="form-group">
 						<label class="col-sm-4 control-label">数量：</label>
 						<div class="col-sm-3">
-							<input class="form-control only"  name="counts" id="counts" placeholder="counts ">
+							<input class="form-control only"  onkeyup="myfun(this);"name="counts" id="counts" value="" placeholder="counts ">
 						</div>
 					</div>
 					<div class="form-group">
 						<label class="col-sm-4 control-label">本金：</label>
 						<div class="col-sm-3">
-							<input class="form-control only"  name="principal " id="principal" placeholder="principal ">
+							<input class="form-control only"  onkeyup="myfun(this);"name="principal" id="principal" value="" placeholder="principal ">
 						</div>
 					</div>
 					<div class="form-group">
 						<label class="col-sm-4 control-label">单价：</label>
 						<div class="col-sm-3">
-							<input class="form-control only" id="price" name="price" placeholder="price">
+							<input class="form-control only" onkeyup="myfun(this);"id="price" name="price" value="" placeholder="price">
 						</div>
 					</div><div class="form-group">
 						<label class="col-sm-4 control-label">促销价格：</label>
 						<div class="col-sm-3">
-							<input class="form-control only" name="proprice" id="proprice" placeholder="proprice">
+							<input class="form-control only" onkeyup="myfun(this);"name="proprice" id="proprice"value="" placeholder="proprice">
 						</div>
 					</div>
 					<div class="form-group">
 						<label class="col-sm-4 control-label">促销开始日期：</label>
 						<div class="col-sm-3">
-							<input  class="form-control only" name="prostart" id="prostart" placeholder="prostart">
+							<input  class="form-control only" onkeyup="myfun(this);"name="prostart" id="prostart" value="" placeholder="prostart">
 						</div>
 					</div>
 					<div class="form-group">
 						<label class="col-sm-4 control-label">促销结束日期：</label>
 						<div class="col-sm-3">
-							<input  class="form-control only" id="proend" name="proend" placeholder="proend">
+							<input  class="form-control only" onkeyup="myfun(this);"id="proend" name="proend"value="" placeholder="proend">
 						</div>
 					</div>
 					<div class="form-group">
 							<label class="col-sm-4 control-label">返利</label>
 							<div class="col-sm-3">
-								<input  class="form-control only" id="rebate" name="rebate" placeholder="proend">
+								<input  class="form-control only" onkeyup="myfun(this);"id="rebate" name="rebate"value="" placeholder="rebate">
 							</div>
 						</div>
 					<div class="form-group">
@@ -184,7 +190,7 @@
 					</label>
 
 					<div class="col-sm-3">
-						<input  class="form-control readon" id="transportmoney" name="transportmoney" placeholder="transportmoney" readonly="true">
+						<input  class="form-control readon" onkeyup="myfun(this);"id="transportmoney" name="transportmoney"value="" placeholder="transportmoney" readonly="true">
 					</div>
 			</div>
 		</div>
@@ -193,75 +199,89 @@
 			<div class="table-responsive table-bordered ">
 
 				<table class="table table-bordered " style="margin-bottom: 0px;">
+					
 					<!--<table class="table table-bordered table-hover" contenteditable="true">-->
 					<thead>
 
-						<div class="col-md-12 " style=" background-color: #F2F9FE;
-										padding: 5px;">
-
-							<button type="submit" class="btn btn-info"> +添加</button>
-						</div>
 					</thead>
-					<tr style=" background-color: #F2F9FE;
+					<tr style=" background-color: rgb(255, 255, 255);
 										padding-left: 5px;">
 						<th colspan="13">商品详情</th>
 					</tr>
 
-					<tr style=" background-color: #F2F9FE;
+					<tr style=" background-color: rgb(250, 250, 250);
 										padding-left: 5px;">
-						<th>序号</th>
-						<th>返利</th>
-						<th>规格</th>
-						<th>配图</th>
-						<th>数量</th>
-						<th>状态</th>
-						<th>详情</th>
+						<th>商品名称</th>
 						<th>所属商家</th>
-						<th>浏览记录</th>
-						<th>id</th>
-						<th>编辑</th>
+						<th>商品介绍</th>
+						<th>颜色/口味</th>
+						<th>尺寸/参数</th>
+						<th>数量</th>
+						<th>本金</th>
+						<th>单价</th>
+						<th>促销价格</th>
+						<th>促销开始日期</th>
+						<th>促销结束日期</th>
+						<th>返利</th>
 					</tr>
 
 					<tbody class="myListTable">
-						<!-- <tr class="datails">
-							<th scope="row">1</th>
-							<td>' + rebate + '</td>
-							<td>' + standard + '</td>
-							<td>'+images+'</td>
-							<td>'+stock+'</td>
-							<td>'+status+'</td>
-							<td>0</td>
-							<td>'+shopname+'</td>
-
-							<td>'+ lookhistoryid+'</td>
-							<td>'+goodsid+'</td> -->
-							<!--<td><button class="button" type="button" id="" data-toggle="modal" data-target="#exampleModal"><span class="glyphicon glyphicon-pencil demo1"aria-hidden="true"></span></button>-->
-								<!-- <td><button class="button" type="button" id=""data-toggle="modal" data-target="#exampleModal"><span class="glyphicon glyphicon-pencil demo1"aria-hidden="true"></span></button></td> -->
-
+						<tr class="datails"style=" background-color: rgb(255, 255, 255);
+						padding-left: 5px;">
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>'
+								
 					</tbody>
 				</table>
 			</div>
 		</div>
 		<div class="col-md-12" style="width: 100%;height: 350px;padding-left: 0px;padding-right: 0px;">
 			<div class=row style="color:red" ;>
-				<div class="col-md-6"> (请在这里输入商品规格参数)</div>
-				<div class="col-md-6"> (退换货说明)</div>
+				<div class="col-md-6"> (请在这里输入商品详情)</div>
+
 			</div>
-			<div id="" style="background-color: red;width: 50%;height: 250px;float: left;">
+			<div id="" style="background-color: red;width: 100%;height: 250px;float: left;">
 				<script id="editor" type="text/plain" style="width:100%;height:250px;"></script>
 			</div>
-			<div id="" style="background-color: cadetblue;width: 50%;height: 250px;float: right;">
-				<script id="editor1" type="text/plain" style="width:100%;height:250px;"></script>
-			</div>
+			<div id="btns">
+					<!--<div id="div_Old" style="height: 300px;border: 2px solid red;width: 100%;">						
+						</div>-->
+					<br />
+					<div align="center">
+
+	
+							<!--<input type="file" name="imgsFile" style="display: inline-block;"></input>-->
+	
+							<a style="display: inline-block;" href="javascript:;" class="a-upload">
+								<input class="myInput" type="file" name="details" id="details">
+							</a>
+	
+	
+
+					</div>
+					<br />
+
+				</div>
 		</div>
 		
-		<div class="col-sm-offset-0 col-sm-10" style="padding-left: 0px;">
-			<button type="button" class="btn btn-success"style="margin-top: 75px;"> 修改</button>
-		</div>
-		<div class="form-group " style:"padding:">
-			<div class="col-sm-offset-5 col-md-12">
-				<button type="button" class="btn btn-success" id="updata"> 更改</button>
+		<div class="form-group " >
+			<div class="col-sm-offset-4 col-md-12"style="margin-top:40px">
+	
+				<button type="button" class="btn btn-success " id="updata"> 更改</button>
 				<button type="button" class="btn btn-success" id="endata"> 确定</button>
+				<button type="submit" class="btn btn-info"> 提交</button>
+			</div>
 			</div>
 		
 		</div>
@@ -304,70 +324,35 @@ $('#endata').click(function () {
 	// if($('#readonly')) {
 		$(".only").prop("readonly",true);
 
+
 })
-$('#updata').click(function () {
+$( '#updata').click(function () {
 		$(".only").prop("readonly",false);
 })
 
-a = localStorage.getItem("data")
-console.log(typeof(JSON.parse(a)))
+
+
+!function(){
+  var check = function(){
+    if( editor.isChanged ){
+      refreshPreview();
+    }
+    setTimeout( check, 500 );
+  };
+  check();
+}()
+
+function myfun(aaa){
+
+	var myValue = $(aaa).val();
+	var myIndex = $(aaa).parents(".form-group").index();
+
+	$($(".datails").children("td")[myIndex - 1]).text(myValue)
 
 
 
 
-
-// $('#addbt').bind('click',function(e){
-
-//         console.log("jjjjjj");
-// 		// e.preventDefault(); 
-// 	function oneGoods(data) {
-// 	var goodsid = data["goodsid"];
-// 	var rebate = data["rebate"];
-// 	var lookhistoryid = data["lookhistoryid"];
-// 	var standard = data["standard"];
-// 	var images = data["images"];
-// 	var details = data["details"];
-// 	var shopname = data["shopname"];
-// 	var status = data["status"];
-// 	var uptime = data["uptime"];
-// 	var downtime = data["downtime"];
-// 	var price = data["price"];
-// 	var goodsName = data["goodsname"];
-// 	var stock = data["stock"];
-// 	var transportmoney=data["goodsname"]
-// 	var ele = '<tr class="datails" goodsid="' + goodsid + '" images="' + images + '"><td><input class="checkbox-one" type="checkbox"></td><th scope="row">3</th><td>' + goodsName + '</td><td>' + shopname + '</td><td>家居</td><td></td><td>已上架</td><td><span class="glyphicon glyphicon-upload up" aria-hidden="true">上架 </span> &nbsp;<span class="glyphicon glyphicon-download down" aria-hidden="true">下架</span></td><td><span class="glyphicon glyphicon-picture demo3" aria-hidden="true"></span> &nbsp;<span class="glyphicon glyphicon-pencil demo4" aria-hidden="true"></span></td><td><span class="glyphicon glyphicon-plus demo5" aria-hidden="true"></span> &nbsp;<span class="glyphicon glyphicon-list-alt demo6"  aria-hidden="true"></span></td><td><span class="glyphicon glyphicon-file demo7"  aria-hidden="true"></span> &nbsp;<span class="glyphicon glyphicon-trash demo8"  aria-hidden="true"></span></td></tr>'
-// 	// var ele='<tr class="datails"><th scope="row">1</th><td>' + rebate + '</td><td>' + standard + '</td><td>'+images+'</td><td>'+stock+'</td><td>'+status+'</td><td>0</td><td>'+shopname+'</td><td>'+uptime+'</td><td>'+downtime+'</td><td>'+ lookhistoryid+'</td><td>'+goodsid+'</td>						<td><button class="button" type="button" id=""data-toggle="modal" data-target="#exampleModal"><span class="glyphicon glyphicon-pencil demo1"aria-hidden="true"></span></button>'
-// 		// $(".myListTable").remove(ele)
-// 	$(".myListTable").append(ele)
-// 	// $(".myListTable").remove(ele)
-// }
-
-// });
-
-
-// $('#demo1').click('shown.bs.modal', function () {
-//   $('#demo1').focus()
-
-// })
-
-// 	$(".demo1").click(function(){
-// 	console.log(" 1")
-
-// });
-// $(".demo2").click(function(){
-// 	console.log(" 2")
-
-// });
-// $(".demo5").click(function(){
-// 		addGoodsIdRed = this.parentNode.parentNode.getAttribute("goodsid")
-// 		console.log(" 5")
-// 		('MyDiv','fade')
-
-// });
-// $('#demo2').on('shown.bs.modal', function () {
-//   $('#myInput').focus()
-//   console.log(" 2")
-// })
+}
 
 
 </script>

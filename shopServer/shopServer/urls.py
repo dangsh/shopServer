@@ -32,6 +32,7 @@ urlpatterns = [
     url(r'^login/$' , login),#登录界面
     url(r'^loginApi/$' , loginApi),  # 登录接口 
     url(r'^register/$' , userManageJsonAdd), # 添加用户接口 
+    url(r'^uploadHeadImg/$' , uploadHeadImg), # 上传头像接口
 
     # url(r'^saveOneImageToServer/$' , saveOneImageToServer),  # 添加一张图片到服务器 不和数据库产生联系
 
@@ -39,10 +40,14 @@ urlpatterns = [
     url(r'^userManageJsonSelect/$' , userManageJsonSelect), # 查询用户接口
     url(r'^userManageJsonDelete/$' , userManageJsonDelete), #删除用户接口
     url(r'^userManageJsonUpdate/$' , userManageJsonUpdate), #更新用户接口
-    url(r'^lookhistorytableManageJsonAdd/$' , lookhistorytableManageJsonAdd),#浏览记录添加接口(GET)
-    url(r'^lookhistorytableManageJsonSelect/$' , lookhistorytableManageJsonSelect),#浏览记录查询接口(GET)
-    url(r'^lookhistorytableManageJsonDelete/$' , lookhistorytableManageJsonDelete),#浏览记录删除接口(GET)
-    url(r'^lookhistorytableManageJsonUpdata/$' , lookhistorytableManageJsonUpdata),#浏览记录更改接口(POST)
+    url(r'^lookhistorytableManageJsonAdd/$' , lookhistorytableManageJsonAdd),#浏览记录添加接口
+    url(r'^lookhistorytableManageJsonSelect/$' , lookhistorytableManageJsonSelect),#浏览记录查询接口
+    url(r'^lookhistorytableManageJsonDelete/$' , lookhistorytableManageJsonDelete),#浏览记录删除接口
+    url(r'^lookhistorytableManageJsonUpdata/$' , lookhistorytableManageJsonUpdata),#浏览记录更改接口
+    url(r'^favoritetableManageJsonAdd/$' , favoritetableManageJsonAdd),#收藏功能添加接口
+    url(r'^favoritetableManageJsonSelect/$' , favoritetableManageJsonSelect),#收藏功能查询接口
+    url(r'^favoritetableManageJsonDelete/$' , favoritetableManageJsonDelete),#收藏功能删除接口
+    url(r'^favoritetableManageJsonUpdata/$' , favoritetableManageJsonUpdata),#收藏功能更改接口
     # url(r'^lookhistorytableManage/$' , lookhistorytableManage),#浏览记录列表
     # url(r'^lookhistoryManage/$' , lookhistoryManage),#浏览记录列表接口
     url(r'^activeManage/$' , activeManage),
@@ -94,6 +99,6 @@ urlpatterns = [
 
     url(r'^personal/$' , personal),      
 
-    url(r'^$' , home),
+    url(r'^$' , login),
     url(r'^.' , error),
 ]

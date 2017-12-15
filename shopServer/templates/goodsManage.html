@@ -473,7 +473,7 @@ function goodsListToPage(data) {
 	$(".demo7").click(function(){
 		currentIndex = $(this).parents("tr").index();
         currentItem = mainData[currentIndex];
-        localStorage.setItem("data" , currentItem)
+        localStorage.setItem("data" ,JSON.stringify(currentItem))
 		setTimeout(function () {
 			window.location.href = "http://localhost:8000/addGoods/"
 		} , 1000)
@@ -481,12 +481,47 @@ function goodsListToPage(data) {
 	$(".demo8").click(function(){
 		console.log('*********');
 		var that = $(this).parents("tr")
+		var oneDeleteData = mainData[that.index()];
+		imageArr = [];
+		var aaa = [];
+		var images = oneDeleteData.images;
+		aaa = images
+		aaa = aaa.split("---")
+		console.log(aaa.length)
+		for (var i=0;i<aaa.length;i++){
+			if (i != ""){
+				imageArr.push(aaa[i])
+			}
+		}
+		var details = decodeURIComponent(oneDeleteData.details);
+		console.log(details);
+		
+		var imgReg = /<img.*?(?:>|\/>)/gi;
+		var srcReg = /src=[\'\"]?([^\'\"]*)[\'\"]?/i;
+		var arr = details.match(imgReg);
+		console.log('所有已成功匹配图片的数组：' + arr);
+		for(var i = 0; i < arr.length; i++) {
+			var src = arr[i].match(srcReg);
+			//获取图片地址
+			if(src[1]) {
+				myimageName = src[1].split("/")
+				for (var name = 0;name < myimageName.length;name++){
+					if (myimageName[name].indexOf("20")==0){
+						imageArr.push(myimageName[name])
+					}
+				}
+				
+			}
+		}
+		console.log(imageArr)
+		
+		
 		var goodsArr = [that.attr("goodsid")]
 		//console.log("...........", goodsArr)
 		$.ajax({
 			url: "http://localhost:8000/goodsManageJsonDelete/",
 			type: 'POST',
-			data:{goodsids:goodsArr},
+			data:{goodsids:goodsArr , images:imageArr},
 			traditional:true,
 			success: function (data) {
 				if (data["status"] == "ok") {
@@ -505,6 +540,10 @@ function goodsListToPage(data) {
 				alert(msg); //错误信息
 			}
 		});
+	
+	
+	
+	
 	});
 }
 
