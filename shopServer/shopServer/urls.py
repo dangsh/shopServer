@@ -35,7 +35,7 @@ urlpatterns = [
     url(r'^uploadHeadImg/$' , uploadHeadImg), # 上传头像接口
     url(r'^drawManage/$',drawManage), #抽奖余额界面
 
-    # url(r'^saveOneImageToServer/$' , saveOneImageToServer),  # 添加一张图片到服务器 不和数据库产生联系
+    url(r'^saveOneImageToServer/$' , saveOneImageToServer),  # 添加一张图片到服务器 不和数据库产生联系
 
     url(r'^userManageJsonAdd/$' , userManageJsonAdd), # 添加用户接口
     url(r'^userManageJsonSelect/$' , userManageJsonSelect), # 查询用户接口
@@ -104,6 +104,8 @@ urlpatterns = [
     url(r'luckyManageJsonDelete/$' , luckyManageJsonDelete), #福袋删除接口
     url(r'luckyManageJsonAdd/$' , luckyManageJsonAdd), #福袋添加接口
     url(r'luckyManageJsonUpdata/$' , luckyManageJsonUpdata), #福袋修改接口
+    url(r'selectLuckyJsonByGoodsId/$' , selectLuckyJsonByGoodsId), #通过商品号查询福袋
+    
 
     url(r'commentJsonQuery/$' , commentJsonQuery), #评论查询接口(分页)    
     url(r'commentJsonDelete/$' , commentJsonDelete), #评论删除接口
@@ -128,6 +130,9 @@ urlpatterns = [
     url(r'^addLeaveMessage/$',addLeaveMessage), ##增加用户留言接口
     url(r'^deleLeaveMessage/$',deleLeaveMessage), ##删除用户留言接口
 
+    # url(r'friendslistManageJsonSelect/$' , friendslistManageJsonSelect), #好友列表查询接口    
+    url(r'friendslistManageJsonDelete/$' , friendslistManageJsonDelete), #好友列表删除接口
+    url(r'friendslistManageJsonAdd/$' , friendslistManageJsonAdd), #好友列表添加接口
 
     url(r'^personal/$' , personal),      
 

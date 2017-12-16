@@ -70,12 +70,6 @@
                 
                     <button class="btn btn-default trash AllDelete"><span class = "glyphicon glyphicon-trash">批量删除</span></button>
                     <button class="btn btn-default plus btn btn-primary" data-toggle="modal" data-target="#plusModal" ><span class = "glyphicon glyphicon-plus">添加会员</span></button>
-                    <form action="" id="headImgForm" method="post">
-                        <input type="text" placeholder="仅供测试" name="imgUserName">
-                        <input type="file" name="headImg" id="headImg">
-                        <input type="button" id="headImgBtn" value="修改">
-                    </form>
-                    
                     <label id="userNumber" class="count" style="float: right; padding-right: 4%;">共有数据</label>
 
             </th>
@@ -130,14 +124,11 @@
                         </form>
 					</div>
 				</div>
-				<!-- /.modal-content -->
 			</div>
-			<!-- /.modal-dialog -->
         </div>
         <img src="" alt="">
 
-        
-        <!-- Small modal -->
+    
         
         <div class="myModal">
            
@@ -145,7 +136,6 @@
         
         
         
-        <!-- <div class="form-group"><label for="recipient-name" class="control-label">头像:</label><input type="text" class="form-control" name="headimg" value="' + headimg + '"></div> -->
 
 {% endblock %}
 
@@ -153,16 +143,6 @@
 
 {% block script %}
 <script src="{% static 'layer/layer.js' %}" type="text/javascript" charset="utf-8"></script>
-<!-- <script>
-$(".addform").on('submit', function(e){
-    aaa=$(".tijiao")
-    console.log(aaa);
-    e.preventDefault();
-    // success:function(aaa){
-    //     console.log("111111111");
-    // }
-});
-</script> -->
     
     
 
@@ -303,7 +283,6 @@ $(".addform").on('submit', function(e){
             }
         });
     function ajaxSubmitForm(){
-        console.log('ajaxsubmit');
         var option = 
         {
             url : "http://localhost:8000/userManageJsonSelect/",
@@ -316,7 +295,7 @@ $(".addform").on('submit', function(e){
                     layer.msg("查找成功")
                 }
                 else{
-                    layer.msg("查找失败")
+                    layer.msg("没有查找到数据")
                 }
                 $('.mytr').remove();
                 document.getElementById("exampleUsername").value = "";
@@ -329,8 +308,14 @@ $(".addform").on('submit', function(e){
                 console.log("chucuole ");
             }
         };
-        $(".searchForm").ajaxSubmit(option);
-        return false;
+        var _form = document.getElementsByClassName("searchForm")[0]
+        if(_form.username.value=="" && _form.phone.value==""){
+        	layer.msg("用户名不能为空")
+        }
+        else{
+        	$(".searchForm").ajaxSubmit(option);
+        	return false;
+        }
     }
     $(".search").click(function(){
         console.log("查询按钮");

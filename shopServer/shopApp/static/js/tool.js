@@ -5,3 +5,16 @@ function myPost(url , data , fn){
         });
 }
 
+
+
+function myPostGoodsManage(url , data , fn){
+    $.ajax({
+        url: "http://localhost:8000/" + url + "/",
+        type: 'POST',
+        data:data,
+        traditional:true,
+        success: function (data) {
+            fn(data);
+        }
+    });
+}

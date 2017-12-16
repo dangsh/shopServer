@@ -324,7 +324,7 @@
 					<!-- 左侧列表部分 -->
 					<ul class="sidebar-menu" data-widget="tree">
 						<li class="header">MAIN NAVIGATION</li>
-						
+
 						<li class="treeview">
 							<a href="#">
 								<i class="fa fa-dashboard"></i> <span>账号管理</span>
@@ -333,16 +333,16 @@
 			            		</span>
 							</a>
 							<ul class="treeview-menu">
-								<li class="myli">
+								<li >
 									<a href="/luckyManage/"><i class="fa fa-dashboard"></i> 福袋管理</a>
 								</li>
-								<li class="myli">
+								<li >
 									<a href="/userManage/"><i class="fa fa-dashboard"></i> 会员管理</a>
 								</li>
-								<li class="myli">
+								<li >
 									<a href="/activeManage/"><i class="fa fa-dashboard"></i> 活动管理</a>
 								</li>
-								<li class="active">
+								<li >
 									<a href="/drawManage/"><i class="fa fa-dashboard"></i> 抽奖管理</a>
 								</li>
 							</ul>
@@ -356,10 +356,10 @@
 			                  	</span>
 							</a>
 							<ul class="treeview-menu">
-								<li class="myli">
+								<li >
 									<a href="/goodsManage/"><i class="fa fa-clock-o"></i> 商品列表</a>
 								</li>
-								<li class="myli">
+								<li >
 									<a href="###"><i class="fa fa-clock-o"></i> 目录管理</a>
 								</li>
 							</ul>
@@ -373,13 +373,13 @@
 		                    	</span>
 							</a>
 							<ul class="treeview-menu">
-								<li class="myli">
+								<li >
 									<a href="/cartsManage/"><i class="fa fa-flag"></i>购物车</a>
 								</li>
-								<li class="myli">
+								<li >
 									<a href="/redpack/"><i class="fa fa-flag"></i> 红包设置</a>
 								</li>
-								<li class="myli">
+								<li >
 									<a href="home/"><i class="fa fa-flag"></i> 店铺消费记录</a>
 								</li>
 							</ul>
@@ -393,7 +393,7 @@
                           </span>
 							</a>
 							<ul class="treeview-menu">
-								<li class="myli">
+								<li >
 									<a href="/orderManage/"><i class="fa fa-bell"></i> 订单详情</a>
 								</li>
 							</ul>
@@ -407,7 +407,7 @@
                           </span>
 							</a>
 							<ul class="treeview-menu">
-								<li class="myli">
+								<li >
 									<a href="/adPage/"><i class="fa fa-envelope"></i> 广告详情</a>
 								</li>
 							</ul>
@@ -660,12 +660,12 @@
 
 		<script src="{% static 'js/tool.js' %}"></script>
 		<script type="text/javascript">
-			 $('.treeview-menu').find('a').each(function () {
-            if (this.href == document.location.href || document.location.href.search(this.href) >= 0) {
-                $(this).parent().addClass('active'); // this.className = 'active';
-				$(this).parents(".treeview").addClass('active');
-            }
-        });
+			$('.treeview-menu').find('a').each(function() {
+				if(this.href == document.location.href || document.location.href.search(this.href) >= 0) {
+					$(this).parent().addClass('active'); // this.className = 'active';
+					$(this).parents(".treeview").addClass('active');
+				}
+			});
 		</script>
 		{% block script %}{% endblock %}
 	</body>

@@ -103,13 +103,7 @@
 <div class="post">
 		<div class="container">
 			<div class="rt_content">
-				<form class="form-horizontal" action="/goodsManageJsonAdd/" method="post">
-					<div class="form-group hidden" >
-						<label class="col-sm-4 control-label">商品id：</label>
-						<div class="col-sm-3">
-							<input class="form-control only "  onkeyup="myfun();"name="goodsid" id="goodsid" value="" placeholder="goodsid" readonly="">
-						</div>
-					</div>
+				<form class="form-horizontal" id= "addgoods"action="/goodsManageJsonAdd/" method="post">
 					<div class="form-group">
 						<label class="col-sm-4 control-label">商品名称：</label>
 						<div class="col-sm-3">
@@ -123,7 +117,7 @@
 						</div>
 					</div>
 					<div class="form-group">
-						<label class="col-sm-4 control-label">商品介绍：</label>
+						<label class="col-sm-4 control-label">商家类别：</label>
 						<div class="col-sm-3">
 							<input  class="form-control only" onkeyup="myfun(this);"id="standard" name="standard" value="" placeholder="standard">
 						</div>
@@ -166,13 +160,14 @@
 					<div class="form-group">
 						<label class="col-sm-4 control-label">促销开始日期：</label>
 						<div class="col-sm-3">
-							<input  class="form-control only" onkeyup="myfun(this);"name="prostart" id="prostart" value="" placeholder="prostart">
+							<input  class="form-control only" type="date" onkeyup="myfun(this);"name="prostart" id="prostart" value="2015-03-27">
+							
 						</div>
 					</div>
 					<div class="form-group">
 						<label class="col-sm-4 control-label">促销结束日期：</label>
 						<div class="col-sm-3">
-							<input  class="form-control only" onkeyup="myfun(this);"id="proend" name="proend"value="" placeholder="proend">
+							<input  class="form-control only" type="date" onkeyup="myfun(this);"id="proend" name="proend"value="2015-03-27" >
 						</div>
 					</div>
 					<div class="form-group">
@@ -240,7 +235,7 @@
 							<td></td>
 							<td></td>
 							<td></td>
-							<td></td>'
+							<td></td>
 								
 					</tbody>
 				</table>
@@ -249,30 +244,15 @@
 		<div class="col-md-12" style="width: 100%;height: 350px;padding-left: 0px;padding-right: 0px;">
 			<div class=row style="color:red" ;>
 				<div class="col-md-6"> (请在这里输入商品详情)</div>
-
+				<a style="display: inline-block;" href="javascript:;" class="a-upload">
+					<input class="myInput" type="file" name="details" id="">点击这里上传文件
+					
+					</a>
+				<input id="subbtn" class="btn btn-default" type="submit">
 			</div>
 			<div id="" style="background-color: red;width: 100%;height: 250px;float: left;">
 				<script id="editor" type="text/plain" style="width:100%;height:250px;"></script>
 			</div>
-			<div id="btns">
-					<!--<div id="div_Old" style="height: 300px;border: 2px solid red;width: 100%;">						
-						</div>-->
-					<br />
-					<div align="center">
-
-	
-							<!--<input type="file" name="imgsFile" style="display: inline-block;"></input>-->
-	
-							<a style="display: inline-block;" href="javascript:;" class="a-upload">
-								<input class="myInput" type="file" name="details" id="details">
-							</a>
-	
-	
-
-					</div>
-					<br />
-
-				</div>
 		</div>
 		
 		<div class="form-group " >
@@ -280,7 +260,7 @@
 	
 				<button type="button" class="btn btn-success " id="updata"> 更改</button>
 				<button type="button" class="btn btn-success" id="endata"> 确定</button>
-				<button type="submit" class="btn btn-info"> 提交</button>
+				<button type="button" class="btn btn-info" id="sub"> 提交</button>
 			</div>
 			</div>
 		
@@ -321,7 +301,7 @@
 	}
 })
 $('#endata').click(function () {
-	// if($('#readonly')) {
+
 		$(".only").prop("readonly",true);
 
 
@@ -330,29 +310,57 @@ $( '#updata').click(function () {
 		$(".only").prop("readonly",false);
 })
 
+if (localStorage.length==1){
+	var data = JSON.parse(localStorage.getItem("data"));
+	$("#goodsname").val(data.goodsname);
+	$("#shopname").val(data.shopname);
+	$("#standard").val(data.standard);
+	$("#color").val(data.color);
+	$("#size").val(data.size);
+	$("#counts").val(data.counts);
+	$("#principal").val(data.principal);
+	$("#price").val(data.price);
+	$("#proprice").val(data.proprice);
+	$("#goodsname").val(data.goodsname);
+	$("#rebate").val(data.rebate);
+	$("#proprice").val(data.proprice);
+	$("#prostart").val(data.prostart);
+	$("#proend").val(data.proend);
+	myfun("#goodsname");
+	myfun("#shopname");
+	myfun("#standard");
+	myfun("#color");
+	myfun("#size");
+	myfun("#counts");
+	myfun("#principal");
+	myfun("#price");
+	myfun("#proprice");
+	myfun("#goodsname");
+	myfun("#rebate");
+	myfun("#proprice");
+	myfun("#prostart");
+	myfun("#proend");
+	localStorage.clear();
+}
 
 
-!function(){
-  var check = function(){
-    if( editor.isChanged ){
-      refreshPreview();
-    }
-    setTimeout( check, 500 );
-  };
-  check();
-}()
+
+
 
 function myfun(aaa){
 
 	var myValue = $(aaa).val();
 	var myIndex = $(aaa).parents(".form-group").index();
 
-	$($(".datails").children("td")[myIndex - 1]).text(myValue)
-
-
-
-
+	$($(".datails").children("td")[myIndex]).text(myValue)
+	
 }
+$( '#sub').click(function () {
+	console.log("3333")
+	$("#addgoods").ajaxSubmit();
+
+})
+
 
 
 </script>

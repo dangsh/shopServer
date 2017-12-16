@@ -40,15 +40,15 @@
 				<p ><b style="float:left">会员登录</b><span class="rapidregister"><a style="color:#e23c40">快速注册</a></span><span  >还不是微分销会员?</span></p>
 				<ul>				
 					<li class="click">
-					<input class="text_password" name="username" type="text" placeholder="用户名"/> <i class="login_user"></i>
+					<input class="text_password" name="username" id="name" type="text" placeholder="用户名"/> <i class="login_user"></i>
 				</li>
 	
 				<li>
-					<input class="text_password" name="password" type="password" placeholder="输入登录密码"/> <i class="login_password"></i>
+					<input class="text_password" name="password" id="pwd" type="password" placeholder="输入登录密码"/> <i class="login_password"></i>
 				</li>
 				
 				<li>
-					<input class="text_password" name="code" type="text" placeholder="输入验证码"/> <i class="login_password"></i>
+					<input class="text_password" name="code" id="code" type="text" placeholder="输入验证码"/> <i class="login_password"></i>
 				</li>
 				<li>
 						<img id="imgclick" style="width:150px;height:50px" src="../static/myfile/code.jpg" alt="" srcset="">
@@ -102,13 +102,13 @@
 			data: data,
 			success: function (data)
 			{
-//				console.log(data);
-				alert("成功了/////////");
+				
+				alert(data.message);
 			},
 			error: function(err)
 			{
-//				console.log(err);
-				alert("失败了");
+				
+				alert("失败了..");
 			}
 		});
 	}
@@ -154,10 +154,16 @@
 				aa=result.status;
 				console.log(aa);
 				if (aa=="ok"){
+					document.getElementById("name").value = "";
+					document.getElementById("pwd").value = "";
+					document.getElementById("code").value = ""
 					console.log("789797979797")
 					window.parent.location.href="https://www.baidu.com/"
 				}
 				else{
+					document.getElementById("pwd").value = "";
+					document.getElementById("code").value = ""
+					changeCode()
 					alert("账号或密码输入错误！");
 				}
 				console.log(result);

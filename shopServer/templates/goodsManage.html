@@ -106,11 +106,6 @@
 			<p>共有数据:<strong id="goodsNumber">0</strong>条</p>
 		</div>
 	</div>
-	<!-- <form action="" method="post"> -->
-	<!-- <input type="button" value="我的测试按钮 删除" id="delbtn"> -->
-	<!-- <button id="delbtn">删除</button> -->
-
-	<!-- </form> -->
 
 	<div class="" id="bigdiv">
 		<table class="table table-bordered" style=" margin-bottom: 0px;">
@@ -134,51 +129,43 @@
 			</thead>
 
 			<tbody class="myListTable">
-				<!--<tr class="biaojuzhong">
-						<td>
-							<input type="checkbox" class="checkbox-one">
-						</td>
-						<th scope="row">1</th>
-						<td>手机充电器</td>
-						<td>小米一号店</td>
-						<td>小米手机</td>
-						<td></td>
-						<td class="goodsStatus">已上架</td>
-						<td>
-							<span class="glyphicon glyphicon-upload up" aria-hidden="true">上架 </span> &nbsp;
-							<span class="glyphicon glyphicon-download down" aria-hidden="true">下架</span>
-						</td>
-						<td>
-							<span class="glyphicon glyphicon-picture demo3" aria-hidden="true"></span> &nbsp;
-							<span class="glyphicon glyphicon-pencil demo4" aria-hidden="true"></span>
-						</td>
-						<td>
-							<span class="glyphicon glyphicon-plus demo5" aria-hidden="true"></span> &nbsp;
-							<span class="glyphicon glyphicon-list-alt demo6"  aria-hidden="true"></span>
-						</td>
-						<td>
-							<span class="glyphicon glyphicon-file demo7"  aria-hidden="true"></span> &nbsp;
-							<span class="glyphicon glyphicon-trash demo8"  aria-hidden="true"></span>
-						</td>
-					</tr>-->
 			</tbody>
 
 		</table>
 
+		<!-- 确定删除福袋 模态框 -->
+		<div class="modal fade" id="exampleModal-confirm" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						<h4 class="modal-title" style="text-align: center;">确认删除</h4>
+					</div>
+					<div class="modal-body">
+						<table class="table table-bordered" style=" margin-bottom: 0px;">
+							<caption><strong style="color: #000000;" id="delete-counts"></strong></caption>
+							<thead>
+								<tr class="biaojuzhong">
+									<th>商品名称</th>
+									<th>商品号</th>
+									<th>福袋记录数</th>
+									<th>删除</th>
+								</tr>
+							</thead>
+							<tbody id="myListTable-confirm">
+							</tbody>
+						</table>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+						<button type="button" class="btn btn-danger" id="deleteAll-confirm">全部删除</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
 		<div class="row" id="div3" style=" padding: 1% 0;">
 			<div class="col-md-12" style="text-align: left;">
-				<!--<nav aria-label="...">
-							<ul class="pagination">
-								<li class="disabled"><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
-								<li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
-								<li><a href="#">2</a></li>
-								<li><a href="#">3</a></li>
-								<li><a href="#">4</a></li>
-								<li><a href="#">5</a></li>
-								<li><a href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
-								<span class="sumdiv">共2页,当前第一页,共15条数据</span>
-							</ul>
-						</nav>-->
 				<div class="text-center">
 					<ul id="visible-pages-example"></ul>
 				</div>
@@ -199,13 +186,11 @@
 				<script id="editor" type="text/plain" style="width:100%;height:300px;"></script>
 			</div>
 			<div id="btns">
-				<!--<div id="div_Old" style="height: 300px;border: 2px solid red;width: 100%;">						
-					</div>-->
+				
 				<br />
 				<div align="center">
 					<form style="text-align: center;" id="uploadForm" method="post" action="http://localhost:8000/saveOneImageToServer/">
 
-						<!--<input type="file" name="imgsFile" style="display: inline-block;"></input>-->
 
 						<a style="display: inline-block;" href="javascript:;" class="a-upload">
 							<input class="myInput" type="file" name="imgsFile" id="">点击这里上传文件
@@ -260,7 +245,6 @@ function addAll(goodsid) {
 	console.log(objData)
 	data = encodeURIComponent(data);
 	myPost("goodsManageJsonUpdata" ,{"goodsid":addGoodsIdRed , "details":data} ,function(data){
-		console.log("11111111111111111")
 		if(data["data"] == "success") {
 				alert("商品详情添加成功。。。"); //请求传输成功回调函数
 				location.reload()
@@ -295,7 +279,6 @@ function ShowDiv(show_div, bg_div) {
 
 	data = UE.getEditor('editor').getContent();
 	var objData = "goodsid=" + addGoodsIdRed; //post方式传送的数据
-	console.log(objData)
 	myPost("goodsSelectByid" ,objData , function(data){
 		console.log(data.data)
 		for(var i = 0; i < data.data.length; i++) {
@@ -307,25 +290,7 @@ function ShowDiv(show_div, bg_div) {
 			}
 
 	} )
-	// $.ajax({
-	// 	url: url,
-	// 	type: 'POST',
-	// 	success: "success",
-	// 	data: objData,
-	// 	success: function(data) {
-	// 		console.log(data.data)
-	// 		for(var i = 0; i < data.data.length; i++) {
-	// 			if(data.data[i].goodsid == addGoodsIdRed) {
-	// 				var detailsAll = data.data[i].details;
-	// 				detailsAll = decodeURIComponent(detailsAll)
-	// 				ue.setContent(detailsAll);					
-	// 			}
-	// 		}
-	// 	},
-	// 	error: function(msg) {
-	// 		console.log("error 加载数据失败")
-	// 	}
-	// });
+
 
 	document.getElementById(show_div).style.display = 'block';
 	document.getElementById(bg_div).style.display = 'block';
@@ -388,7 +353,6 @@ function goodsListToPage(data) {
 		oneGoods(data[i])
 	}
 	$(".up").click(function(){
-		console.log("上架按钮点击事件。。。。")
 		var that = this
 		goodsid = $(that).parents("tr").attr("goodsid")
 		myPost("goodsManageJsonUpdata" , {"status":1,"goodsid":goodsid} , function (data) {
@@ -399,44 +363,16 @@ function goodsListToPage(data) {
 				$(that).parents("td").children(".down").removeAttr("disabled").val()
 				$(that).parents("td").children(".up").attr("disabled","").val()
 				goodsStatus.attr("style", "color:green");
-//					alert("上架操作成功。。。");//请求传输成功回调函数
 				layer.msg('上架成功');
 			}
 			else{
-//					alert("上架操作失败。。。");//请求传输失败回调函数
 				layer.msg('上架失败');
 			}
 		});
 
 
-// 		$.ajax({
-// 			url: url,
-// 			type: 'POST',
-// 			data:{"status":1,"goodsid":goodsid},
-// 			success:"success",
-// 			success: function (data) {
-// 				if (data["data"] == "success") {
-// 					var goodsStatus = $(that).parents("tr").children(".goodsStatus")
-// 					goodsStatus.text("已上架")
-// 					$(that).parents("td").children(".down").removeAttr("disabled").val()
-// 					$(that).parents("td").children(".up").attr("disabled","").val()
-// 					goodsStatus.attr("style", "color:green");
-// //					alert("上架操作成功。。。");//请求传输成功回调函数
-// 					layer.msg('上架成功');
-// 				}
-// 				else{
-// //					alert("上架操作失败。。。");//请求传输失败回调函数
-// 					layer.msg('上架失败');
-// 				}
-// 			},
-// 			error: function (msg) {
-// 				alert(msg); //错误信息
-		
-// 			}
-// 		});    
 	});
 	$(".down").click(function(){
-		console.log("下架按钮点击事件。。。。")
 		var that = this
 		goodsid = $(that).parents("tr").attr("goodsid")
 		myPost("goodsManageJsonUpdata" , {"status":0,"goodsid":goodsid} , function (data) {
@@ -465,8 +401,6 @@ function goodsListToPage(data) {
 	});
 	$(".demo4").click(function() {
 		var that = $(this).parents("tr")
-		//console.log(that.attr("goodsid"))
-		//console.log(that.attr("images"))
 		window.location.href = "/changePic/?goodsid=" + that.attr("goodsid");
 	});
 	$(".demo5").click(function() {
@@ -493,15 +427,16 @@ function goodsListToPage(data) {
 		var aaa = [];
 		var images = oneDeleteData.images;
 		aaa = images
-		aaa = aaa.split("---")
-		console.log(aaa.length)
-		for (var i=0;i<aaa.length;i++){
-			if (i != ""){
-				imageArr.push(aaa[i])
+		if (aaa != null){
+			aaa = aaa.split("---")
+			console.log(aaa.length)
+			for (var i=0;i<aaa.length;i++){
+				if (i != ""){
+					imageArr.push(aaa[i])
+				}
 			}
 		}
 		var details = decodeURIComponent(oneDeleteData.details);
-		console.log("&&&&&&&&&&&&&&&&");
 		console.log(details);
 		
 		var imgReg = /<img.*?(?:>|\/>)/gi;
@@ -519,55 +454,28 @@ function goodsListToPage(data) {
 						if (myimageName[name].indexOf("20")==0){
 							imageArr.push(myimageName[name])
 						}
+						
 					}
-					
 				}
 			}
+			console.log('所有已成功匹配图片的数组：' + arr);
 		}
-		console.log('所有已成功匹配图片的数组：' + arr);
 		
-		// console.log(imageArr)
-		
-		
+
 		var goodsArr = [that.attr("goodsid")]
-		//console.log("...........", goodsArr)
 		myPost("goodsManageJsonDelete",{goodsids:goodsArr , images:imageArr} , function(data){
-			console.log("****************")
 			if (data["status"] == "ok") {
 					var deleteCount = data['deleteCount']
 					loaddata()
-//					alert("删除" + deleteCount + "条记录成功");//请求传输成功回调函数
 					layer.msg('删除' + deleteCount + "条记录成功");
 			   }
 			   else{
-//					 alert("删除失败");//请求传输失败回调函数
 					layer.msg('删除失败');
-			   }
+			}
 
 		})
 
-// 		$.ajax({
-// 			url: "http://localhost:8000/goodsManageJsonDelete/",
-// 			type: 'POST',
-// 			data:{goodsids:goodsArr , images:imageArr},
-// 			traditional:true,
-// 			success: function (data) {
-// 				if (data["status"] == "ok") {
-// 					var deleteCount = data['deleteCount']
-// 					loaddata()
-// //					alert("删除" + deleteCount + "条记录成功");//请求传输成功回调函数
-// 					layer.msg('删除' + deleteCount + "条记录成功");
-// 			   }
-// 			   else{
-// //					 alert("删除失败");//请求传输失败回调函数
-// 					layer.msg('删除失败');
-// 			   }
-// 			},
-// 			error: function (msg) {
-// 				console.log("error")
-// 				alert(msg); //错误信息
-// 			}
-// 		});
+
 	
 	
 	
@@ -580,9 +488,13 @@ $("#goodsSelectBtn").click(function(){
 	thispage = 1
 	commName = $("#goodsSelectName").val()
 	console.log("*****", commName)
+	if(commName==""){
+		layer.msg("商品名称不能为空")
+	}
+	myflag=1
 	loaddata()  
 });
-
+var luckyGoods = {}
 
 $('#deleteBtn').click(function () {
 	
@@ -598,50 +510,48 @@ $('#deleteBtn').click(function () {
 	console.log(goodsArr)
 
 	myPost("goodsManageJsonDelete" , {goodsids:goodsArr} , function (data) {
-		console.log("------------------------");
 		if (data["status"] == "ok") {
 			var deleteCount = data['deleteCount']
 			loaddata()
 			layer.msg("删除" + deleteCount + "条记录成功");
 		}
-		else{
+	})
+
+	loaddata()
+
+
+
+	
+})
+
+$("#deleteAll-confirm").click( function () {
+	var goodsArr = []
+	var goodsidOne = $("#myListTable-confirm").children("tr").attr("goodsid")
+	goodsArr.push(goodsidOne)
+	myPostGoodsManage("goodsManageJsonDelete" , {goodsids:goodsArr} , function (data) {
+		if (data["status"] == "ok") {
+			var deleteCount = data['deleteCount']
+			loaddata()
+			layer.msg("删除" + deleteCount + "条记录成功");
+		} else {
 			layer.msg("删除失败")
 		}
 	});
-	// $.ajax({
-	// 	url: "http://localhost:8000/goodsManageJsonDelete/",
-	// 	type: 'POST',
-	// 	data:{goodsids:goodsArr},
-	// 	traditional:true,
-	// 	success: function (data) {
-	// 		if (data["status"] == "ok") {
-	// 			var deleteCount = data['deleteCount']
-	// 			loaddata()
-	// 			layer.msg("删除" + deleteCount + "条记录成功");
-	// 	   }
-	// 	   else{
-	// 			 layer.msg("删除失败")
-	// 	   }
-	// 	},
-	// 	error: function (msg) {
-	// 		alert(msg); //错误信息
-	
-	// 	}
-	// });
+	$("#exampleModal-confirm").modal("hide");
 })
+
+
 
 
 $('#checkbox-all').click(function () {
 	if($('#checkbox-all').is(':checked')) {
-		//console.log("get - all")
 		$(".checkbox-one").prop("checked",true);
 	}else{
-		//console.log("close - all")
 		$(".checkbox-one").prop("checked",false);
 	}
 });
 
-
+myflag=0
 function loaddata() {
 
 	$.ajax({
@@ -649,14 +559,19 @@ function loaddata() {
 		success: function (data) {
 			goodsCount = data.goodscount
 			goodsListPages = Math.ceil(parseInt(goodsCount) / 10 )
-			console.log("-----",goodsListPages)
 			$(".myListTable").children("tr").remove()
 			//解析数据
-			console.log("**************************");
-			console.log(data.data)
 			mainData = data.data;
+			
 			goodsListToPage(mainData)
-			//记录个数'
+			
+			if(data.data!="" && myflag==1){
+			        layer.msg("查找成功")
+			    }
+            if(data.data=="" && myflag==1){
+                    layer.msg("没有查找到数据")
+                }
+			//记录个数
 			$("#goodsNumber").text(goodsCount);
 			$("#visible-pages-example").children(".sumdiv").remove()
 			var spanele = '<span class="sumdiv">共' + goodsListPages + '页,当前第' + thispage + '页,共' + goodsCount + '条数据</span>'
@@ -676,12 +591,10 @@ function loaddata() {
 					loaddata()
 				}
 			});
-			
 		},
 		error: function (msg) {
 			console.log("error:获取数据失败")
 			alert(msg); //错误信息
-	
 		}
 	});
 }
