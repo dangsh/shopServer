@@ -2,7 +2,7 @@ from django.shortcuts import render
 
 
 from django.http import HttpResponse
-# import qrcode
+import qrcode
 import os
 import random
 from PIL import Image

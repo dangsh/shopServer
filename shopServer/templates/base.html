@@ -12,14 +12,14 @@
 		<link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}">
 		<link rel="stylesheet" href="{% static 'dist/css/AdminLTE.min.css' %}">
 		<link rel="stylesheet" href="{% static 'dist/css/skins/_all-skins.min.css' %}">
-		
+
 		<style type="text/css">
-			body{
+			body {
 				min-width: 1122px;
 			}
 		</style>
-		
-		 {% block css %}{% endblock %}
+
+		{% block css %}{% endblock %}
 
 	</head>
 
@@ -315,47 +315,51 @@
 						<div class="input-group">
 							<input type="text" name="q" class="form-control" placeholder="搜索...">
 							<span class="input-group-btn">
-                <button type="submit" name="search" id="search-btn" class="btn btn-flat">
-                  <i class="fa fa-search"></i>
-                </button>
-              </span>
+			                <button type="submit" name="search" id="search-btn" class="btn btn-flat">
+			                  <i class="fa fa-search"></i>
+			                </button>
+			              	</span>
 						</div>
 					</form>
 					<!-- 左侧列表部分 -->
 					<ul class="sidebar-menu" data-widget="tree">
 						<li class="header">MAIN NAVIGATION</li>
-						<li class="active treeview menu-open">
+						
+						<li class="treeview">
 							<a href="#">
 								<i class="fa fa-dashboard"></i> <span>账号管理</span>
 								<span class="pull-right-container">
-              		<i class="fa fa-angle-left pull-right"></i>
-            		</span>
+			              		<i class="fa fa-angle-left pull-right"></i>
+			            		</span>
 							</a>
 							<ul class="treeview-menu">
-								<li>
+								<li class="myli">
 									<a href="/luckyManage/"><i class="fa fa-dashboard"></i> 福袋管理</a>
 								</li>
-								<li class="active">
+								<li class="myli">
 									<a href="/userManage/"><i class="fa fa-dashboard"></i> 会员管理</a>
 								</li>
-								<li class="active">
+								<li class="myli">
 									<a href="/activeManage/"><i class="fa fa-dashboard"></i> 活动管理</a>
+								</li>
+								<li class="active">
+									<a href="/drawManage/"><i class="fa fa-dashboard"></i> 抽奖管理</a>
 								</li>
 							</ul>
 						</li>
 
-						<li class=" treeview ">
+						<li class="treeview ">
 							<a href="#">
 								<i class="fa fa-clock-o"></i> <span>商品管理</span>
 								<span class="pull-right-container">
-                    <i class="fa fa-angle-left pull-right"></i>
-                  </span>
+			                    <i class="fa fa-angle-left pull-right"></i>
+			                  	</span>
 							</a>
 							<ul class="treeview-menu">
-								<li>
+								<li class="myli">
 									<a href="/goodsManage/"><i class="fa fa-clock-o"></i> 商品列表</a>
 								</li>
-								<li class="active">
+								<li class="myli">
 									<a href="###"><i class="fa fa-clock-o"></i> 目录管理</a>
 								</li>
 							</ul>
@@ -365,17 +369,17 @@
 							<a href="#">
 								<i class="fa fa-flag-o"></i> <span>地面店管理</span>
 								<span class="pull-right-container">
-                        <i class="fa fa-angle-left pull-right"></i>
-                      </span>
+		                        <i class="fa fa-angle-left pull-right"></i>
+		                    	</span>
 							</a>
 							<ul class="treeview-menu">
-								<li>
+								<li class="myli">
 									<a href="/cartsManage/"><i class="fa fa-flag"></i>购物车</a>
 								</li>
-								<li class="active">
+								<li class="myli">
 									<a href="/redpack/"><i class="fa fa-flag"></i> 红包设置</a>
 								</li>
-								<li class="active">
+								<li class="myli">
 									<a href="home/"><i class="fa fa-flag"></i> 店铺消费记录</a>
 								</li>
 							</ul>
@@ -389,7 +393,7 @@
                           </span>
 							</a>
 							<ul class="treeview-menu">
-								<li class="active">
+								<li class="myli">
 									<a href="/orderManage/"><i class="fa fa-bell"></i> 订单详情</a>
 								</li>
 							</ul>
@@ -403,7 +407,7 @@
                           </span>
 							</a>
 							<ul class="treeview-menu">
-								<li class="active">
+								<li class="myli">
 									<a href="/adPage/"><i class="fa fa-envelope"></i> 广告详情</a>
 								</li>
 							</ul>
@@ -421,18 +425,17 @@
         
         {% block contentLeft %}{% endblock %}
         
-      </h1>  {% block contentRight %}{% endblock %}
-					
+      </h1> {% block contentRight %}{% endblock %}
 
 				</section>
 
 				<!-- Main content -->
 				<style>
-					.content{
+					.content {
 						padding: 0 5%;
 					}
 				</style>
-				<section class="content" >
+				<section class="content">
 					<!--内容区域-->
 					{% block content %}{% endblock %}
 				</section>
@@ -650,13 +653,20 @@
 		<script src="{% static 'utf8-php/ueditor.all.min.js' %}"></script>
 
 		<script src="{% static 'utf8-php/lang/zh-cn/zh-cn.js' %}"></script>
-		
+
 		<script src="{% static 'js/jquery.form.min.js' %}"></script>
 
 		<script src="{% static 'js/jquery.twbsPagination.js' %}"></script>
 
 		<script src="{% static 'js/tool.js' %}"></script>
-
+		<script type="text/javascript">
+			 $('.treeview-menu').find('a').each(function () {
+            if (this.href == document.location.href || document.location.href.search(this.href) >= 0) {
+                $(this).parent().addClass('active'); // this.className = 'active';
+				$(this).parents(".treeview").addClass('active');
+            }
+        });
+		</script>
 		{% block script %}{% endblock %}
 	</body>
 
