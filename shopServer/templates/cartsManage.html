@@ -3,11 +3,11 @@
 
 {% block css %}
 <style type="text/css">
-	.biaojuzhong th {
+	.row th {
 		text-align: center;
 	}
 	
-	.biaojuzhong td {
+	.row td {
 		text-align: center;
 	}
 
@@ -74,10 +74,7 @@
 	</div>
 	<div class="row" >
 		<div class="row" style="height: 50px;">
-			<!-- <div class="col-md-6" style="text-align: left;">
-				<button id="deleteBtn" type="button" class="btn btn-danger" style="margin:10px"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span>批量删除</button>
-				<button id="buyBtn" type="button" class="btn purchase-btn" style="margin:5px">立即购买</button>
-			</div> -->
+			
 			<div class="col-md-6" style="text-align: right;">
 				<p >共有数据:<strong id="goodsNumber">0</strong>条</p>
 			</div>
@@ -87,7 +84,7 @@
 		<div class=""  id="bigdiv">
 			
 			<table id="table" class="table table-bordered" >
-					<tr name="row">
+					<tr class="row">
 						<td id="item" style="display:none"></td>
 						<th>自然序号</th>
 						<th>商品名称</th>
@@ -99,99 +96,30 @@
 						<th>金额</th>
 						<th>操作</th>
 					</tr>
-					<tr name="row">
-						<td id="item">1</td>
-						<td>商品名</td>
-						<td>商品图片</td>
-						<td>店铺名称</td>
-						<td>商家类别</td>
-						<td>单价</td>
-						<td>
-							<div class="item-amount">
-								<a href="#" class="J_Minus no-minus">-</a>
-								<input type="text" value="1" class="text text-amount J_ItemAmount" data-max="281" data-now="1" autocomplete="off">
-								<a href="#" class="J_Plus plus">+</a>
-							</div>
-						</td>
-						<td>金额</td>
-						<td>
-							<button class="btn btn-success">购 买</button>
-							<button class="btn btn-danger">删 除</button> 
-						</td>
-					</tr>
-					<tr name="row">
-						<td id="item">2</td>
-						<td>商品名</td>
-						<td>商品图片</td>
-						<td>店铺名称</td>
-						<td>商家类别</td>
-						<td>单价</td>
-						<td>
-							<div class="item-amount">
-								<a href="#" class="J_Minus no-minus">-</a>
-								<input type="text" value="1" class="text text-amount J_ItemAmount" data-max="281" data-now="1" autocomplete="off">
-								<a href="#" class="J_Plus plus">+</a>
-							</div>
-						</td>
-						<td>金额</td>
-						<td>
-							<button class="btn btn-success">购 买</button>
-							<button class="btn btn-danger">删 除</button> 
-						</td>
-					</tr>
-					<tr name="row">
-						<td id="item">3</td>
-						<td>商品名</td>
-						<td>商品图片</td>
-						<td>店铺名称</td>
-						<td>商家类别</td>
-						<td>单价</td>
-						<td>
-							<div class="item-amount">
-								<a href="#" class="J_Minus no-minus">-</a>
-								<input type="text" value="1" class="text text-amount J_ItemAmount" data-max="281" data-now="1" autocomplete="off">
-								<a href="#" class="J_Plus plus">+</a>
-							</div>
-						</td>
-						<td>金额</td>
-						<td>
-							<button class="btn btn-success">购 买</button>
-							<button class="btn btn-danger">删 除</button> 
-						</td>
-					</tr>
-					<tr name="row">
-						<td id="item">4</td>
-						<td>商品名</td>
-						<td>商品图片</td>
-						<td>店铺名称</td>
-						<td>商家类别</td>
-						<td>单价</td>
-						<td>
-							<div class="item-amount">
-								<a href="#" class="J_Minus no-minus">-</a>
-								<input type="text" value="1" class="text text-amount J_ItemAmount" data-max="281" data-now="1" autocomplete="off">
-								<a href="#" class="J_Plus plus">+</a>
-							</div>
-						</td>
-						<td>金额</td>
-						<td>
-							<button class="btn btn-success">购 买</button>
-							<button class="btn btn-danger">删 除</button> 
-						</td>
-					</tr>
-				</table>
-							
-				
-			
 
-			<div class="row" id="div3" style=" padding: 1% 0;">
-				<div class="col-md-12" style="text-align: left;">
+
+					<!-- <tr class="row" id="myRow">
 						
-						<div class="text-center">
-							<ul id="visible-pages-example"></ul>
-						</div>
-				</div>
-			</div>
+						<th>1</th>
+						<th>商品名称</th>
+						<th>商品图文信息</th>
+						<th>所属商家</th>
+						<th>商家类别</th>
+						<th>单价</th>
+						<th>
+							<div class="item-amount">
+								<a href="#" class="J_Minus no-minus decrease">-</a>
+								<a type="text" value="1" class="text text-amount J_ItemAmount" data-max="281" data-now="1" autocomplete="off"></a>
+								<a href="#" class="J_Plus plus increase">+</a>
+							</div>
+						</th>
+						<th>金额</th>
+						<th>
+							<button class="btn btn-success buybtn">购 买</button>
+							<button class="btn btn-danger delbtn">删 除</button> 
+						</th>
+					</tr> -->
+				</table>
 		</div>
 		
 		
@@ -202,7 +130,7 @@
 			<div style="text-align: right; cursor: default; height: 40px;" id="move">
 				<span style="font-size: 16px;" onclick="CloseDiv('MyDiv','fade')">关闭</span>
 			</div>
-			<div id="">
+		 	<div id="">
 				<div>
 					<h1>商品信息添加：</h1>
 					<script id="editor" type="text/plain" style="width:100%;height:300px;"></script>
@@ -224,11 +152,7 @@
 				</div>
 				
 			</div>
-			
-			
-			<script type="text/javascript">
-				
-			</script>
+
 		</div>
 		
 		
@@ -256,8 +180,104 @@
 {% block script %}
 <script>
 
+function getDataFn(opt) {
+	$.ajax({
+		type: "post",
+		url: "http://localhost:8000/cartstableManageJsonGain/",
+		async: true,
+		success: function(res) 
+		{
+			console.log(res);
+			for(var i = 0; i < res.length; i++) 
+			{
+				var oneData = res[i];
+				var cartsid = oneData.cartsid;
+				var number = oneData.number;
+				var goodsid = oneData.goodsid;
+				var userid = oneData.userid;
 
+				var ele = '<tr class="row"><th class="id">' + cartsid + '</th><th>huawei</th><th>' + goodsid + '</th><th>华为</th><th>手机</th><th>￥2999</th><th><div class="item-amount"><a href="#" class="J_Minus no-minus glyphicon glyphicon-minus decrease" name="-"></a><input type="text" value="' + number + '" class="text text-amount J_ItemAmount counts" data-max="281" data-now="1" autocomplete="off"><a href="#" class="J_Plus plus glyphicon glyphicon-plus increase"></a></div></th><th>金额</th><th><button class="btn btn-success">购 买</button><button class="btn btn-danger delbtn">删 除</button> </th></tr>' ;
+				$(".table-bordered").append(ele) ;
+			}
+		}
+	});
 
+	$('.row').delegate('button', 'click', function(ev)
+	{
+		console.log("&&&&&&&&&&");
+		a = $(this).html();
+		var that = $(this).parent().parent(".row");
+		var cartsid = that.children(".id").html();
+		console.log(cartsid);
+		if (a == "删 除")
+		{
+			$.ajax({
+				url: "http://localhost:8000/cartstableManageJsonDelete/?id=" + cartsid,
+				success: function(res) {
+					console.log("删除成功。。。。。");
+					$(that).remove();
+				},
+				error: function(msg) {
+					console.log("error 加载数据失败");
+				}
+			});
+		}
+		else
+		{
+			console.log("购买");
+		}
+    });
+
+	$('.row').delegate('a', 'click', function(ev)
+	{
+		// console.log("**********");
+		b = $(this).attr("name");
+		var that = $(this).parents(".item-amount");
+		var a = $(that).parents(".row");
+		var cartsid = a.children(".id").html();
+		var number = $(that.children(".counts")).val();
+		// console.log(cartsid);
+		
+		if (b == "-")
+		{
+			if (number > 0)
+			{
+				number -- ;
+			}
+			console.log(number);
+			$.post("http://localhost:8000/cartstableManageJsonUpdate/?id=" + cartsid, 
+				{"num":number},
+				function(data){
+					if (data.status == "ok") {
+						$(that.children(".counts")).val(number);
+						
+					} else {
+						console.log(data);
+					}
+				}
+			);
+		}
+		else
+		{
+			if (number >= 0)
+			{
+				number ++ ;
+			}
+			console.log(number);
+			$.post("http://localhost:8000/cartstableManageJsonUpdate/?id=" + cartsid, 
+				{"num":number},
+				function(data){
+					if (data.status == "ok") {
+						$(that.children(".counts")).val(number);
+					} else {
+						console.log(data);
+					}
+				}
+			);
+		}
+	});
+}
+getDataFn();
 
 </script>
 {% endblock %}

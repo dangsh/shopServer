@@ -2,7 +2,7 @@ from django.shortcuts import render
 
 
 from django.http import HttpResponse
-
+# import qrcode
 import os
 import random
 from PIL import Image
@@ -112,6 +112,10 @@ def changePic(request):
 	return render(request,"changePic.html")
 
 
+def drawManage(request):
+    	return render(request,"drawManage.html")
+
+
 # 根据用户名创建属于他的表格
 def personal(request):
     # name=request.get["name"];
@@ -177,15 +181,31 @@ def userManageJsonAdd(request):
         username = request.POST["username"]
     if request.POST["password"]:
         pwd = request.POST["password"]
-    print(username , pwd);
+
+
     userid = randomString()
-    print(userid)
+    data = {"username":username , "password":pwd};
+    imgName = randomString()+".jpg"
+    img_file = r"./shopApp/static/myfile/" + imgName
+    img = qrcode.make(data)
+    img.save(img_file)
 
     cursor = connection.cursor();
-    result = cursor.execute("INSERT INTO user(userid , username , pwd)VALUES('%s' , '%s' , '%s')"%(userid , username , pwd))
+    cursor.execute("SELECT * FROM user")
+    datas=cursor.fetchall()
     cursor.close()
-    print("9999999");
+    print("**************88")
+    print()
+    for i in datas:
+        if i[1] == username:
+            statusDic = {"status" : "error" , "message" : "用户已存在"};
+            return HttpResponse(json.dumps(statusDic) , content_type = "application/json");
+            break;
+    cursor = connection.cursor();
+    result = cursor.execute("INSERT INTO user(userid , username , pwd , qrcode)VALUES('%s' , '%s' , '%s' , '%s')"%(userid , username , pwd , imgName))
+    cursor.close()
     statusDic = "";
+    print("&&&&&&&&&&&")
     if result == 1:
         statusDic = {"status" : "ok" , "message" : "添加用户成功"};
     else :
@@ -264,6 +284,19 @@ def userManageJsonDelete(request):
             os.remove("../shopServer/shopApp/static/myfile/"+headimg);
     cursor.close();
 
+    #删除二维码图片
+    cursor=connection.cursor();
+    secondimg = ""
+    cursor.execute("SELECT * FROM user WHERE userid= %s "%(userid));
+    datas = cursor.fetchall()
+    for data in datas:
+        secondimg = data[18]  
+    # print(headimg)
+    aa = os.listdir("../shopServer/shopApp/static/myfile/")
+    for item in aa:
+        if item == secondimg:
+            os.remove("../shopServer/shopApp/static/myfile/"+secondimg);
+    cursor.close();
 
     cursor=connection.cursor();
     try:
@@ -514,35 +547,6 @@ def goodsManageJsonSelect(request):
         return HttpResponse(json.dumps({'data':myData, 'status':'error', 'goodscount':'0'}), content_type="application/json");
 
 # 商品列表接口
-# def goodsManageJsonSelect(request):
-#     myData=[];
-#     cursor = connection.cursor();
-#     cursor.execute("SELECT * FROM goods");
-#     datas=cursor.fetchall();
-#     try:
-#         for row in datas:
-#             goods = {
-#                 'goodsid':row[0],
-#                 'rebate':row[1],
-#                 'lookhistoryid':row[2],
-#                 'standard':row[3],
-#                 'images':row[4],
-#                 'details':row[5],
-#                 'shopname':row[6],
-#                 'status':row[7],
-#                 'uptime':row[8].strftime('%Y-%m-%d %H:%M:%S'),
-#                 'downtime':row[9].strftime('%Y-%m-%d %H:%M:%S'),
-#                 'price':row[10],
-#                 'goodsname':row[11],
-#                 'stock':row[12],
-#             }
-#             myData.append(goods);
-#         cursor.close();
-#         return HttpResponse(json.dumps({'data':myData, 'status':'ok'}), content_type="application/json")
-    
-#     except Exception as e: 
-#         raise e   
-#         return HttpResponse(json.dumps({'data':myData, 'status':'error'}), content_type="application/json");
 
 # 商品列表删除接口
 def goodsManageJsonDelete(request):
@@ -579,6 +583,8 @@ def goodsManageJsonDelete(request):
 
     except Exception as e:   
         return HttpResponse(json.dumps({"message":'删除失败' , "status":"error"}) , content_type="application/json");
+
+
 
 #商品详情列表展示 有待测试 吕健威
 def goodsSelectByid(request):
@@ -701,28 +707,38 @@ def ordertableManageJsonAdd(request):
 
 # 订单列表接口  有待测试 韩乐天
 def ordertabalelistJaon(request):
-    userid = request.POST["userid"]
-    orderid = request.POST["orderid"];
-    print(userid,orderid)
-    print("000000000000000000000000000")
-    cursor = connection.cursor()
-    sql = "SELECT orderid,userid,ordertime,isaudit,ispass,iscancel,ispay,issend,ispaydone,isclose,price FROM ordertable";
-    allOrdertables = [];
+    sql="";
+    if request.POST and (request.POST["userid"]!="" or request.POST["orderid"]!="" or request.POST["status"]!=0):
+        userid = request.POST["userid"]
+        orderid = request.POST["orderid"];
+        a=request.POST["status"];
+        if userid=="" and orderid!="":
+            sql="SELECT * from ordertable WHERE orderid='%s'"%(orderid);
+        elif userid!="" and orderid=="":
+            sql="SELECT * from ordertable WHERE userid='%s'"%(userid);
+        elif userid=="" and orderid=="":
+           sql="SELECT * from ordertable WHERE status='%s'"%(a);
+        else:
+            pass;
+        # for key in request.POST:
+        #     aaa = request.POST.getlist(key);
+        # print(aaa);
+        # "select * from ordertable where"
+        print(userid,orderid,a)
+    else:
+        sql = "SELECT * FROM ordertable";
+    
     try:
+        allOrdertables = [];
+        cursor = connection.cursor()
         cursor.execute(sql)
         for row in cursor.fetchall():
             ordertable = {
                 'orderid':row[0],
                 'userid':row[1],
-                'ordertime':row[2].strftime('%Y-%m-%d %H:%M:%S'),
-                'isaudit':row[3],
-                'ispass':row[4],
-                'iscancel':row[5],
-                'ispay':row[6],
-                'issend':row[7],
-                'ispaydone':row[8],
-                'isclose':row[9],
-                'price':row[10],
+                'price':row[2],
+                'ordertime':row[3].strftime('%Y-%m-%d %H:%M:%S'),
+                'status':row[4],
             }
             allOrdertables.append(ordertable)
         cursor.close()
@@ -730,257 +746,44 @@ def ordertabalelistJaon(request):
         return HttpResponse(json.dumps({'data':allOrdertables, 'status':'ok'}), content_type="application/json")
     except Exception as e:
         return HttpResponse(json.dumps({'data':allOrdertables, 'status':'error'}), content_type="application/json")
-    # print(userid)
-def ordertableManageJsonSelete(request):
-    userid = request.POST["userid"]
-    orderid = request.POST["orderid"];
-    print("000000000000000000000000000")
-    cursor = connection.cursor()
-    sql = "SELECT orderid,userid,ordertime,isaudit,ispass,iscancel,ispay,issend,ispaydone,isclose FROM ordertable WHERE orderid = '%s'" % orderid;
-    allOrdertables = [];
-    try:
-        cursor.execute(sql)
-        for row in cursor.fetchall():
-            ordertable = {
-                'orderid':row[0],
-                'userid':row[1],
-                'ordertime':row[2].strftime('%Y-%m-%d %H:%M:%S'),
-                'isaudit':row[3],
-                'ispass':row[4],
-                'iscancel':row[5],
-                'ispay':row[6],
-                'issend':row[7],
-                'ispaydone':row[8],
-                'isclose':row[9],
-            }
-            allOrdertables.append(ordertable)
-        cursor.close()
-        print(allOrdertables)
-        return HttpResponse(json.dumps({'data':allOrdertables, 'status':'ok'}), content_type="application/json")
-    except Exception as e:
-        return HttpResponse(json.dumps({'data':allOrdertables, 'status':'error'}), content_type="application/json")
-    # print(userid)
-    # 获取游标
-    if request.GET["userid"]:      
-        userid = request.GET["userid"]
-        if request.GET["status"] == "1":
-            isaudit = request.GET["status"]
-            cursor = connection.cursor()
-            sql = "SELECT orderid,userid,ordertime,isaudit,ispass,iscancel,ispay,issend,ispaydone,isclose FROM ordertable WHERE userid = '%s'AND isaudit = '%s'" % (userid,isaudit);
-            allOrdertables = [];
-            try:
-                cursor.execute(sql)
-                for row in cursor.fetchall():
-                    ordertable = {
-                            'orderid':row[0],
-                            'userid':row[1],
-                            'ordertime':row[2].strftime('%Y-%m-%d %H:%M:%S'),
-                            'isaudit':row[3],
-                            'ispass':row[4],
-                            'iscancel':row[5],
-                            'ispay':row[6],
-                            'issend':row[7],
-                            'ispaydone':row[8],
-                            'isclose':row[9],
-                    }
-                    allOrdertables.append(ordertable)
-                cursor.close()
-                return HttpResponse(json.dumps({'data':allOrdertables, 'status':'ok'}), content_type="application/json")
-            except Exception as e:
-                return HttpResponse(json.dumps({'data':allOrdertables, 'status':'error'}), content_type="application/json")
-        if request.GET["status"] == "2":
-            ispass = request.POST["status"]
-            cursor = connection.cursor()
-            sql = "SELECT orderid,userid,ordertime,isaudit,ispass,iscancel,ispay,issend,ispaydone,isclose FROM ordertable WHERE userid = '%s'AND ispass = '%s'" % (userid,ispass);
-            allOrdertables = [];
-            try:
-                cursor.execute(sql)
-                for row in cursor.fetchall():
-                    ordertable = {
-                            'orderid':row[0],
-                            'userid':row[1],
-                            'ordertime':row[2].strftime('%Y-%m-%d %H:%M:%S'),
-                            'isaudit':row[3],
-                            'ispass':row[4],
-                            'iscancel':row[5],
-                            'ispay':row[6],
-                            'issend':row[7],
-                            'ispaydone':row[8],
-                            'isclose':row[9],
-                    }
-                    allOrdertables.append(ordertable)
-                cursor.close()
-                return HttpResponse(json.dumps({'data':allOrdertables, 'status':'ok'}), content_type="application/json")
-            except Exception as e:
-                return HttpResponse(json.dumps({'data':allOrdertables, 'status':'error'}), content_type="application/json")
-        if request.GET["status"] == "7":
-                iscancel = request.GET["status"];
-                cursor = connection.cursor()
-                sql = "SELECT orderid,userid,ordertime,isaudit,ispass,iscancel,ispay,issend,ispaydone,isclose FROM ordertable WHERE userid = '%s'AND iscancel = '%s'" % (userid,iscancel);
-                allOrdertables = [];
-                try:
-                    cursor.execute(sql)
-                    for row in cursor.fetchall():
-                        ordertable = {
-                                'orderid':row[0],
-                                'userid':row[1],
-                                'ordertime':row[2].strftime('%Y-%m-%d %H:%M:%S'),
-                                'isaudit':row[3],
-                                'ispass':row[4],
-                                'iscancel':row[5],
-                                'ispay':row[6],
-                                'issend':row[7],
-                                'ispaydone':row[8],
-                                'isclose':row[9],
-                        }
-                        allOrdertables.append(ordertable)
-                    cursor.close()
-                    return HttpResponse(json.dumps({'data':allOrdertables, 'status':'ok'}), content_type="application/json")
-                except Exception as e:
-                    return HttpResponse(json.dumps({'data':allOrdertables, 'status':'error'}), content_type="application/json")
-        if request.GET["status"] == "3":
-            ispay = request.GET["status"];
-            cursor = connection.cursor()
-            sql = "SELECT orderid,userid,ordertime,isaudit,ispass,iscancel,ispay,issend,ispaydone,isclose FROM ordertable WHERE userid = '%s'AND ispay = '%s'" % (userid,ispay);
-            allOrdertables = [];
-            try:
-                cursor.execute(sql)
-                for row in cursor.fetchall():
-                    ordertable = {
-                            'orderid':row[0],
-                            'userid':row[1],
-                            'ordertime':row[2].strftime('%Y-%m-%d %H:%M:%S'),
-                            'isaudit':row[3],
-                            'ispass':row[4],
-                            'iscancel':row[5],
-                            'ispay':row[6],
-                            'issend':row[7],
-                            'ispaydone':row[8],
-                            'isclose':row[9],
-                    }
-                    allOrdertables.append(ordertable)
-                cursor.close()
-                return HttpResponse(json.dumps({'data':allOrdertables, 'status':'ok'}), content_type="application/json")
-            except Exception as e:
-                return HttpResponse(json.dumps({'data':allOrdertables, 'status':'error'}), content_type="application/json")
-        if request.GET["status"] =="6":
-            issend = request.GET["status"];
-            cursor = connection.cursor()
-            sql = "SELECT orderid,userid,ordertime,isaudit,ispass,iscancel,ispay,issend,ispaydone,isclose FROM ordertable WHERE userid = '%s'AND issend = '%s'" % (userid,issend);
-            allOrdertables = [];
-            try:
-                cursor.execute(sql)
-                for row in cursor.fetchall():
-                    ordertable = {
-                            'orderid':row[0],
-                            'userid':row[1],
-                            'ordertime':row[2].strftime('%Y-%m-%d %H:%M:%S'),
-                            'isaudit':row[3],
-                            'ispass':row[4],
-                            'iscancel':row[5],
-                            'ispay':row[6],
-                            'issend':row[7],
-                            'ispaydone':row[8],
-                            'isclose':row[9],
-                    }
-                    allOrdertables.append(ordertable)
-                cursor.close()
-                return HttpResponse(json.dumps({'data':allOrdertables, 'status':'ok'}), content_type="application/json")
-            except Exception as e:
-                return HttpResponse(json.dumps({'data':allOrdertables, 'status':'error'}), content_type="application/json")
-        if request.GET["status"] == "4":
-            ispaydone = request.GET["status"];
-            cursor = connection.cursor()
-            sql = "SELECT orderid,userid,ordertime,isaudit,ispass,iscancel,ispay,issend,ispaydone,isclose FROM ordertable WHERE userid = '%s'AND ispaydone = '%s'" % (userid,ispaydone);
-            allOrdertables = [];
-            try:
-                cursor.execute(sql)
-                for row in cursor.fetchall():
-                    ordertable = {
-                            'orderid':row[0],
-                            'userid':row[1],
-                            'ordertime':row[2].strftime('%Y-%m-%d %H:%M:%S'),
-                            'isaudit':row[3],
-                            'ispass':row[4],
-                            'iscancel':row[5],
-                            'ispay':row[6],
-                            'issend':row[7],
-                            'ispaydone':row[8],
-                            'isclose':row[9],
-                    }
-                    allOrdertables.append(ordertable)
-                cursor.close()
-                return HttpResponse(json.dumps({'data':allOrdertables, 'status':'ok'}), content_type="application/json")
-            except Exception as e:
-                return HttpResponse(json.dumps({'data':allOrdertables, 'status':'error'}), content_type="application/json")
-        if request.GET["status"]=="8":
-            isclose = request.GET["status"];
-            cursor = connection.cursor()
-            sql = "SELECT orderid,userid,ordertime,isaudit,ispass,iscancel,ispay,issend,ispaydone,isclose FROM ordertable WHERE userid = '%s'AND isclose = '%s'" % (userid,isclose);
-            allOrdertables = [];
-            try:
-                cursor.execute(sql)
-                for row in cursor.fetchall():
-                    ordertable = {
-                            'orderid':row[0],
-                            'userid':row[1],
-                            'ordertime':row[2].strftime('%Y-%m-%d %H:%M:%S'),
-                            'isaudit':row[3],
-                            'ispass':row[4],
-                            'iscancel':row[5],
-                            'ispay':row[6],
-                            'issend':row[7],
-                            'ispaydone':row[8],
-                            'isclose':row[9],
-                    }
-                    allOrdertables.append(ordertable)
-                cursor.close()
-                return HttpResponse(json.dumps({'data':allOrdertables, 'status':'ok'}), content_type="application/json")
-            except Exception as e:
-                return HttpResponse(json.dumps({'data':allOrdertables, 'status':'error'}), content_type="application/json")
-    else:
-        orderid = request.POST["orderid"];
-        print("000000000000000000000000000")
-        cursor = connection.cursor()
-        sql = "SELECT orderid,userid,ordertime,isaudit,ispass,iscancel,ispay,issend,ispaydone,isclose FROM ordertable WHERE orderid = '%s'" % orderid;
-        allOrdertables = [];
-        try:
-            cursor.execute(sql)
-            for row in cursor.fetchall():
-                ordertable = {
-                    'orderid':row[0],
-                    'userid':row[1],
-                    'ordertime':row[2].strftime('%Y-%m-%d %H:%M:%S'),
-                    'isaudit':row[3],
-                    'ispass':row[4],
-                    'iscancel':row[5],
-                    'ispay':row[6],
-                    'issend':row[7],
-                    'ispaydone':row[8],
-                    'isclose':row[9],
-                }
-                allOrdertables.append(ordertable)
-            cursor.close()
-            print(allOrdertables)
-            return HttpResponse(json.dumps({'data':allOrdertables, 'status':'ok'}), content_type="application/json")
-        except Exception as e:
-            return HttpResponse(json.dumps({'data':allOrdertables, 'status':'error'}), content_type="application/json")
+
 # 订单删除接口 吕建威
 def ordertableDelete(request):
-    cursor = connection.cursor()
-    # ordertableid = "123456789"
-    ordertableid = request.POST["ordertableid"]
-    try:
-        result = cursor.execute("DELETE FROM xxx WHERE ordertableid=%s" % ordertableid)
-        if result == 1 :
-            statusDic = {"status" : "ok" , "message" : "删除订单成功"};
-            return HttpResponse(json.dumps(statusDic) , content_type = "application/json");
-        else:
-            statusDic = {"status" : "error" , "message" : "删除订单失败"};
-            return HttpResponse(json.dumps(statusDic) , content_type = "application/json");
-    except Exception as e: 
-        # raise e   
-        return HttpResponse(json.dumps({'message':"删除订单失败", 'status':'error'}), content_type="application/json");
+    print("}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}]]]")
+
+    print(request.POST);
+    for key in request.POST:
+        orderid = request.POST.getlist(key)[0]
+    print(orderid);
+
+    cursor=connection.cursor();
+    # print(cursor)
+    # try:
+    result = cursor.execute("DELETE FROM ordertable WHERE orderid='%s'" % orderid)
+    # connection.commit();
+    cursor.close();
+    if result == 1:
+        return HttpResponse(json.dumps({'message': '删除成功','status':'ok'}), content_type="application/json");
+    else:
+        return HttpResponse(json.dumps({'message': '删除失败','status':'error'}), content_type="application/json");
+            
+    # except Exception as e:   
+    #      # connection.rollback();
+    #      return HttpResponse(json.dumps({"message":'删除失败' , "status":"error"}) , content_type="application/json");
+    # cursor = connection.cursor()
+    # # ordertableid = "123456789"
+    # ordertableid = request.POST["orderid"]
+    # try:
+    #     result = cursor.execute("DELETE FROM ordertable WHERE orderid=%s" % orderid)
+    #     if result == 1 :
+    #         statusDic = {"status" : "ok" , "message" : "删除订单成功"};
+    #         return HttpResponse(json.dumps(statusDic) , content_type = "application/json");
+    #     else:
+    #         statusDic = {"status" : "error" , "message" : "删除订单失败"};
+    #         return HttpResponse(json.dumps(statusDic) , content_type = "application/json");
+    # except Exception as e: 
+    #     # raise e   
+    #     return HttpResponse(json.dumps({'message':"删除订单失败", 'status':'error'}), content_type="application/json");
 
 # 活动查询接口  有待测试
 def activeManageJsonSelect(request):
@@ -1165,7 +968,7 @@ def favoritetableManageJsonUpdata(request):
 #                                 修改了数据库中活动表的时间字段,数据类型由DataTime修改为timestamp,加入默认值为记录创建时间
 
 
-# # 购物车添加接口 
+ # 购物车添加接口 
 def cartstableManageJsonAdd(request):
     
     # cartsid = request.carts["cartsid"]
@@ -1197,28 +1000,40 @@ def cartstableManageJsonDelete(request):
     # cartsid = request.POST["cartsid"];
 
     name = "liu";
-    cartsid = "222";
+    cartsid = request.GET["id"];
+
     try:
-        cursor.execute("DELETE FROM %s_carts WHERE cartsid='%s'" % (name , cartsid))
+        result = cursor.execute("DELETE FROM %s_carts WHERE cartsid='%s'" % (name , cartsid))
         cursor.close()
-        return HttpResponse(json.dumps({"message":"删除成功","status":"ok"}),content_type="application/json")
+        print("***********")
+        print(result);
+        if result == 1:
+             return HttpResponse(json.dumps({"message":"删除成功","status":"ok"}),content_type="application/json")
+        else : 
+             return HttpResponse(json.dumps({"message":"删除失败","status":"error"}),content_type="application/json")
+       
     except Exception as identifier:
-        return HttpResponse(json.dumps({"message":"删除失败","status":"error"}),content_type="application/json")
+        return HttpResponse(json.dumps({"message":"删除语句执行失败","status":"error"}),content_type="application/json")
 
 #购物车修改接口   
 def cartstableManageJsonUpdate(request):
+    cursor = connection.cursor();
+    cartsid = request.GET["id"];
     
-    cartsid = "111";
     datas = request.POST
-    print(datas)
-    try:
-        for key in list(datas):
-            cursor = connection.cursor()
-            cursor.execute("update %s_carts set %s='%s' where cartsid='%s'"%(name , key , datas[key] , datas["cartsid"]))
-        statusDis = {'data':'修改成功', 'status':'ok'}
-        return HttpResponse(json.dumps(statusDis) , content_type="application/json")
-    except Exception as identifier:
+    Num = datas["num"];
+    print(cartsid);
+    print(Num);
+    
+    result = cursor.execute("update liu_carts set number='%s' where cartsid='%s'"%(Num , cartsid))
+    cursor.close();
+    if result == 1:
+        return HttpResponse(json.dumps({"message":"修改成功","status":"ok"}),content_type="application/json")
+    else:
         return HttpResponse(json.dumps({"message":"修改失败","status":"error"}),content_type="application/json")
+    
+       
+        
 
 #购物车查询接口
 def cartstableManageJsonSelect(request):
@@ -1240,6 +1055,272 @@ def cartstableManageJsonSelect(request):
 
     return HttpResponse(json.dumps(myData) , content_type="application/json");
 
+
+#添加抽奖余额接口
+def drawJsonAdd(request):
+    
+    cursor = connection.cursor()
+    userid = request.POST["userid"];
+    balance = request.POST["balance"];
+    try:
+        cursor.execute("INSERT INTO draw (userid , balance) VALUES ('%s' , '%s')" % (userid , balance))
+        statusDis={"status":"ok","message":"添加成功"};
+        return HttpResponse(json.dumps(statusDis),content_type="application/json");
+    except:
+        statusDis={"status":"error","message":"添加失败"};
+        return HttpResponse(json.dumps(statusDis),content_type="application/json");
+
+
+#删除抽奖余额接口
+def drawJsonDel(request):
+    cursor = connection.cursor()
+    userid = request.POST["userid"];
+    
+    try:
+        cursor.execute("DELETE FROM draw WHERE userid=\"%s\""%userid)
+        statusDis={"status":"ok","message":"删除成功"};
+        return HttpResponse(json.dumps(statusDis),content_type="application/json");
+    except:
+        statusDis={"status":"error","message":"删除失败"};
+        return HttpResponse(json.dumps(statusDis),content_type="application/json");
+
+
+#更新地址接口
+def drawJsonUpdate(request):
+    cursor = connection.cursor()
+    datas = request.POST
+
+    try:
+        for key in list(datas):
+            cursor.execute("update draw set %s='%s' where userid='%s'"%(key , datas[key] , datas["userid"]))
+            statusDis = {'data':'修改成功', 'status':'ok'}
+        return HttpResponse(json.dumps(statusDis) , content_type="application/json")
+
+    except Exception as identifier:
+        return HttpResponse(json.dumps({"message":"修改失败","status":"error"}),content_type="application/json")
+
+def drawJsonQuery(request):
+    cursor = connection.cursor()
+    # addid = request.POST["addid"]
+    userid = request.POST["userid"]
+    myData = []
+    try:
+        cursor.execute('SELECT * FROM draw WHERE userid=\"%s\"' % userid)
+        datas = cursor.fetchall()
+        for data in datas:
+            userid = data[0]
+            balance = data[1]
+            tempDic = {"userid":userid , "balance":balance}
+            myData.append(tempDic)
+
+        return HttpResponse(json.dumps(myData) , content_type="application/json");
+
+    except:
+        statusDis={"status":"error","message":"查找失败"};
+        return HttpResponse(json.dumps(statusDis),content_type="application/json");
+    pass
+
+
+# 福袋管理页面 胡亚洲
+def luckyManage(request):
+    return render(request , "luckyManage.html");
+
+# 福袋模糊查询(分页) 胡亚洲
+def luckyManageJsonQuery(request):
+    myData = []
+    cursor = connection.cursor()
+    commName = request.GET["commName"]
+    mypage = 0
+    luckycount = 0
+    mypage = (int(request.GET["page"]) - 1) * 10
+    luckycount = cursor.execute("SELECT lucky.luckyid, lucky.goodsid, goods.goodsname, lucky.counts, goods.price, lucky.uptime FROM goods,lucky where lucky.goodsid=goods.goodsid and goods.goodsname like '%%%%%s%%%%' LIMIT %d , 10;"%(commName, mypage));
+    datas = cursor.fetchall()
+    try:
+        for row in datas:
+            try:
+                uptime = row[5].strftime('%Y-%m-%d %H:%M:%S')
+            except:
+                uptime = "未知"
+            lucky = {
+                'luckyid':row[0],
+                'goodsid':row[1],
+                'goodsname':row[2],
+                'counts':row[3],
+                'price':row[4],
+                'uptime':uptime,
+            }
+            myData.append(lucky);
+        cursor.close();
+        return HttpResponse(json.dumps({'data':myData, 'status':'ok' , 'luckycount':str(luckycount) }), content_type="application/json")
+    
+    except Exception as e: 
+        raise e  
+        return HttpResponse(json.dumps({'data':myData, 'status':'error', 'goodscount':'0'}), content_type="application/json");
+
+# 福袋列表删除接口 胡亚洲
+def luckyManageJsonDelete(request):
+    luckyidsDict =  request.POST
+    luckyids = luckyidsDict.getlist("luckyids")
+    cursor=connection.cursor();
+    result = 0
+    try:
+        for luckyid in luckyids:
+            result += cursor.execute("DELETE FROM lucky where luckyid = '%s'"%(luckyid))
+        cursor.close();
+        if result != 0:
+            return HttpResponse(json.dumps({'message': '删除成功','status':'ok', 'deleteCount':result}), content_type="application/json");
+        else: 
+            return HttpResponse(json.dumps({"message":'删除失败' , "status":"error"}) , content_type="application/json");
+    except Exception as e:   
+        return HttpResponse(json.dumps({"message":'删除失败' , "status":"error"}) , content_type="application/json");
+
+# 福袋修改列表修改接口 胡亚洲
+def luckyManageJsonUpdata(request):
+    try:
+        datas = request.POST
+        for key in list(datas):
+            print(key , datas[key])
+            cursor = connection.cursor()
+            cursor.execute("update lucky set %s='%s' where luckyid='%s'"%(key , datas[key] , datas["luckyid"]))
+        data = {'data':'success', 'status':'ok'}
+        return HttpResponse(json.dumps(data) , content_type="application/json");
+    except Exception as e:   
+        return HttpResponse(json.dumps({"message":'修改失败' , "status":"error"}) , content_type="application/json");
+
+# 福袋添加接口 胡亚洲
+def luckyManageJsonAdd(request):
+    luckyid = randomString()
+    try:
+        goodsid = request.POST["goodsid"]
+        counts = request.POST["counts"]
+        cursor = connection.cursor()
+        sql = "INSERT INTO lucky (luckyid , goodsid , counts ) VALUES('%s','%s','%s')" % (luckyid, goodsid, counts)
+        result = cursor.execute(sql)
+        if result == 1 :
+            statusDic = {"status" : "ok" , "message" : "添加成功"};
+            return HttpResponse(json.dumps(statusDic) , content_type = "application/json");
+        else:
+            statusDic = {"status" : "error" , "message" : "添加失败"};
+            return HttpResponse(json.dumps(statusDic) , content_type = "application/json");
+    except Exception as e:    
+        return HttpResponse(json.dumps({'message':"添加失败", 'status':'error'}), content_type="application/json");
+
+#通过商品号查询福袋数
+def selectLuckyJsonByGoodsId(request):
+    myData = []
+    goodsid = ""
+    try:
+        goodsid = request.GET["goodsid"]
+        cursor = connection.cursor();
+        luckycount = cursor.execute("SELECT lucky.luckyid, lucky.goodsid, goods.goodsname, lucky.counts, goods.price, lucky.uptime FROM goods,lucky where lucky.goodsid=goods.goodsid and goods.goodsid = '%s'" % (goodsid))
+        datas = cursor.fetchall();
+        for row in datas:
+            try:
+                uptime = row[5].strftime('%Y-%m-%d %H:%M:%S')
+            except:
+                uptime = "未知"
+            lucky = {
+                'luckyid':row[0],
+                'goodsid':row[1],
+                'goodsname':row[2],
+                'counts':row[3],
+                'price':row[4],
+                'uptime':uptime,
+            }
+            myData.append(lucky);
+        cursor.close();
+        return HttpResponse(json.dumps({'data':myData, 'status':'ok' , 'luckycount':str(luckycount) }), content_type="application/json")
+    except Exception as e: 
+        raise e  
+        return HttpResponse(json.dumps({'data':myData, 'status':'error', 'goodscount':'0'}), content_type="application/json");
+
+
+# 评论查询 胡亚洲
+def commentJsonQuery(request):
+    myData = []
+    cursor = connection.cursor()
+    goodsid = request.GET["goodsid"]
+    mypage = 0
+    luckycount = 0
+    mypage = (int(request.GET["page"]) - 1) * 10
+    luckycount = cursor.execute("SELECT commentid , goodsid , userid , comment_text FROM comment where goodsid='%s' LIMIT %d , 10;"%(goodsid, mypage));
+    datas = cursor.fetchall()
+    try:
+        for row in datas:
+            try:
+                uptime = row[4].strftime('%Y-%m-%d %H:%M:%S')
+            except:
+                uptime = "未知"
+            comment = {
+                'commentid':row[0],
+                'goodsid':row[1],
+                'userid':row[2],
+                'comment_text':row[3],
+                'uptime':uptime,
+            }
+            myData.append(comment);
+        cursor.close();
+        return HttpResponse(json.dumps({'data':myData, 'status':'ok' , 'luckycount':str(luckycount) }), content_type="application/json")
+    
+    except Exception as e: 
+        raise e  
+        return HttpResponse(json.dumps({'data':myData, 'status':'error', 'goodscount':'0'}), content_type="application/json");
+
+# 评论删除接口 胡亚洲
+def commentJsonDelete(request):
+    commentidsDict =  request.POST
+    commentids = luckyidsDict.getlist("commentids")
+    cursor=connection.cursor();
+    result = 0
+    try:
+        for commentid in commentids:
+            result += cursor.execute("DELETE FROM comment where commentid = '%s'"%(commentid))
+        cursor.close();
+        if result != 0:
+            return HttpResponse(json.dumps({'message': '删除成功','status':'ok', 'deleteCount':result}), content_type="application/json");
+        else: 
+            return HttpResponse(json.dumps({"message":'删除失败' , "status":"error"}) , content_type="application/json");
+    except Exception as e:   
+        return HttpResponse(json.dumps({"message":'删除失败' , "status":"error"}) , content_type="application/json");
+
+# 评论添加接口 胡亚洲
+def commentJsonAdd(request):
+    try:
+        commentid = randomString()
+        goodsid = request.POST["goodsid"]
+        userid = request.POST["userid"]
+        comment_text = request.POST["comment_text"]
+        cursor = connection.cursor()
+        sql = "INSERT INTO comment (commentid , goodsid , userid , comment_text) VALUES('%s','%s','%s','%s')" % (commentid, goodsid, userid, comment_text)
+        result = cursor.execute(sql)
+        if result == 1 :
+            statusDic = {"status" : "ok" , "message" : "添加成功"};
+            return HttpResponse(json.dumps(statusDic) , content_type = "application/json");
+        else:
+            statusDic = {"status" : "error" , "message" : "添加失败"};
+            return HttpResponse(json.dumps(statusDic) , content_type = "application/json");
+    except Exception as e:    
+        return HttpResponse(json.dumps({'message':"添加失败", 'status':'error'}), content_type="application/json");
+
+
+
+#购物车获取数据接口
+def cartstableManageJsonGain(request):
+    cursor = connection.cursor()
+    name = "liu";
+    myData = []
+    cursor = connection.cursor()
+    cursor.execute("SELECT * FROM %s_carts" % (name));
+    datas = cursor.fetchall()
+    for data in datas:
+        cartsid = data[0];
+        number = data[1];
+        goodsid = data[2];
+        userid = data[3];
+        tempDic = {"cartsid":cartsid , "number":number , "goodsid":goodsid , "userid":userid }
+        myData.append(tempDic)
+
+    return HttpResponse(json.dumps(myData) , content_type="application/json");
 #添加地址接口
 def addAddress(request):
 
@@ -1343,6 +1424,7 @@ def uploadHeadImg(request):
     fileobj.write(headImgs.__dict__["file"].read());
     #关闭文件
     fileobj.close();
+
     #定义数据库游标
     cursor = connection.cursor();
     #通过userId来给用户添加headimg数据
@@ -1354,7 +1436,134 @@ def uploadHeadImg(request):
     else :
         statusDic = {"status" : "error" , "message" : "添加失败"};
     return HttpResponse(json.dumps(statusDic) , content_type = "application/json");
+#删除余额接口实现，获取数据测试用GET ，具体情况具体使用  王贺
+def delMoney(request):
+    statusDic = "";
+    if request.GET :
+        userid = request.GET["userId"];
+        sql = "delete from remainmoney where userId='%s'" % userid;
+        cursor = connection.cursor();
+        result = cursor.execute(sql);
+        if result:
+            statusDic = {"status" : "ok", "message" : "删除成功"};
+        else:
+            statusDic = {"status" : "error", "message" : "删除失败"};
+        return HttpResponse(json.dumps(statusDic) , content_type = "application/json");
+    else:
+        statusDic = {"status" : "error", "message" : "没有数据"};
+        return HttpResponse(json.dumps(statusDic) , content_type = "application/json");
 
+#添加余额接口实现，获取数据测试用GET ，具体情况具体使用  王贺
+def addMoney(request):
+    statusDic = "";
+    if request.GET :
+        userid = request.GET["userId"];
+        money = request.GET["money"];
+        sql = "insert into remainmoney (userId , money) values('%s','%s')" % (userid , money);
+        cursor = connection.cursor();
+        result = cursor.execute(sql);
+        if result:
+            statusDic = {"status" : "ok", "message" : "添加成功"};
+        else:
+            statusDic = {"status" : "error", "message" : "添加失败"};
+        return HttpResponse(json.dumps(statusDic) , content_type = "application/json");
+    else:
+        statusDic = {"status" : "error", "message" : "没有数据"};
+        return HttpResponse(json.dumps(statusDic) , content_type = "application/json");
+#更新余额接口实现，获取数据测试用GET ，具体情况具体使用  王贺
+def updateMoney(request):
+    statusDic = "";
+    if request.GET :
+        userid = request.GET["userId"];
+        money = request.GET["money"];
+        sql = "update remainmoney set money='%s' where userId='%s'" % (money ,userid);
+        cursor = connection.cursor();
+        result = cursor.execute(sql);
+        if result:
+            statusDic = {"status" : "ok", "message" : "修改"};
+        else:
+            statusDic = {"status" : "error", "message" : "修改失败"};
+        return HttpResponse(json.dumps(statusDic) , content_type = "application/json");
+    else:
+        statusDic = {"status" : "error", "message" : "没有数据"};
+        return HttpResponse(json.dumps(statusDic) , content_type = "application/json");
+#查询余额接口实现，获取数据测试用GET ，具体情况具体使用  王贺
+def findMoney(request):
+    statusDic = "";
+    if request.GET :
+        userid = request.GET["userId"];
+        print (userid);
+        sql = "select * from remainmoney where userId='%s'" % userid;
+        print(sql);
+        cursor = connection.cursor();
+        datas = cursor.execute(sql);
+        myData = [];
+        datas = cursor.fetchall()
+        print (datas);
+        if datas:
+            for data in datas:
+                userid = data[0];
+                money = data[1];
+                tempDic = {"userId":userid , "money":money}
+                myData.append(tempDic)
+            statusDic = {"data" : myData,"status" : "ok", "message" : "查找成功"};
+        else:
+            statusDic = {"status" : "error", "message" : "查找失败"};
+        return HttpResponse(json.dumps(statusDic) , content_type = "application/json");
+    else:
+        statusDic = {"status" : "error", "message" : "没有数据"};
+        return HttpResponse(json.dumps(statusDic) , content_type = "application/json");
+
+#添加分享接口
+#查询用户留言接口
+def leaveMessage(request):
+    cursor = connection.cursor()
+    cursor.execute('SELECT * FROM message')
+    a = cursor.fetchall()
+    print(a)
+    cursor.close()
+    imgDic = []
+    for i in a:
+        aaa = {"goodsid":i[0] , "userid":i[1] , "leavemessage":i[2]}
+        imgDic.append(aaa)
+    return HttpResponse(json.dumps(imgDic) , content_type = "application/json")
+
+#增加用户留言接口
+def addLeaveMessage(request):
+    data = request.POST
+    goodsid = data["goodsid"]
+    userid = data["userid"]
+    leavemessage = data["leavemessage"]
+    print("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
+    # goodsid = "2017121519245103"
+    # userid = "2017121519245103"
+    # leavemessage = "啥的感觉爱仕达将刷机大师"
+    cursor = connection.cursor()
+    result = cursor.execute("INSERT INTO message(goodsid , userid , leavemessage)VALUES('%s' , '%s' , '%s')"%(goodsid , userid , leavemessage))
+    cursor.close()
+    if result == 1:
+        statusDic = {"status" : "ok" , "message" : "留言添加成功"};
+    else :
+        statusDic = {"status" : "error" , "message" : "留言添加失败"};
+    return HttpResponse(json.dumps(statusDic) , content_type = "application/json")
+
+#删除用户留言接口
+def deleLeaveMessage(request):
+    data = request.POST
+    goodsid = data["goodsid"]
+    userid = data["userid"]
+    # goodsid = "2017121115433480"
+    # userid = "2017121517150701"
+    # print("***********************8")
+    cursor = connection.cursor()
+    sql = " delete from message where goodsid = '"+goodsid+"' and userid = '" + userid +"'"
+    result = cursor.execute(sql)
+    cursor.close() 
+    if result == 0:
+        statusDic = {"status" : "ok" , "message" : "留言删除成功"};
+    else :
+        statusDic = {"status" : "error" , "message" : "留言删除失败"};
+    return HttpResponse(json.dumps(statusDic) , content_type = "application/json")
 
 #添加分享接口
 def addShare(request):
@@ -1447,13 +1656,7 @@ def orderSpilit(request):
                 'orderid':row[1],
                 'price':row[2],
                 'ordertime':row[3].strftime('%Y-%m-%d %H:%M:%S'),
-                'isaudit':row[4],
-                'ispass':row[5],
-                'iscancel':row[6],
-                'ispay':row[7],
-                'issend':row[8],
-                'ispaydone':row[9],
-                'isclose':row[10],
+                'status':row[4]
             }
             myData.append(goods);
         cursor.close();
@@ -1468,35 +1671,6 @@ def orderSpilit(request):
         return HttpResponse(json.dumps({'data':myData, 'status':'error' , 'ordercount':str(ordercount)}), content_type="application/json");
 
 
-
-
-#添加抽奖余额接口
-def drawJsonAdd(request):
-    
-    cursor = connection.cursor()
-    userid = "0111";
-    balance = "96318"
-    try:
-        cursor.execute("INSERT INTO draw (userid , balance) VALUES ('%s' , '%s')" % (userid , balance))
-        statusDis={"status":"ok","message":"添加成功"};
-        return HttpResponse(json.dumps(statusDis),content_type="application/json");
-    except:
-        statusDis={"status":"error","message":"添加失败"};
-        return HttpResponse(json.dumps(statusDis),content_type="application/json");
-
-
-#删除抽奖余额接口
-def drawJsonDel(request):
-    cursor = connection.cursor()
-    userid = "999"
-    
-    try:
-        cursor.execute("DELETE FROM draw WHERE userid=\"%s\""%userid)
-        statusDis={"status":"ok","message":"删除成功"};
-        return HttpResponse(json.dumps(statusDis),content_type="application/json");
-    except:
-        statusDis={"status":"error","message":"删除失败"};
-        return HttpResponse(json.dumps(statusDis),content_type="application/json");
 
 
 

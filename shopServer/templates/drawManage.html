@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+
+
+<form action="http://localhost:8000/drawJsonAdd/" method="post">
+<input type="text" name="userid" placeholder="请输入用户id">
+<br>
+<input type="text" name="balance" placeholder="请输入余额">
+<br>
+<input type="submit" value="提交">
+</form>
+<br>
+<form action="http://localhost:8000/drawJsonDel/" method="post">
+<input type="text" name="userid" placeholder="请输入要删除的用户id">
+<br>
+<input type="submit" value="提交">
+</form>
+<br>
+<form action="http://localhost:8000/drawJsonUpdate/" method="post">
+<input type="text" name="userid" placeholder="请输入要修改的用户id">
+<br>
+<input type="text" name="balance" placeholder="请输入余额">
+<br>
+<input type="submit" value="提交">
+</form>
+<br>
+<form action="http://localhost:8000/drawJsonQuery/" method="post">
+<input type="text" name="userid" placeholder="请输入要查询的用户id">
+<br>
+<input type="submit" value="提交">
+</form>
+{% endblock %}

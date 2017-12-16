@@ -33,6 +33,7 @@ urlpatterns = [
     url(r'^loginApi/$' , loginApi),  # 登录接口 
     url(r'^register/$' , userManageJsonAdd), # 添加用户接口 
     url(r'^uploadHeadImg/$' , uploadHeadImg), # 上传头像接口
+    url(r'^drawManage/$',drawManage), #抽奖余额界面
 
     # url(r'^saveOneImageToServer/$' , saveOneImageToServer),  # 添加一张图片到服务器 不和数据库产生联系
 
@@ -79,25 +80,53 @@ urlpatterns = [
     url(r'^redpack/$',redpack),#红包页面
 
     url(r'^ordertableManageJsonAdd/$' , ordertableManageJsonAdd), # 订单添加接口
-    url(r'^ordertableDelete/(\d+)/$' , ordertableDelete), # 订单删除接口
-    url(r'^ordertableManageJsonSelete/$' , ordertableManageJsonSelete), # 订单列表接口
+    url(r'^ordertableDelete/$' , ordertableDelete), # 订单删除接口
     url(r'^orderSpilit/$',orderSpilit), #订单分页接口
 
     url(r'cartstableManageJsonAdd/$' , cartstableManageJsonAdd), #购物车添加接口
     url(r'cartstableManageJsonDelete/$' , cartstableManageJsonDelete), #购物车删除接口
     url(r'cartstableManageJsonUpdate/$' , cartstableManageJsonUpdate), #购物车修改接口
     url(r'cartstableManageJsonSelect/$' , cartstableManageJsonSelect), #购物车查询接口
+
+
+
+    url(r'^drawJsonAdd/$',drawJsonAdd),   #添加抽奖余额接口
+    url(r'^drawJsonDel/$',drawJsonDel),   #删除抽奖余额接口
+    url(r'^drawJsonUpdate/$',drawJsonUpdate),   #修改抽奖余额接口
+    url(r'^drawJsonQuery/$',drawJsonQuery),   #查找抽奖余额接口
     
+    url(r'cartstableManageJsonGain/$' , cartstableManageJsonGain),#购物车获取接口
+
+
+
+    url(r'luckyManage/$' , luckyManage), #福袋管理界面
+    url(r'luckyManageJsonQuery/$' , luckyManageJsonQuery), #福袋模糊查询接口(分页)
+    url(r'luckyManageJsonDelete/$' , luckyManageJsonDelete), #福袋删除接口
+    url(r'luckyManageJsonAdd/$' , luckyManageJsonAdd), #福袋添加接口
+    url(r'luckyManageJsonUpdata/$' , luckyManageJsonUpdata), #福袋修改接口
+
+    url(r'commentJsonQuery/$' , commentJsonQuery), #评论查询接口(分页)    
+    url(r'commentJsonDelete/$' , commentJsonDelete), #评论删除接口
+    url(r'commentJsonAdd/$' , commentJsonAdd), #评论添加接口
+
+
     url(r'^addAddress/$',addAddress),   #添加地址接口
     url(r'^delAddress/$',delAddress),   #删除地址接口
     url(r'^updateAddress/$',updateAddress),   #修改地址接口
     url(r'^findAddress/$',findAddress),   #查找地址接口
 
+    url(r'^addMoney/$',addMoney),   #增加余额接口
+    url(r'^delMoney/$',delMoney),   #删除余额接口
+    url(r'^updateMoney/$',updateMoney),   #修改余额接口
+    url(r'^findMoney/$',findMoney),   #查询余额接口
     url(r'^addShare/$',addShare),   #添加分享记录接口
     url(r'^delShare/$',delShare),   #删除分享记录接口
     url(r'^updateShare/$',updateShare),   #修改分享记录接口
     url(r'^findShare/$',findShare),   #查找分享记录接口
 
+    url(r'^leaveMessage/$',leaveMessage), #查询用户留言接口
+    url(r'^addLeaveMessage/$',addLeaveMessage), ##增加用户留言接口
+    url(r'^deleLeaveMessage/$',deleLeaveMessage), ##删除用户留言接口
 
 
     url(r'^personal/$' , personal),      

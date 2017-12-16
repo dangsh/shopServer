@@ -3,14 +3,15 @@
 	<div class="row ">
 
 		<div class="col-md-11" style="text-align: center;">
-			<form class="form-inline" action="#">
+			<form class="form-inline" action="http://localhost:8000/ordertabalelistJaon/" id="searchForm" method="post">
 				<div class="form-group">
 					<label for="exampleInputName2">订单号:</label>
 					<input type="text" class="form-control" name = "orderid" id="orderid" placeholder="订单号">
 					<label for="exampleInputName2">用户名:</label>
-					<input type="text" class="form-control"id="userid" placeholder="用户名">
+					<input type="text" class="form-control"id="userid" name="userid" placeholder="用户名">
 					<label for="exampleInputName2">订单状态:</label>
 					<select name="status" class="form-control" id = "myStatus">
+						<option value="0">请选择</option>
 						<option value="1">待审核</option>
 						<option value="2">已审核</option>
 						<option value = "3">待支付</option>
@@ -21,18 +22,28 @@
 						<option value = "8">已完成</option>
 					</select>
 				</div>
-				<button type="submit" id = "tijiao"  class="btn btn-success mybtn" ><span class="glyphicon glyphicon-search" aria-hidden="true"></span>订单查询</button>
+				<input type="submit" id = "tijiao"  class="btn btn-success mybtn" aria-hidden="true" value="订单查询" >
+				<!-- <span class="glyphicon glyphicon-search" aria-hidden="true" value="订单查询"> -->
 			</form>
 		</div>
-
-		<!-- <div iclass="col-md-1" id="orderCount">
-			共有数据：100条
-		</div> -->
 		<table class="table">
+			<thead>
+				<tr>
+					<th colspan="11">
+						
+							<button class="btn btn-default trash AllDelete"><span class = "glyphicon glyphicon-trash">批量删除</span></button>
+							<label id="userNumber" class="count" style="float: right; padding-right: 4%;">共有数据</label>
+						
+					</th>
+				</tr>
+			</thead>
 
-			<caption><strong style="color: #000000;">商品列表</strong></caption>
+			<!-- <caption><strong style="color: #000000;">商品列表</strong></caption> -->
 			<thead>	
 				<tr>
+					<th class="info nature">
+							<input type="checkbox" id = "checkbox-all">
+					</th>
 					<th>序号</th>
 					<th>订单号</th>
 					<th>用户ID</th>
@@ -40,12 +51,6 @@
 					<th>下单时间</th>
 					<th>是否审核</th>
 					<th>是否通过</th>
-					<th>是否取消</th>
-					<th>是否付款</th>
-					<th>是否发货</th>
-					<th>付款是否完成</th>
-					<th>订单是否关闭</th>
-					<th>修改状态</th>
 					<th>编辑</th>
 				</tr>
 			</thead>
@@ -59,6 +64,25 @@
 		</div>
 
 	</div>
+	<div id="exampleModal" class="modal fade" tabindex="-1" role="dialog" data-backdrop="false" data-show="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						<h4 class="modal-title">Modal title</h4>
+					</div>
+					<div class="modal-body">
+						<p>One fine body&hellip;</p>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						<button type="button" class="btn btn-primary">Save changes</button>
+					</div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal-dialog -->
+		</div>
 
 	{% endblock %} {% block contentRight %}
 
@@ -72,32 +96,36 @@
 	{% endblock %} {% block contentLeft %} 订单管理
 	<small>Version 5.0</small> {% endblock %} {% block script %}
 	<script>
-
         var thispage = 1
 
 
 		//解析数据到页面
 		function orderListToPage(data) {
 			for (var i = 0; i < data.length; i++) {
-				console.log(data[i])
 				oneOrder(data[i])
 			}
+			
+			
 		}
+		
+ 
 
 		function oneOrder(data) {
 			orderid = data["orderid"]
 			userid = data["userid"]
 			price = data["price"]
 			ordertime = data["ordertime"]
-			isaudit = data["isaudit"]
-			ispass = data["ispass"]
-			iscancel = data["iscancel"]
-			ispay = data["ispay"]
-			issend = data["issend"]
-			ispaydone = data["ispaydone"]
-			isclose = data["isclose"]
-			var myHtml = '<tr><th scope="row">1</th><td>' + orderid + '</td><td>' + userid + '</td><td>' + price + '</td><td>'+ordertime+'</td><td>' + isaudit + '</td><td>'+ispass+'</td><td>'+iscancel+'</td><td>'+ispay+'</td><td>'+issend+'</td><td>'+ispaydone+'</td><td>'+isclose+'</td><td><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span></td><td ><span class="glyphicon glyphicon-trash deletespan" aria-hidden="true"></span></td></tr>'
+			status = data["status"]
+			var myHtml = '<tr class="mytr" orderid="' + orderid + '"><td class="info ele"><input class="checkbox-one" name="checkbox-one" type="checkbox"/></td><td scope="row">1</td><td>' + orderid + '</td><td>' + userid + '</td><td>' + price + '</td><td>'+ordertime+'</td><td>' + status + '</td><td><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span></td><td > <button class="btn btn-default delete">删除</button></td></tr>'
 			$(".myListTable").append(myHtml)
+			$('.delete').click(function () {
+				var that = $(this).parents('tr');
+                var objData = that.attr('orderid')
+				myPost("ordertableDelete" , {orderid:objData} , function () {
+					$(that).remove();
+					
+				})
+			})
 			
 		}	
 
@@ -135,113 +163,71 @@
 					console.log("加载数据error")
 				}
 			})
-		}
-		
-		
+		}		
 		loadData()
 		
 
-
-
-		// function ShowDiv(show_div, bg_div) {
-		// 	var commName = ""
-
-		// 	var url = "http://localhost:8000/ordertabalelistJaon/"; //后台接收处理url
-		// 	// data =data;
-		// 	// var objData = "goodsid=" + addGoodsIdRed; //post方式传送的数据
-		// 	// console.log(objData)
-		// 	$.ajax({
-		// 		url: url,
-		// 		type: 'POST',
-		// 		success: "success",
-		// 		data: {"userid":"aaa","orderid":"vvv"},
-		// 		success: function(data) {
-		// 			// console.log(data.data)
-					
-					
-		// 			for(var i = 0; i < data.data.length; i++) {
-		// 				// if(data.data[i].goodsid == addGoodsIdRed) {
-		// 				addToHtml(data.data[i]);
-		// 					// ue.setContent(detailsAll);
-		// 					//						
-		// 				// }
-		// 			}
-		// 		},
-		// 		error: function(msg) {
-		// 			console.log("error 加载数据失败")
-		// 		}
-		// 	});
-		// }
-
-		// ShowDiv();
-		function addToHtml(data) {
-			// userid = data["userid"]
-			// // orderid=data.orderid;
-			// orderid = data["orderid"]
-			// price = data["price"]
-			// ordertime = data["ordertime"]
-			// isaudit = data["isaudit"]
-			// ispass = data["ispass"]
-			// iscancel = data["iscancel"]
-			// ispay = data["ispay"]
-			// issend = data["issend"]
-			// ispaydone = data["ispaydone"]
-			// isclose = data["isclose"]
-			// var myHtml = '<tr><th scope="row">1</th><td>' + orderid + '</td><td>' + userid + '</td><td>' + price + '</td><td>'+ordertime+'</td><td>' + isaudit + '</td><td>'+ispass+'</td><td>'+iscancel+'</td><td>'+ispay+'</td><td>'+issend+'</td><td>'+ispaydone+'</td><td>'+isclose+'</td><td><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span></td><td ><span class="glyphicon glyphicon-trash deletespan" aria-hidden="true"></span></td></tr>'
-			// $("#mytbody").append(myHtml)
-		}
-		addToHtml();
-
+	
 		//解析数据 data为数组
-		function parseFn(data) {
-			for(var i = 0; i < data.length; i++) {
-				addToHtml(data[i])
-			
-			}
-			//为编辑添加删除事件
-			$(".deletespan").click(function() {
-				//console.log(this)
-				var trEle = $(this).parents("tr")
-				//				console.log($(trEle.children("td")[0]).text());
-				var mydelete = $(trEle.children("td")[0]).text()
-				$.ajax({
-					url: "http://localhost:8000/ordertableDelete/" + mydelete + "/",
-					context: document.body,
-					success: function(result) {
-						console.log(result)
-					}
-				});
-			});
-		}
-		$.ajax({
-            url: "http://localhost:8000/ordertableManageJsonSelete/",
-            context: document.body,
-            success: function(result) {
-                for(var i = 0; i < result.length; i++) {
-				// console.log(result)
-                addToHtml(result)
-                }
-            }
-        });
 		
-		
-		
-		$('#tijiao').bind("click", function(){
-			var orderid = $('#orderid').val();
-			var price = $('#price').val();
-			var status = $("#myStatus").find("option:selected").val();
-			// console.log("((((((((");
-			// console.log(price,orderid , status),
-			// console.log(userid , orderid , status)
-			$.ajax({
-			
-			url: "http://localhost:8000/ordertableManageJsonSelete/?orderid="+orderid+"&price="+price+"&status="+status+"",
-			success: function(result) {
-				console.log("aaa")
-				console.log(result)
+		$(".AllDelete").click(function(){
+            console.log("批量删除");
+            $("[name = checkbox-one]:checkbox").each(function () {
+                if ($(this).is(":checked")) {
+                    console.log("xuanzhong");
+                    var that = $(this).parents('tr');
+                    var objData = that.attr('orderid')
+                    myPost("ordertableDelete" , {orderid:objData} , function () {
+						$(that).remove();
+					})
 				}
-	     	});		
-		});
+			})
+		})
+		
 
+        $('#checkbox-all').click(function () {
+            if($('#checkbox-all').is(':checked')) {
+                console.log("get - all")
+                $(".checkbox-one").prop("checked",true);
+            }else{
+                console.log("close - all")
+                $(".checkbox-one").prop("checked",false);
+            }
+        })
+		function ajaxSubmitForm(){
+			console.log('ajaxsubmit');
+			var option = 
+			{
+				url : "http://localhost:8000/ordertabalelistJaon/",
+				type : 'POST',
+				dataType : 'json',
+				success : function(data)
+				{   
+					newData = data.data
+					$('.mytr').remove();
+					orderListToPage(newData)
+					
+					document.getElementById("orderid").value = "";
+					document.getElementById("userid").value = "";
+					
+					
+				},
+				error: function(data)
+				{
+					console.log("chucuole");
+				}
+			};
+			$("#searchForm").ajaxSubmit(option);
+			return false;
+		}
+
+		$('#searchForm').on('submit', function(e) {
+			e.preventDefault(); 
+			$(this).ajaxSubmit({
+				success: function () {
+					ajaxSubmitForm();
+			}
+		})
+		});
 	</script>
 	{% endblock %}
