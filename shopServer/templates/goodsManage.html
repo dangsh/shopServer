@@ -101,6 +101,7 @@
 		<div class="col-md-6" style="text-align: left;">
 			<button id="deleteBtn" type="button" class="btn btn-danger"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span>批量删除</button>
 			<a href="/addGoods/" class="btn btn-info"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>添加商品</a>
+			<button id="timeBtn" type="button" class="btn btn-warning"><span class="glyphicon glyphicon-download" aria-hidden="true">当前时间降序</span></button>			
 		</div>
 		<div class="col-md-6" style="text-align: right;">
 			<p>共有数据:<strong id="goodsNumber">0</strong>条</p>
@@ -235,7 +236,7 @@ var goodsCount = 1
 var thispage = 1
 var addGoodsIdRed = ""
 var commName = ""
-
+var timeBtnUp = 0
 
 var mainData = "";
 
@@ -308,7 +309,7 @@ function CloseDiv(show_div, bg_div) {
 	document.getElementById(bg_div).style.display = 'none';
 };
 
-function oneGoods(data) {
+function oneGoods(data, i) {
 	//console.log(data)
 	var goodsid = data["goodsid"];
 	var rebate = data["rebate"];
@@ -340,8 +341,8 @@ function oneGoods(data) {
 		goodsStatusColour = "red"
 		downDisabled = "disabled"
 	}
-
-	var ele = '<tr class="biaojuzhong" goodsid="' + goodsid + '"><td><input class="checkbox-one" type="checkbox"></td><th scope="row">3</th><td>' + goodsName + '</td><td>' + shopname + '</td><td>家居</td><td></td><td class="goodsStatus" style="color: ' + goodsStatusColour +';">' + goodsStatusStr + '</td><td><button class="btn btn-default up" type="button" ' + upDisabled + '><span class="glyphicon glyphicon-upload " aria-hidden="true">上架 </span></button><button class="btn btn-default down" type="button" ' + downDisabled + '><span class="glyphicon glyphicon-download" aria-hidden="true">下架</span></button></td><td><button class="btn btn-default demo3" type="button"><span class="glyphicon glyphicon-picture" aria-hidden="true"></span></button><button class="btn btn-default  demo4" type="button"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button></td><td><button class="btn btn-default demo5" type="button"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button><button class="btn btn-default demo6" type="button"><span class="glyphicon glyphicon-list-alt"  aria-hidden="true"></span></button></td><td><button class="btn btn-default demo7" type="button"><span class="glyphicon glyphicon-file"  aria-hidden="true"></span></button><button class="btn btn-default demo8" type="button"><span class="glyphicon glyphicon-trash"  aria-hidden="true"></span></button></td></tr>'
+	var row = (thispage - 1) * 10 + i
+	var ele = '<tr class="biaojuzhong" goodsid="' + goodsid + '"><td><input class="checkbox-one" type="checkbox"></td><th scope="row">' + row + '</th><td>' + goodsName + '</td><td>' + shopname + '</td><td>家居</td><td></td><td class="goodsStatus" style="color: ' + goodsStatusColour +';">' + goodsStatusStr + '</td><td><button class="btn btn-default up" type="button" ' + upDisabled + '><span class="glyphicon glyphicon-upload " aria-hidden="true">上架 </span></button><button class="btn btn-default down" type="button" ' + downDisabled + '><span class="glyphicon glyphicon-download" aria-hidden="true">下架</span></button></td><td><button class="btn btn-default demo3" type="button"><span class="glyphicon glyphicon-picture" aria-hidden="true"></span></button><button class="btn btn-default  demo4" type="button"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button></td><td><button class="btn btn-default demo5" type="button"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button></td><td><button class="btn btn-default demo7" type="button"><span class="glyphicon glyphicon-file"  aria-hidden="true"></span></button><button class="btn btn-default demo8" type="button"><span class="glyphicon glyphicon-trash"  aria-hidden="true"></span></button></td></tr>'
 	$(".myListTable").append(ele)
 	
 }
@@ -350,7 +351,7 @@ function oneGoods(data) {
 function goodsListToPage(data) {
 	for (var i = 0; i < data.length; i++) {
 		//console.log(data[i])
-		oneGoods(data[i])
+		oneGoods(data[i], i+1)
 	}
 	$(".up").click(function(){
 		var that = this
@@ -419,8 +420,10 @@ function goodsListToPage(data) {
 			window.location.href = "http://localhost:8000/addGoods/"
 		} , 1000)
 	});
+
+
+	
 	$(".demo8").click(function(){
-		console.log('*********');
 		var that = $(this).parents("tr")
 		var oneDeleteData = mainData[that.index()];
 		imageArr = [];
@@ -435,51 +438,73 @@ function goodsListToPage(data) {
 					imageArr.push(aaa[i])
 				}
 			}
-		}
-		var details = decodeURIComponent(oneDeleteData.details);
-		console.log(details);
-		
-		var imgReg = /<img.*?(?:>|\/>)/gi;
-		var srcReg = /src=[\'\"]?([^\'\"]*)[\'\"]?/i;
-		var arr = details.match(imgReg);
-		if (arr == null || arr == undefined) {
-			console.log("商品详情中没有图片.....");
-		} else {
-			for(var i = 0; i < arr.length; i++) {
-				var src = arr[i].match(srcReg);
-				//获取图片地址
-				if(src[1]) {
-					myimageName = src[1].split("/")
-					for (var name = 0;name < myimageName.length;name++){
-						if (myimageName[name].indexOf("20")==0){
-							imageArr.push(myimageName[name])
+			var details = decodeURIComponent(oneDeleteData.details);
+			var imgReg = /<img.*?(?:>|\/>)/gi;
+			var srcReg = /src=[\'\"]?([^\'\"]*)[\'\"]?/i;
+			var arr = details.match(imgReg);
+			if (arr == null || arr == undefined) {
+				console.log("商品详情中没有图片.....");
+			} else {
+				for(var i = 0; i < arr.length; i++) {
+					var src = arr[i].match(srcReg);
+					//获取图片地址
+					if(src[1]) {
+						myimageName = src[1].split("/")
+						for (var name = 0;name < myimageName.length;name++){
+							if (myimageName[name].indexOf("20")==0){
+								imageArr.push(myimageName[name])
+							}
 						}
 						
 					}
 				}
 			}
-			console.log('所有已成功匹配图片的数组：' + arr);
 		}
-		
-
 		var goodsArr = [that.attr("goodsid")]
-		myPost("goodsManageJsonDelete",{goodsids:goodsArr , images:imageArr} , function(data){
-			if (data["status"] == "ok") {
-					var deleteCount = data['deleteCount']
-					loaddata()
-					layer.msg('删除' + deleteCount + "条记录成功");
-			   }
-			   else{
+		myPostGoodsManage("selectLuckyJsonByGoodsId",{goodsids:goodsArr} , function(data){
+			
+			if (data["status"] == "ok" && data["luckycount"] == 0) {
+				myPostGoodsManage("goodsManageJsonDelete",{goodsids:goodsArr , images:imageArr} , function(data){
+					if (data["status"] == "ok") {
+							var deleteCount = data['deleteCount']
+							loaddata()
+							layer.msg('删除' + deleteCount + "条记录成功");
+					}else{
+							layer.msg('删除失败');
+					}
+				})
+			} else if (data["status"] == "ok" && data["luckycount"] > 0) {
+				$("#exampleModal-confirm").modal();
+				$("#delete-counts").text("冲突数量:" + data["luckycount"])
+				$("#myListTable-confirm").children("tr").remove()
+				$("#myListTable-confirm").append(ele)
+				for (var  i = 0; i< data.data.length; i++) {
+					var goodsname = data.data[i].luckyData.goodsname
+					var goodsid = data.data[i].luckyData.goodsid
+					var count = data.data[i].luckyCount
+					var ele = '<tr class="biaojuzhong" goodsid="' + goodsid + '"><td>' + goodsname + '</td><td>' + goodsid + '</td><td>' + count + '</td><td><button class="btn btn-danger delete-confirm" type="button"><span class="glyphicon glyphicon-trash"  aria-hidden="true"></span></button></td></tr>'
+					$("#myListTable-confirm").append(ele)
+				}
+				$(".delete-confirm").click( function () {
+					var goodsArr = []
+					var goodsidOne = $(this).parents("tr").attr("goodsid")
+					goodsArr.push(goodsidOne)
+					myPostGoodsManage("goodsManageJsonDelete" , {goodsids:goodsArr} , function (data) {
+						if (data["status"] == "ok") {
+							var deleteCount = data['deleteCount']
+							loaddata()
+							$("#exampleModal-confirm").modal("hide");
+							layer.msg("删除" + deleteCount + "条记录成功");
+						} else {
+							layer.msg("删除失败")
+						}
+					});
+					$("#exampleModal-confirm").modal("hide");
+				})
+			} else {
 					layer.msg('删除失败');
 			}
-
 		})
-
-
-	
-	
-	
-	
 	});
 }
 
@@ -487,18 +512,18 @@ function goodsListToPage(data) {
 $("#goodsSelectBtn").click(function(){
 	thispage = 1
 	commName = $("#goodsSelectName").val()
-	console.log("*****", commName)
 	if(commName==""){
 		layer.msg("商品名称不能为空")
 	}
-	myflag=1
-	loaddata()  
+	else{
+		myflag=1
+		loaddata()  
+	}
 });
 var luckyGoods = {}
 
 $('#deleteBtn').click(function () {
 	
-	console.log("delete")
 	var goodsArr = []
 	var checkboxs = $('.checkbox-one')
 	for (var i = 0; i < checkboxs.length; i++) {
@@ -507,21 +532,70 @@ $('#deleteBtn').click(function () {
 			goodsArr.push(goodsidOne)
 		}
 	}
-	console.log(goodsArr)
-
-	myPost("goodsManageJsonDelete" , {goodsids:goodsArr} , function (data) {
-		if (data["status"] == "ok") {
-			var deleteCount = data['deleteCount']
-			loaddata()
-			layer.msg("删除" + deleteCount + "条记录成功");
+	myPostGoodsManage("selectLuckyJsonByGoodsId",{goodsids:goodsArr} , function(data){
+		if (data["status"] == "ok" && data["luckycount"] == 0) {
+			myPostGoodsManage("goodsManageJsonDelete" , {goodsids:goodsArr} , function (data) {
+				if (data["status"] == "ok") {
+					var deleteCount = data['deleteCount']
+					loaddata()
+					layer.msg("删除" + deleteCount + "条记录成功");
+				}
+				else{
+					layer.msg("删除失败")
+				}
+			});
+		} else if (data["status"] == "ok" && data["luckycount"] > 0) {
+			var deleteGoodsIdArr = []
+			for (var j = 0 ; j < goodsArr.length; j++) {
+				var tt = true
+				for (var k = 0; k < data.data.length; k++) {
+					if (goodsArr[j] == data.data[k].luckyData.goodsid) {
+						tt = false
+					}
+				}
+				if (tt == true) {
+					deleteGoodsIdArr.push(goodsArr[j])
+				}
+			}
+			// console.log(deleteGoodsIdArr)
+			myPostGoodsManage("goodsManageJsonDelete" , {goodsids:deleteGoodsIdArr} , function (data) {
+				if (data["status"] == "ok") {
+					var deleteCount = data['deleteCount']
+					loaddata()
+					layer.msg("删除" + deleteCount + "条记录成功");
+				}
+			});
+			$("#exampleModal-confirm").modal();
+			$("#delete-counts").text("冲突数量:" + data["luckycount"])
+			$("#myListTable-confirm").children("tr").remove()
+			$("#myListTable-confirm").append(ele)
+			for (var  i = 0; i< data.data.length; i++) {
+				var goodsname = data.data[i].luckyData.goodsname
+				var goodsid = data.data[i].luckyData.goodsid
+				var count = data.data[i].luckyCount
+				var ele = '<tr class="biaojuzhong" goodsid="' + goodsid + '"><td>' + goodsname + '</td><td>' + goodsid + '</td><td>' + count + '</td><td><button class="btn btn-danger delete-confirm" type="button"><span class="glyphicon glyphicon-trash"  aria-hidden="true"></span></button></td></tr>'
+				$("#myListTable-confirm").append(ele)
+			}
+			$(".delete-confirm").click( function () {
+				var goodsArr = []
+				var goodsidOne = $(this).parents("tr").attr("goodsid")
+				goodsArr.push(goodsidOne)
+				myPostGoodsManage("goodsManageJsonDelete" , {goodsids:goodsArr} , function (data) {
+					if (data["status"] == "ok") {
+						var deleteCount = data['deleteCount']
+						loaddata()
+						layer.msg("删除" + deleteCount + "条记录成功");
+					} else {
+						layer.msg("删除失败")
+					}
+				});
+				$("#exampleModal-confirm").modal("hide");
+			})
+		} else {
+				layer.msg('删除失败');
 		}
 	})
-
 	loaddata()
-
-
-
-	
 })
 
 $("#deleteAll-confirm").click( function () {
@@ -555,7 +629,7 @@ myflag=0
 function loaddata() {
 
 	$.ajax({
-		url: "http://localhost:8000/commodityQuery/?page=" + thispage + "&commName=" + commName,
+		url: "http://localhost:8000/commodityQuery/?page=" + thispage + "&commName=" + commName + "&timeUP=" +timeBtnUp,
 		success: function (data) {
 			goodsCount = data.goodscount
 			goodsListPages = Math.ceil(parseInt(goodsCount) / 10 )
@@ -600,6 +674,22 @@ function loaddata() {
 }
 
 loaddata()
+
+$("#timeBtn").click( function () {
+	if (timeBtnUp == 0) {
+		$(this).children("span").remove()
+		var ele = '<span class="glyphicon glyphicon-upload" aria-hidden="true">当前时间升序</span>'
+		$(this).append(ele)
+		timeBtnUp = 1
+	} else {
+		$(this).children("span").remove()
+		var ele = '<span class="glyphicon glyphicon-download" aria-hidden="true">当前时间降序</span>'
+		$(this).append(ele)
+		timeBtnUp = 0
+	}
+	thispage = 1
+	loaddata()
+})
 
 </script>
 {% endblock %}

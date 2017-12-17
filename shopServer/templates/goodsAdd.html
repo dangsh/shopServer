@@ -96,7 +96,7 @@
 	</ol>
 
 	{% endblock %} {% block contentLeft %} 商品添加
-	<small>Version 5.0</small> {% endblock %} 
+<small>Version 5.0</small> {% endblock %} 
 
 {% block content %}
 		
@@ -244,14 +244,15 @@
 		<div class="col-md-12" style="width: 100%;height: 350px;padding-left: 0px;padding-right: 0px;">
 			<div class=row style="color:red" ;>
 				<div class="col-md-6"> (请在这里输入商品详情)</div>
-				<a style="display: inline-block;" href="javascript:;" class="a-upload">
-					<input class="myInput" type="file" name="details" id="">点击这里上传文件
-					
-					</a>
-				<input id="subbtn" class="btn btn-default" type="submit">
+
 			</div>
 			<div id="" style="background-color: red;width: 100%;height: 250px;float: left;">
-				<script id="editor" type="text/plain" style="width:100%;height:250px;"></script>
+				<script id="editor" type="text/plain" style="width:100%;height:250px;">
+					<input class="myInput" type="file" name="details" id="">
+				</script>
+				<a style="display: inline-block;" href="javascript:;" class="a-upload">
+					<input class="myInput" type="file" name="details" id="">点击这里上传文件					
+					</a>
 			</div>
 		</div>
 		
@@ -310,7 +311,12 @@ $( '#updata').click(function () {
 		$(".only").prop("readonly",false);
 })
 
+$( '#sub').click(function () {
+	console.log("3333")
+	$("#addgoods").ajaxSubmit();
+})
 if (localStorage.length==1){
+	$("h1").html("编辑商品<small>Version 5.0</small>");
 	var data = JSON.parse(localStorage.getItem("data"));
 	$("#goodsname").val(data.goodsname);
 	$("#shopname").val(data.shopname);
@@ -347,6 +353,8 @@ if (localStorage.length==1){
 
 
 
+
+
 function myfun(aaa){
 
 	var myValue = $(aaa).val();
@@ -355,11 +363,6 @@ function myfun(aaa){
 	$($(".datails").children("td")[myIndex]).text(myValue)
 	
 }
-$( '#sub').click(function () {
-	console.log("3333")
-	$("#addgoods").ajaxSubmit();
-
-})
 
 
 

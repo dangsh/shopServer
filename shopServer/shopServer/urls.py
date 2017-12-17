@@ -20,6 +20,7 @@ from shopApp.views import *
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    url(r'^home/$' , home),
     url(r'^goodsManage/$' , goodsManage),
     url(r'^adPage/$' , adPage),
     url(r'^cartsManage/$' , cartsManage),#购物车界面
@@ -32,7 +33,7 @@ urlpatterns = [
     url(r'^login/$' , login),#登录界面
     url(r'^loginApi/$' , loginApi),  # 登录接口 
     url(r'^register/$' , userManageJsonAdd), # 添加用户接口 
-    url(r'^uploadHeadImg/$' , uploadHeadImg), # 上传头像接口
+    # url(r'^uploadHeadImg/$' , uploadHeadImg), # 上传头像接口
     url(r'^drawManage/$',drawManage), #抽奖余额界面
 
     url(r'^saveOneImageToServer/$' , saveOneImageToServer),  # 添加一张图片到服务器 不和数据库产生联系
@@ -130,9 +131,9 @@ urlpatterns = [
     url(r'^addLeaveMessage/$',addLeaveMessage), ##增加用户留言接口
     url(r'^deleLeaveMessage/$',deleLeaveMessage), ##删除用户留言接口
 
-    # url(r'friendslistManageJsonSelect/$' , friendslistManageJsonSelect), #好友列表查询接口    
-    url(r'friendslistManageJsonDelete/$' , friendslistManageJsonDelete), #好友列表删除接口
-    url(r'friendslistManageJsonAdd/$' , friendslistManageJsonAdd), #好友列表添加接口
+    url(r'^scoreAdd/$',scoreAdd), #积分添加接口
+    url(r'^scoreDelete/$',scoreDelete), #积分删除接口
+    url(r'^scoreSelect/$',scoreSelect), #积分查询接口
 
     url(r'^personal/$' , personal),      
 

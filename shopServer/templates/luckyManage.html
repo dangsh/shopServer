@@ -58,6 +58,10 @@
 			<button type="button" class="btn btn-info" data-toggle="modal" data-target="#exampleModal">
 				<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>添加福袋
 			</button>
+			<button id="timeBtn" type="button" class="btn btn-warning">
+				<span class="glyphicon glyphicon-download" aria-hidden="true">当前时间降序</span>
+			</button>			
+			
 			<!-- 添加福袋 模态框 -->
 			<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
 				<div class="modal-dialog" role="document">
@@ -212,6 +216,8 @@ var luckyCount = 1
 var thispage = 1
 var commName = ""
 var updata_luckyid = ""
+var timeBtnUp = 0
+
 
 function oneLucky(data, i) {
 	var luckyid = data["luckyid"];
@@ -220,7 +226,7 @@ function oneLucky(data, i) {
 	var counts = data["counts"];
 	var price = "￥" + data["price"]
 	var uptime = data["uptime"];
-	var listNumber = (thispage - 1) * 10 + i
+	var listNumber = (thispage - 1) * 10 + i+1
 	if (data["price"] == null) {
 		price = "未知"
 	}
@@ -231,6 +237,7 @@ function oneLucky(data, i) {
 
 //解析数据到页面
 function luckyListToPage(data, i) {
+	console.log("lllllllllllllllllllllllll")
 	for (var i = 0; i < data.length; i++) {
 		oneLucky(data[i], i)
 	}
@@ -342,13 +349,14 @@ $('#checkbox-all').click(function () {
 
 function loaddata() {
 	$.ajax({
-		url: "http://localhost:8000/luckyManageJsonQuery/?page=" + thispage + "&commName=" + commName,
+		url: "http://localhost:8000/luckyManageJsonQuery/?page=" + thispage + "&commName=" + commName + "&timeUp=" + timeBtnUp,
 		success: function (data) {
 			luckyCount = data.luckycount
 			luckyListPages = Math.ceil(parseInt(luckyCount) / 10 )
 			$(".myListTable").children("tr").remove()
 			//解析数据
 			mainData = data.data;
+			console.log("ajlajlajlajlajlajl")
 			luckyListToPage(mainData)
 			//记录个数'
 			$("#luckyNumber").text(luckyCount);
@@ -378,11 +386,11 @@ function loaddata() {
 	});
 }
 
-loaddata()
 
 
 //添加模态框
 function addLucky(form_goodsId, form_counts){
+	console.log(form_goodsId, form_counts)
 	$.ajax({
 		url: "http://localhost:8000/luckyManageJsonAdd/",
 		type: 'POST',
@@ -402,10 +410,11 @@ function addLucky(form_goodsId, form_counts){
 		}
 	});
 }
-
+var form_goodsId = ""
+var form_counts = ""
 $("#form-addLucky").click( function () {
-	var form_goodsId = $("#addLucky-goodsId").val()
-	var form_counts = $("#addLucky-counts").val()
+	form_goodsId = $("#addLucky-goodsId").val()
+	form_counts = $("#addLucky-counts").val()
 	$.ajax({
 		url: "http://localhost:8000/goodsSelectByid/",
 		type: 'POST',
@@ -418,11 +427,6 @@ $("#form-addLucky").click( function () {
 					$("#exampleModal-confirm").modal();
 					$("#add-goodsname").text("商品名:" + data.data[0].goodsname)
 					$("#add-counts").text("数量:" + form_counts)
-					$("#form-confirm").click( function () {
-						addLucky(form_goodsId, form_counts)
-						$("#exampleModal").modal('hide')
-						$("#exampleModal-confirm").modal('hide')
-					})
 					//addLucky(form_goodsId, form_counts)
 				}
 			} else {
@@ -435,6 +439,33 @@ $("#form-addLucky").click( function () {
 		}
 	});
 });
+
+$("#form-confirm").click( function () {
+	console.log("88888888888888888888888")
+	addLucky(form_goodsId, form_counts)
+	$("#exampleModal").modal('hide')
+	$("#exampleModal-confirm").modal('hide')
+	$("#addLucky-goodsId").val("")
+	$("#addLucky-counts").val(1)
+})
+
+loaddata()
+
+$("#timeBtn").click( function () {
+	if (timeBtnUp == 0) {
+		$(this).children("span").remove()
+		var ele = '<span class="glyphicon glyphicon-upload" aria-hidden="true">当前时间升序</span>'
+		$(this).append(ele)
+		timeBtnUp = 1
+	} else {
+		$(this).children("span").remove()
+		var ele = '<span class="glyphicon glyphicon-download" aria-hidden="true">当前时间降序</span>'
+		$(this).append(ele)
+		timeBtnUp = 0
+	}
+	thispage = 1
+	loaddata()
+})
 
 
 

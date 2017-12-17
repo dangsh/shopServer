@@ -29,7 +29,6 @@ def home(request):
  
     # name = "liu";
     
-    
     # cursor.execute('CREATE TABLE manager(username varchar(255),pwd varchar(255))')
 
     # cursor.execute('CREATE TABLE Persons2(Id_P int,LastName varchar(255),FirstName varchar(255),Address varchar(255),City varchar(255))')
@@ -398,8 +397,9 @@ def addGoodsImage(request):
 def adManageJsonAdd(request):
     
     imgs = request.FILES["images"];
-    imgsName = randomString() + ".jpg";
-    adId = request.POST["adId"]
+    adId = randomString()
+    imgsName = adId + ".jpg";
+    
     imagePath = imgsName;
     filepath = "./shopApp/static/myfile";
     filename = os.path.join(filepath,imgsName)
@@ -639,9 +639,13 @@ def commodityQuery(request):
     cursor = connection.cursor()
     # commName = "xiaomi"
     commName = request.GET["commName"]
+    timeUP = request.GET["timeUP"]
+    timeStatus = "desc"
+    if timeUP == '1':
+        timeStatus = ""
     mypage = 0
     mypage = (int(request.GET["page"]) - 1) * 10
-    cursor.execute("SELECT * FROM goods where goodsname like '%%%%%s%%%%' LIMIT %d , 10;"%(commName, mypage));
+    cursor.execute("SELECT * FROM goods where goodsname like '%%%%%s%%%%' order by uptime %s LIMIT %d , 10;"%(commName, timeStatus, mypage));
     datas = cursor.fetchall()
     try:
         for row in datas:
@@ -723,40 +727,76 @@ def ordertableManageJsonAdd(request):
 # 订单列表接口
 def ordertabalelistJaon(request):
     sql="";
+    selectCount=0
+    mypage = 0
+    selectpage =0
+    try:
+        selectpage = request.POST["selectpage"]
+    except:
+        pass
+    print(selectpage)
+    mypage = (int(selectpage) - 1) * 10
+    print(mypage)
+
     if request.POST and (request.POST["userid"]!="" or request.POST["orderid"]!=""):
-        print("[]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]")
-    
-        print(request.POST)
+        # print(request.POST)
         userid = request.POST["userid"]
         orderid = request.POST["orderid"];
         a=request.POST["status"];
+        
         if userid=="" and orderid!="":
-            sql="SELECT * from ordertable WHERE orderid='%s'"%(orderid);
+            sql="SELECT * from ordertable WHERE orderid='%s' LIMIT %d , 10;"%(orderid , mypage);
+            print(sql)
+            cursor2 = connection.cursor();
+            cursor2.execute("SELECT COUNT(*) FROM ordertable WHERE orderid='%s'"%(orderid))
+            selectCount  = cursor2.fetchall();
+            cursor2.close()
+            selectCount = selectCount[0][0]
+
         elif userid!="" and orderid=="":
-            sql="SELECT * from ordertable WHERE userid='%s'"%(userid);
+            sql="SELECT * from ordertable WHERE userid='%s' LIMIT %d , 10;"%(userid , mypage);
+            print(sql)
+            cursor2 = connection.cursor();
+            cursor2.execute("SELECT COUNT(*) FROM ordertable WHERE userid='%s'"%(userid))
+            selectCount  = cursor2.fetchall();
+            cursor2.close()
+            selectCount = selectCount[0][0]
+
         elif userid=="" and orderid=="":
-           sql="SELECT * from ordertable WHERE status='%s'"%(a);
+            sql="SELECT * from ordertable WHERE status='%s' LIMIT %d , 10;"%(a , mypage);
+
+            cursor2 = connection.cursor();
+            cursor2.execute("SELECT COUNT(*) FROM ordertable WHERE status='%s'"%(a))
+            selectCount  = cursor2.fetchall();
+            cursor2.close()
+            selectCount = selectCount[0][0]
+
         else:
             pass;
-    else:
-        sql = "SELECT * FROM ordertable";   
+    # else:
+    #     sql = "SELECT * FROM ordertable";   
+    #     cursor2 = connection.cursor();
+    #     cursor2.execute("SELECT COUNT(*) FROM ordertable LIMIT %d , 10;"% mypage)
+    #     selectCount  = cursor2.fetchall();
+    #     cursor2.close()
+    #     selectCount = selectCount[0][0]
     try:
         allOrdertables = [];
         cursor = connection.cursor()
         cursor.execute(sql)
         for row in cursor.fetchall():
             ordertable = {
-                'orderid':row[0],
-                'userid':row[1],
+                'orderid':row[1],
+                'userid':row[0],
                 'price':row[2],
                 'ordertime':row[3].strftime('%Y-%m-%d %H:%M:%S'),
                 'status':row[4],
             }
             allOrdertables.append(ordertable)
         cursor.close()
-        return HttpResponse(json.dumps({'data':allOrdertables, 'status':'ok'}), content_type="application/json")
+        return HttpResponse(json.dumps({'data':allOrdertables, 'status':'ok' , 'selectCount':str(selectCount)}), content_type="application/json")
     except Exception as e:
-        return HttpResponse(json.dumps({'data':allOrdertables, 'status':'error'}), content_type="application/json")
+        return HttpResponse(json.dumps({'data':allOrdertables, 'status':'error' , 'selectCount':str(selectCount)}), content_type="application/json")
 # 订单删除接口 吕建威
 def ordertableDelete(request):
     for key in request.POST:
@@ -1112,12 +1152,17 @@ def luckyManage(request):
 # 福袋模糊查询(分页) 胡亚洲
 def luckyManageJsonQuery(request):
     myData = []
+    timeUP = "0"
     cursor = connection.cursor()
     commName = request.GET["commName"]
+    timeUP = request.GET["timeUp"]
+    timeStatus = "desc"
+    if timeUP == '1':
+        timeStatus = ""
     mypage = 0
     luckycount = 0
     mypage = (int(request.GET["page"]) - 1) * 10
-    luckycount = cursor.execute("SELECT lucky.luckyid, lucky.goodsid, goods.goodsname, lucky.counts, goods.price, lucky.uptime FROM goods,lucky where lucky.goodsid=goods.goodsid and goods.goodsname like '%%%%%s%%%%' LIMIT %d , 10;"%(commName, mypage));
+    cursor.execute("SELECT lucky.luckyid, lucky.goodsid, goods.goodsname, lucky.counts, goods.price, lucky.uptime FROM goods,lucky where lucky.goodsid=goods.goodsid and goods.goodsname like '%%%%%s%%%%' order by lucky.uptime %s LIMIT %d , 10;"%(commName, timeStatus, mypage));
     datas = cursor.fetchall()
     try:
         for row in datas:
@@ -1134,6 +1179,8 @@ def luckyManageJsonQuery(request):
                 'uptime':uptime,
             }
             myData.append(lucky);
+        cursor.execute("SELECT COUNT(*) FROM goods,lucky where lucky.goodsid=goods.goodsid and goods.goodsname like '%%%%%s%%%%'" % (commName))
+        luckycount = cursor.fetchall()[0][0]
         cursor.close();
         return HttpResponse(json.dumps({'data':myData, 'status':'ok' , 'luckycount':str(luckycount) }), content_type="application/json")
     
@@ -1177,6 +1224,8 @@ def luckyManageJsonAdd(request):
     try:
         goodsid = request.POST["goodsid"]
         counts = request.POST["counts"]
+        print("**********************")
+        print(luckyid, goodsid, counts)
         cursor = connection.cursor()
         sql = "INSERT INTO lucky (luckyid , goodsid , counts ) VALUES('%s','%s','%s')" % (luckyid, goodsid, counts)
         result = cursor.execute(sql)
@@ -1395,45 +1444,45 @@ def findAddress(request):
         return HttpResponse(json.dumps(statusDis),content_type="application/json");
     pass
 
-
-def uploadHeadImg(request):
-    print ("请求成功");
-    statusDic = "";
-    if request.POST and request.FILES:
-        cursor = connection.cursor();
-        #前台传过来的图片
-        headImgs = request.FILES["headImg"];
-        #随机字符串存取图片名字
-        headImgsName = randomString() + ".jpg";
-        #当上传头像的时候必然会传过来用户的Id,方法根据前台来决定
-        imgUserName= request.POST["imgUserName"]
-        imgUserName = str(imgUserName)
-        if cursor.execute("SELECT EXISTS(SELECT * FROM user WHERE username='%s')" % imgUserName):
-            cursor.execute("select headimg from user where username='%s'" % imgUserName)
-            data = cursor.fetchall();
-            if data:
-                tempimg = data[0][0];
-                os.remove("../shopServer/shopApp/static/myfile/"+tempimg);
-            filepath = "./shopApp/static/myfile/";
-            #路径组合
-            filepath = os.path.join(filepath,headImgsName)
-            #在路径中创建图片名字
-            fileobj = open(filepath , "wb");
-            #并把前端传过来的数据写到文件中
-            fileobj.write(headImgs.__dict__["file"].read());
-            #关闭文件
-            fileobj.close();
-            #通过userId来给用户添加headimg数据
-            result = cursor.execute("UPDATE user set headimg='%s' where username='%s'" % (headImgsName,imgUserName));
-            if result == 1:
-                statusDic = {"status" : "ok" , "message" : "添加成功" , "imgUserName":imgUserName};
-            else :
-                statusDic = {"status" : "error" , "message" : "添加失败"};
-        else:
-            statusDic = {"status" : "error" , "message" : "没有此用户"};
-    else:
-        statusDic = {"status" : "error" , "没有数据" : "添加成功"};
-    return HttpResponse(json.dumps(statusDic) , content_type = "application/json");
+#应该是没用了
+# def uploadHeadImg(request):
+#     print ("请求成功");
+#     statusDic = "";
+#     if request.POST and request.FILES:
+#         cursor = connection.cursor();
+#         #前台传过来的图片
+#         headImgs = request.FILES["headImg"];
+#         #随机字符串存取图片名字
+#         headImgsName = randomString() + ".jpg";
+#         #当上传头像的时候必然会传过来用户的Id,方法根据前台来决定
+#         imgUserName= request.POST["imgUserName"]
+#         imgUserName = str(imgUserName)
+#         if cursor.execute("SELECT EXISTS(SELECT * FROM user WHERE username='%s')" % imgUserName):
+#             cursor.execute("select headimg from user where username='%s'" % imgUserName)
+#             data = cursor.fetchall();
+#             if data:
+#                 tempimg = data[0][0];
+#                 os.remove("../shopServer/shopApp/static/myfile/"+tempimg);
+#             filepath = "./shopApp/static/myfile/";
+#             #路径组合
+#             filepath = os.path.join(filepath,headImgsName)
+#             #在路径中创建图片名字
+#             fileobj = open(filepath , "wb");
+#             #并把前端传过来的数据写到文件中
+#             fileobj.write(headImgs.__dict__["file"].read());
+#             #关闭文件
+#             fileobj.close();
+#             #通过userId来给用户添加headimg数据
+#             result = cursor.execute("UPDATE user set headimg='%s' where username='%s'" % (headImgsName,imgUserName));
+#             if result == 1:
+#                 statusDic = {"status" : "ok" , "message" : "添加成功" , "imgUserName":imgUserName};
+#             else :
+#                 statusDic = {"status" : "error" , "message" : "添加失败"};
+#         else:
+#             statusDic = {"status" : "error" , "message" : "没有此用户"};
+#     else:
+#         statusDic = {"status" : "error" , "没有数据" : "添加成功"};
+#     return HttpResponse(json.dumps(statusDic) , content_type = "application/json");
 #删除余额接口实现，获取数据测试用GET ，具体情况具体使用  王贺
 def delMoney(request):
     statusDic = "";
@@ -1611,9 +1660,7 @@ def updateShare(request):
         return HttpResponse(json.dumps(statusDis) , content_type="application/json")
 
     except Exception as identifier:
-        return HttpResponse(json.dumps({"message":"修改失败","status":"error"}),content_type="application/json")
-
-
+        return HttpResponse(json.dumps({"message":"修改失败","status":"error"}),content_type="application/json");
 #查找分享接口
 def findShare(request):
     cursor = connection.cursor()
@@ -1668,45 +1715,65 @@ def orderSpilit(request):
         raise e   
         return HttpResponse(json.dumps({'data':myData, 'status':'error' , 'ordercount':str(ordercount)}), content_type="application/json");
 
-#好友列表增加功能
-def friendslistManageJsonAdd(request):
+#积分添加接口 吕建威
+def scoreAdd(request):
 
-    # friendslistid = request.carts["friendslistid"]
+    # shareid = request.POST["shareid"]
+    # goodsid = request.POST["goodsid"]
     # userid = request.POST["userid"]
     # friendid = request.POST["friendid"]
+    userid = "1111"
+    scoreid = "2221"
+    scoretime = "3331"
+    scorecount = "4441"
+
     cursor = connection.cursor()
     
     friendslistid = "22"
     userid = "22"
     friendid = "22"
     
-    result = cursor.execute("INSERT INTO friendsList(friendslistid , userid , friendid) VALUES ('%s' , '%s' , '%s')" % ())
-    
-    if result == 1:
-        statusDis={"status":"ok","message":"添加成功"};
-        return HttpResponse(json.dumps(statusDis),content_type="application/json");
-    else:
+    result = cursor.execute("INSERT INTO friendsList(friendslistid , userid , friendid) VALUES ('%s' , '%s' , '%s')" % (friendslistid , userid , friendid))
+    try:
+        if result == 1:
+            statusDis={"status":"ok","message":"添加成功"};
+            cursor.close()
+            return HttpResponse(json.dumps(statusDis),content_type="application/json");
+    except Exception as e:
         statusDis={"status":"error","message":"添加失败"};
         return HttpResponse(json.dumps(statusDis),content_type="application/json");
-
-
-#好友列表删除功能
-def friendslistManageJsonDelete(request):
-    cursor=connection.cursor()
-    # friendslistid = request.POST["friendslistid"];
-    friendslistid = "22"
+#积分删除按钮 吕建威
+def scoreDelete(request):
+    scoreid = request.POST["scoreid"]
     try:
-        result = cursor.execute("DELETE FROM friendsList WHERE friendslistid='%s'" % (friendslistid))
+        cursor.execute("DELETE * FROM score WHERE %s" %(scoreid))
+        statusDis={"status":"ok","message":"删除成功"};
         cursor.close()
-        print("***********")
-        print(result);
-        if result == 1:
-             return HttpResponse(json.dumps({"message":"删除成功","status":"ok"}),content_type="application/json")
-        else : 
-             return HttpResponse(json.dumps({"message":"删除失败","status":"error"}),content_type="application/json")
-       
-    except Exception as identifier:
-        return HttpResponse(json.dumps({"message":"删除语句执行失败","status":"error"}),content_type="application/json")
+        return HttpResponse(json.dumps(statusDis),content_type="application/json");
+    except:
+        statusDis={"status":"error","message":"删除失败"};
+        return HttpResponse(json.dumps(statusDis),content_type="application/json");
+
+#积分查询按钮 吕建威
+def scoreSelect(request):
+    userid = request.POST["userid"]
+    cursor=connection.cursor()
+    myData=[]
+    cursor.execute("SELECT (userid , scoreid , scoretime , scorecount ,getpath) FROM score WHERE userid = %s" %userid)
+    try:
+        for data in cursor.fetchall():
+            userid=data[0]
+            scoreid=data[1]
+            scoretime=data[2]
+            scorecount = data[3]
+            getpath = data[4]
+            tempDic={"userid":userid,"scoreid":scoreid,"scoretime":scoretime,"scorecount":scorecount,"getpath":getpath}
+            myData.append(tempDic)
+        cursor.close()
+        return HttpResponse(json.dumps({'data':myData, 'status':'ok'}), content_type="application/json")
+    except Exception as e:   
+        # raise e
+        return HttpResponse(json.dumps({"data":myData , "status":"error"}) , content_type="application/json");
 
 #好友列表查询功能
 def friendslistManageJsonSelect(request):
