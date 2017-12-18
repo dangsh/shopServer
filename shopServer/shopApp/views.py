@@ -808,19 +808,17 @@ def ordertabalelistJaon(request):
         selectpage = request.POST["selectpage"]
     except:
         pass
-    print(selectpage)
-    mypage = (int(selectpage) - 1) * 10
-    print(mypage)
 
-    if request.POST and (request.POST["userid"]!="" or request.POST["orderid"]!=""):
+    mypage = (int(selectpage) - 1) * 10
+    print(request.POST)
+    if request.POST and (request.POST["userid"]!="" or request.POST["orderid"]!="" or request.POST["status"]!=""):
         # print(request.POST)
         userid = request.POST["userid"]
         orderid = request.POST["orderid"];
-        a=request.POST["status"];
-        
+        status=request.POST["status"];
+        print("xxxxxxxxxxxxxxxxxxxx",status)
         if userid=="" and orderid!="":
             sql="SELECT * from ordertable WHERE orderid='%s'"%(orderid);
-            print(sql)
             cursor2 = connection.cursor();
             cursor2.execute("SELECT COUNT(*) FROM ordertable WHERE orderid='%s'"%(orderid))
             selectCount  = cursor2.fetchall();
@@ -828,19 +826,26 @@ def ordertabalelistJaon(request):
             selectCount = selectCount[0][0]
 
         elif userid!="" and orderid=="":
-            sql="SELECT * from ordertable WHERE userid='%s'"%(userid);
-            print(sql)
-            cursor2 = connection.cursor();
-            cursor2.execute("SELECT COUNT(*) FROM ordertable WHERE userid='%s'"%(userid))
-            selectCount  = cursor2.fetchall();
-            cursor2.close()
-            selectCount = selectCount[0][0]
+            if status=="0":
+                sql="SELECT * from ordertable WHERE userid='%s'"%(userid);
+                cursor2 = connection.cursor();
+                cursor2.execute("SELECT COUNT(*) FROM ordertable WHERE userid='%s'"%(userid))
+                selectCount  = cursor2.fetchall();
+                cursor2.close()
+                selectCount = selectCount[0][0]
+            else :
+                sql="SELECT * from ordertable WHERE userid='%s' AND status='%s'"%(userid,status);
+                print(sql)
+                cursor2 = connection.cursor();
+                cursor2.execute("SELECT COUNT(*) FROM ordertable WHERE userid='%s' AND status='%s'"%(userid,status))
+                selectCount  = cursor2.fetchall();
+                cursor2.close()
+                selectCount = selectCount[0][0]
 
         elif userid=="" and orderid=="":
-            sql="SELECT * from ordertable WHERE status='%s'"%(a);
-
+            sql="SELECT * from ordertable WHERE status='%s'"%(status);
             cursor2 = connection.cursor();
-            cursor2.execute("SELECT COUNT(*) FROM ordertable WHERE status='%s'"%(a))
+            cursor2.execute("SELECT COUNT(*) FROM ordertable WHERE status='%s'"%(status))
             selectCount  = cursor2.fetchall();
             cursor2.close()
             selectCount = selectCount[0][0]

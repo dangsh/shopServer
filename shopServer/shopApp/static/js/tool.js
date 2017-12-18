@@ -10,7 +10,7 @@ function myPost(url, data, fn) {
 }
 
 // 订单状态规则
-var tool_order_status = ["未审核", "已审核", "待支付", "已支付", "代发货", "已发货", "已取消", "已完成"];
+var tool_order_status = ["待审核", "已审核", "待支付", "已支付", "代发货", "已发货", "已取消", "已完成"];
 
 // 创建分页
 function createPageNav(selec, totalPages, cbFn) {
