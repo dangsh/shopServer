@@ -94,6 +94,7 @@
 			</div>
 </body>
 <script>
+	
 	//ajax请求函数
 	function ajaxFn(url , data){
 		$.ajax({
@@ -154,11 +155,12 @@
 				aa=result.status;
 				console.log(aa);
 				if (aa=="ok"){
+					localStorage.setItem("keySss" , "ok")
 					document.getElementById("name").value = "";
 					document.getElementById("pwd").value = "";
 					document.getElementById("code").value = ""
 					console.log("789797979797")
-					window.parent.location.href="https://www.baidu.com/"
+					window.location.href="http://localhost:8000/goodsManage/"
 				}
 				else{
 					document.getElementById("pwd").value = "";

@@ -79,6 +79,10 @@ urlpatterns = [
     url(r'^activeManageJsonSelect/$' , activeManageJsonSelect), # 活动列表接口
     url(r'^activetableManageJsonDelete/$' , activetableManageJsonDelete), # 活动删除接口接口
     url(r'^redpack/$',redpack),#红包页面
+    url(r'^redpackApi/$',redpackApi),#红包查询
+    url(r'^redpackAdd/$',redpackAdd),#红包添加
+    url(r'^redpackDelete/$',redpackDelete),#红包删除
+    
 
     url(r'^ordertableManageJsonAdd/$' , ordertableManageJsonAdd), # 订单添加接口
     url(r'^ordertableDelete/$' , ordertableDelete), # 订单删除接口
@@ -93,7 +97,7 @@ urlpatterns = [
 
     url(r'^drawJsonAdd/$',drawJsonAdd),   #添加抽奖余额接口
     url(r'^drawJsonDel/$',drawJsonDel),   #删除抽奖余额接口
-    url(r'^drawJsonUpdate/$',drawJsonUpdate),   #修改抽奖余额接口
+    # url(r'^drawJsonUpdate/$',drawJsonUpdate),   #修改抽奖余额接口
     url(r'^drawJsonQuery/$',drawJsonQuery),   #查找抽奖余额接口
     
     url(r'cartstableManageJsonGain/$' , cartstableManageJsonGain),#购物车获取接口
@@ -132,8 +136,12 @@ urlpatterns = [
     url(r'^deleLeaveMessage/$',deleLeaveMessage), ##删除用户留言接口
 
     url(r'^scoreAdd/$',scoreAdd), #积分添加接口
-    url(r'^scoreDelete/$',scoreDelete), #积分删除接口
-    url(r'^scoreSelect/$',scoreSelect), #积分查询接口
+    url(r'^scoreDelete/$',scoreDelete), #积分删除接口 POST请求
+    url(r'^scoreSelect/$',scoreSelect), #积分查询接口 POST请求
+
+    url(r'^buyhistoryAdd/$',buyhistoryAdd), #购买历史添加接口
+    url(r'^buyhistorySelect/$',buyhistorySelect), #购买历史删除接口 POST请求
+    url(r'^buyhistoryDelete/$',buyhistoryDelete), #购买历史查询接口 POST请求
 
     url(r'^personal/$' , personal),      
 

@@ -85,7 +85,18 @@
 	}
 </style>
 {% endblock %} {% block content %}
-<div class="row" style="height: 60px;">
+<div class="row">
+		<div class="col-md-4 col-md-offset-3">
+			<div><input type="text" class="form-control" id="goodsSelectName" placeholder="商品名"></div>
+		</div>
+		<div>
+			<button type="submit" class="btn btn-success" id="goodsSelectBtn"><span class="glyphicon glyphicon-search" aria-hidden="true"></span>商品查询</button>
+		</div>
+</div>
+
+<!-- 胡亚州 from 表单 
+	<div class="row" style="height: 60px;">
+	
 	<div class="col-md-12" style="text-align: center;">
 		<form class="form-inline" action="#">
 			<div class="form-group">
@@ -95,7 +106,7 @@
 			<button type="submit" class="btn btn-success" id="goodsSelectBtn"><span class="glyphicon glyphicon-search" aria-hidden="true"></span>商品查询</button>
 		</form>
 	</div>
-</div>
+</div> -->
 <div class="row">
 	<div class="row" style="height: 50px;">
 		<div class="col-md-6" style="text-align: left;">
@@ -117,14 +128,15 @@
 						<input type="checkbox" id="checkbox-all" value="$(goodsid)">
 					</th>
 					<th>序号</th>
+					<th>商品号</th>
 					<th>商品名称</th>
-					<th>所属商家</th>
 					<th>商家类别</th>
+					<th>添加时间</th>
 					<th>已售件数</th>
 					<th>上架状态</th>
 					<th>上架处理</th>
 					<th>轮播图</th>
-					<th>商品图文信息</th>
+					<th>图文信息</th>
 					<th>编辑</th>
 				</tr>
 			</thead>
@@ -169,6 +181,9 @@
 			<div class="col-md-12" style="text-align: left;">
 				<div class="text-center">
 					<ul id="visible-pages-example"></ul>
+
+
+					<ul id="xxx"></ul>
 				</div>
 			</div>
 		</div>
@@ -194,7 +209,7 @@
 
 
 						<a style="display: inline-block;" href="javascript:;" class="a-upload">
-							<input class="myInput" type="file" name="imgsFile" id="">点击这里上传文件
+							<input class="myInput" type="file" name="imgsFile" id="">点击这里上传图片
 						</a>
 
 						<input id="subbtn" class="btn btn-default" type="submit">
@@ -237,6 +252,10 @@ var thispage = 1
 var addGoodsIdRed = ""
 var commName = ""
 var timeBtnUp = 0
+
+var fenye = $('#visible-pages-example');
+var defaultOptions = ""
+
 
 var mainData = "";
 
@@ -283,13 +302,32 @@ function ShowDiv(show_div, bg_div) {
 	myPost("goodsSelectByid" ,objData , function(data){
 		console.log(data.data)
 		for(var i = 0; i < data.data.length; i++) {
-				if(data.data[i].goodsid == addGoodsIdRed) {
-					var detailsAll = data.data[i].details;
-					detailsAll = decodeURIComponent(detailsAll)
-					ue.setContent(detailsAll);					
-				}
+			if(data.data[i].goodsid == addGoodsIdRed) {
+				var detailsAll = data.data[i].details;
+				detailsAll = decodeURIComponent(detailsAll)
+				ue.setContent(detailsAll);					
 			}
-
+		}
+			$("#edui153").css({"position":"abdsolute" , "top":"-10000px"});
+			$("#edui148").css({"position":"abdsolute" , "top":"-10000px"})
+			$("#edui268").css({"position":"abdsolute" , "top":"-10000px"})
+			$("#edui263").css({"position":"abdsolute" , "top":"-10000px"})
+			$("#edui262").css({"position":"abdsolute" , "top":"-10000px"})
+			$("#edui261").css({"position":"abdsolute" , "top":"-10000px"})
+			$("#edui260").css({"position":"abdsolute" , "top":"-10000px"})
+			$("#edui259").css({"position":"abdsolute" , "top":"-10000px"})
+			$("#edui258").css({"position":"abdsolute" , "top":"-10000px"})
+			$("#edui257").css({"position":"abdsolute" , "top":"-10000px"})
+			$("#edui256").css({"position":"abdsolute" , "top":"-10000px"})
+			$("#edui255").css({"position":"abdsolute" , "top":"-10000px"})
+			$("#edui254").css({"position":"abdsolute" , "top":"-10000px"})
+			$("#edui253").css({"position":"abdsolute" , "top":"-10000px"})
+			$("#edui252").css({"position":"abdsolute" , "top":"-10000px"})
+			$("#edui247").css({"position":"abdsolute" , "top":"-10000px"})
+			$("#edui248").css({"position":"abdsolute" , "top":"-10000px"})
+			$("#edui238").css({"position":"abdsolute" , "top":"-10000px"})
+			$("#edui219").css({"position":"abdsolute" , "top":"-10000px"})
+			$("#edui175").css({"position":"abdsolute" , "top":"-10000px"})
 	} )
 
 
@@ -324,6 +362,7 @@ function oneGoods(data, i) {
 	var price = data["price"];
 	var goodsName = data["goodsname"];
 	var stock = data["stock"];
+	var addtime = data["addtime"];
 
 	var goodsStatusStr = "未知"
 	var goodsStatusColour = "black"
@@ -342,7 +381,7 @@ function oneGoods(data, i) {
 		downDisabled = "disabled"
 	}
 	var row = (thispage - 1) * 10 + i
-	var ele = '<tr class="biaojuzhong" goodsid="' + goodsid + '"><td><input class="checkbox-one" type="checkbox"></td><th scope="row">' + row + '</th><td>' + goodsName + '</td><td>' + shopname + '</td><td>家居</td><td></td><td class="goodsStatus" style="color: ' + goodsStatusColour +';">' + goodsStatusStr + '</td><td><button class="btn btn-default up" type="button" ' + upDisabled + '><span class="glyphicon glyphicon-upload " aria-hidden="true">上架 </span></button><button class="btn btn-default down" type="button" ' + downDisabled + '><span class="glyphicon glyphicon-download" aria-hidden="true">下架</span></button></td><td><button class="btn btn-default demo3" type="button"><span class="glyphicon glyphicon-picture" aria-hidden="true"></span></button><button class="btn btn-default  demo4" type="button"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button></td><td><button class="btn btn-default demo5" type="button"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button></td><td><button class="btn btn-default demo7" type="button"><span class="glyphicon glyphicon-file"  aria-hidden="true"></span></button><button class="btn btn-default demo8" type="button"><span class="glyphicon glyphicon-trash"  aria-hidden="true"></span></button></td></tr>'
+	var ele = '<tr class="biaojuzhong" goodsid="' + goodsid + '"><td><input class="checkbox-one" type="checkbox"></td><th scope="row">' + row + '</th><td>' + goodsid + '</td><td>' + goodsName + '</td><td>' + standard + '</td><td>' + addtime + '</td><td></td><td class="goodsStatus" style="color: ' + goodsStatusColour +';">' + goodsStatusStr + '</td><td><button class="btn btn-default up" type="button" ' + upDisabled + '><span class="glyphicon glyphicon-upload " aria-hidden="true">上架 </span></button><button class="btn btn-default down" type="button" ' + downDisabled + '><span class="glyphicon glyphicon-download" aria-hidden="true">下架</span></button></td><td><button class="btn btn-default demo3" type="button"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button><button class="btn btn-default  demo4" type="button"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button></td><td><button class="btn btn-default demo5" type="button"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button></td><td><button class="btn btn-default demo7" type="button"><span class="glyphicon glyphicon-file"  aria-hidden="true"></span></button><button class="btn btn-default demo8" type="button"><span class="glyphicon glyphicon-trash"  aria-hidden="true"></span></button></td></tr>'
 	$(".myListTable").append(ele)
 	
 }
@@ -415,14 +454,15 @@ function goodsListToPage(data) {
 	$(".demo7").click(function(){
 		currentIndex = $(this).parents("tr").index();
         currentItem = mainData[currentIndex];
-        localStorage.setItem("data" ,JSON.stringify(currentItem))
+        localStorage.setItem("data" ,JSON.stringify(currentItem));
+		localStorage.setItem("isEdit",true)
 		setTimeout(function () {
 			window.location.href = "http://localhost:8000/addGoods/"
 		} , 1000)
 	});
 
 
-	
+
 	$(".demo8").click(function(){
 		var that = $(this).parents("tr")
 		var oneDeleteData = mainData[that.index()];
@@ -512,13 +552,7 @@ function goodsListToPage(data) {
 $("#goodsSelectBtn").click(function(){
 	thispage = 1
 	commName = $("#goodsSelectName").val()
-	if(commName==""){
-		layer.msg("商品名称不能为空")
-	}
-	else{
-		myflag=1
-		loaddata()  
-	}
+	loaddata()
 });
 var luckyGoods = {}
 
@@ -626,13 +660,66 @@ $('#checkbox-all').click(function () {
 });
 
 myflag=0
-function loaddata() {
 
+
+function addFenyeHtml (yeNumber) {
+	console.log("******************addFenyeHtml");
+	if (defaultOptions != "") {
+		
+		var currentPage = fenye.twbsPagination('getCurrentPage');
+		if (currentPage > yeNumber) {
+			currentPage = 1;
+		}
+		var cucrrentOptioins = {
+			totalPages:yeNumber,
+			first: "首页",
+			last: "尾页",
+			prev: '上一页',
+			next: '下一页',
+			startPage: currentPage,
+			visiblePages: yeNumber>5?5:yeNumber,
+			version: '1.1',
+			initiateStartPageClick:false ,
+			onPageClick: function (event, page) {
+				console.log("page",page)
+				thispage = page
+				loaddata(page);
+			}
+		};
+		fenye.twbsPagination('destroy');
+		fenye.twbsPagination($.extend({}, defaultOptions, cucrrentOptioins));
+		defaultOptions = cucrrentOptioins;
+	} else {
+		var page = 1 
+		defaultOptions = {
+			totalPages:yeNumber,
+			first: "首页",
+			last: "尾页",
+			prev: '上一页',
+			next: '下一页',
+			startPage: 1,
+			visiblePages: yeNumber>5?5:yeNumber,
+			version: '1.1',
+			initiateStartPageClick:false , 
+			onPageClick: function (event, page) {
+				console.log(")))))))))))))))))))))))");
+				thispage = page
+				// $('#pagination').empty()
+				loaddata();
+			}
+		};
+		fenye.twbsPagination(defaultOptions);
+	}
+}
+
+function loaddata() {
 	$.ajax({
 		url: "http://localhost:8000/commodityQuery/?page=" + thispage + "&commName=" + commName + "&timeUP=" +timeBtnUp,
 		success: function (data) {
 			goodsCount = data.goodscount
 			goodsListPages = Math.ceil(parseInt(goodsCount) / 10 )
+			console.log("thispage",thispage)
+			console.log("-----",goodsListPages)
 			$(".myListTable").children("tr").remove()
 			//解析数据
 			mainData = data.data;
@@ -650,21 +737,7 @@ function loaddata() {
 			$("#visible-pages-example").children(".sumdiv").remove()
 			var spanele = '<span class="sumdiv">共' + goodsListPages + '页,当前第' + thispage + '页,共' + goodsCount + '条数据</span>'
 			$("#visible-pages-example").append($(spanele))
-			
-			$('#visible-pages-example').twbsPagination({
-				totalPages:goodsListPages,
-				first: "首页",
-				last: "尾页",
-				prev: '上一页',
-				next: '下一页',
-				startPage: 1,
-				visiblePages: goodsListPages>5?5:goodsListPages,
-				version: '1.1',
-				onPageClick: function (event, page) {
-					thispage  = page;
-					loaddata()
-				}
-			});
+			addFenyeHtml(goodsListPages)
 		},
 		error: function (msg) {
 			console.log("error:获取数据失败")
@@ -690,6 +763,5 @@ $("#timeBtn").click( function () {
 	thispage = 1
 	loaddata()
 })
-
 </script>
 {% endblock %}

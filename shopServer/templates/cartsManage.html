@@ -68,15 +68,19 @@
 
 
 {% block content %}
-<div class="row" style="height: 60px;">
+<div class="row1" style="height: 60px;">
 		<div class="col-md-12" style="text-align: center;">
 		</div>
 	</div>
 	<div class="row" >
-		<div class="row" style="height: 50px;">
+		<div class="row3" style="height: 50px;">
+				<div class="col-md-6" style="text-align:left;">
+					<!-- <button id="deleteBtn" type="button" class="btn btn-danger delBtn"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span>批量删除</button>			 -->
+					<input id="deleteBtn" type="button" class="btn btn-danger delBtn" value="批量删除"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+				</div>
 			
 			<div class="col-md-6" style="text-align: right;">
-				<p >共有数据:<strong id="goodsNumber">0</strong>条</p>
+				<p>共有数据:<strong id="goodsNumber">0</strong>条</p>
 			</div>
 		</div>
 		
@@ -84,8 +88,11 @@
 		<div class=""  id="bigdiv">
 			
 			<table id="table" class="table table-bordered" >
+				<tbody>
 					<tr class="row">
-						<td id="item" style="display:none"></td>
+						<th>
+							<input type="checkbox" id="checkbox-all" value="$(cartsid)" class="all">
+						</th>
 						<th>自然序号</th>
 						<th>商品名称</th>
 						<th>商品图文信息</th>
@@ -96,29 +103,35 @@
 						<th>金额</th>
 						<th>操作</th>
 					</tr>
-
-
-					<!-- <tr class="row" id="myRow">
-						
-						<th>1</th>
-						<th>商品名称</th>
-						<th>商品图文信息</th>
-						<th>所属商家</th>
-						<th>商家类别</th>
-						<th>单价</th>
+				</tbody>
+					<!-- <tr class="row">
+					<tbody>
+						<th>
+							<input type="checkbox" class="checkbox-one">
+						</th>
+						<th class="id">' + cartsid + '</th>
+						<th>huawei</th>
+						<th>' + goodsid + '</th>
+						<th>华为</th>
+						<th>手机</th>
+						<th>￥2999</th>
 						<th>
 							<div class="item-amount">
-								<a href="#" class="J_Minus no-minus decrease">-</a>
-								<a type="text" value="1" class="text text-amount J_ItemAmount" data-max="281" data-now="1" autocomplete="off"></a>
-								<a href="#" class="J_Plus plus increase">+</a>
+								<a href="#" class="J_Minus no-minus glyphicon glyphicon-minus decrease" name="-"></a>
+								<input type="text" value="' + number + '" class="text text-amount J_ItemAmount counts" data-max="281" data-now="1" autocomplete="off">
+								<a href="#" class="J_Plus plus glyphicon glyphicon-plus increase"></a>
 							</div>
 						</th>
 						<th>金额</th>
 						<th>
-							<button class="btn btn-success buybtn">购 买</button>
-							<button class="btn btn-danger delbtn">删 除</button> 
-						</th>
-					</tr> -->
+							<button class="btn btn-success">购 买</button>
+							<button class="btn btn-danger delbtn">删 除</button>
+						 </th>
+						</tr>
+					</tbody> -->
+					
+
+					
 				</table>
 		</div>
 		
@@ -166,7 +179,7 @@
             <a href="#"><i class="fa fa-dashboard"></i> Home</a>
         </li>
         <li class="active">购物车列表</li>
-    </ol>
+</ol>
 
 {% endblock %}
 
@@ -179,6 +192,13 @@
 
 {% block script %}
 <script>
+$('#checkbox-all').click(function () {
+	if($('#checkbox-all').is(':checked')) {
+		$(".checkbox-one").prop("checked",true);
+	}else{
+		$(".checkbox-one").prop("checked",false);
+	}
+});
 
 function getDataFn(opt) {
 	$.ajax({
@@ -196,11 +216,51 @@ function getDataFn(opt) {
 				var goodsid = oneData.goodsid;
 				var userid = oneData.userid;
 
-				var ele = '<tr class="row"><th class="id">' + cartsid + '</th><th>huawei</th><th>' + goodsid + '</th><th>华为</th><th>手机</th><th>￥2999</th><th><div class="item-amount"><a href="#" class="J_Minus no-minus glyphicon glyphicon-minus decrease" name="-"></a><input type="text" value="' + number + '" class="text text-amount J_ItemAmount counts" data-max="281" data-now="1" autocomplete="off"><a href="#" class="J_Plus plus glyphicon glyphicon-plus increase"></a></div></th><th>金额</th><th><button class="btn btn-success">购 买</button><button class="btn btn-danger delbtn">删 除</button> </th></tr>' ;
+				var ele = '<tr class="row"><th><input type="checkbox" class="checkbox-one"></th><th class="id">' + cartsid + '</th><th>huawei</th><th>' + goodsid + '</th><th>华为</th><th>手机</th><th>￥2999</th><th><div class="item-amount"><a href="#" class="J_Minus no-minus glyphicon glyphicon-minus decrease" name="-"></a><input type="text" value="' + number + '" class="text text-amount J_ItemAmount counts" data-max="281" data-now="1" autocomplete="off"><a href="#" class="J_Plus plus glyphicon glyphicon-plus increase"></a></div></th><th>金额</th><th><button class="btn btn-success">购 买</button><button class="btn btn-danger delbtn">删 除</button> </th></tr>' ;
 				$(".table-bordered").append(ele) ;
 			}
 		}
 	});
+	$('.row').delegate('input', 'click', function(ev){
+		b = $(this).val();
+		var that = $(this).parent().parent(".row");
+		var cartsid = that.children(".id").html();
+		// console.log(that);
+		// console.log(cartsid);
+
+		var cartsArr = [];
+		var checkboxs = $('.checkbox-one');
+		
+		
+		if(b == "批量删除")
+		{
+			 
+			for (var i = 0; i < checkboxs.length; i++) 
+			{
+				
+				if($(checkboxs[i]).is(':checked')) 
+				{
+					var cartsidOne = $(checkboxs[i]).parents("tr").children(".id").html();
+					
+					cartsArr.push(cartsidOne);
+					console.log("--------------");
+					console.log(cartsidOne);
+					myPost("http://localhost:8000/cartstableManageJsonDelete/?id=" + cartsArr , 
+					{"cartsid":cartsidOne} , 
+					function () {
+						console.log("删除成功。。。。。");
+						$(that).remove();
+					})
+					
+				}
+			}
+			console.log(cartsArr);
+		}
+		else{
+			console.log(cartsid);
+		}
+	});
+	
 
 	$('.row').delegate('button', 'click', function(ev)
 	{
@@ -208,6 +268,7 @@ function getDataFn(opt) {
 		a = $(this).html();
 		var that = $(this).parent().parent(".row");
 		var cartsid = that.children(".id").html();
+		console.log(that);
 		console.log(cartsid);
 		if (a == "删 除")
 		{
@@ -222,9 +283,8 @@ function getDataFn(opt) {
 				}
 			});
 		}
-		else
-		{
-			console.log("购买");
+		else{
+			console.log("购买成功");
 		}
     });
 
@@ -276,9 +336,33 @@ function getDataFn(opt) {
 			);
 		}
 	});
+	
 }
 getDataFn();
 
 </script>
 {% endblock %}
 
+<!-- <tr class="row">
+	<th>
+		<input type="checkbox" class="checkbox-one">
+	</th>
+	<th class="id">' + cartsid + '</th>
+	<th>huawei</th>
+	<th>' + goodsid + '</th>
+	<th>华为</th>
+	<th>手机</th>
+	<th>￥2999</th>
+	<th>
+		<div class="item-amount">
+		<a href="#" class="J_Minus no-minus glyphicon glyphicon-minus decrease" name="-"></a>
+		<input type="text" value="' + number + '" class="text text-amount J_ItemAmount counts" data-max="281" data-now="1" autocomplete="off">
+		<a href="#" class="J_Plus plus glyphicon glyphicon-plus increase"></a>
+		</div>
+	</th>
+	<th>金额</th>
+	<th>
+		<button class="btn btn-success">购 买</button>
+		<button class="btn btn-danger delbtn">删 除</button>
+	</th>
+</tr> -->

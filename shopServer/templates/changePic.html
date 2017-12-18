@@ -80,43 +80,56 @@
 
 				
 				for(var i=0;i<data.data.length;i++){
-//					console.log(data.data[i])
-//					console.log(data.data[i].goodsid)
+					console.log(data.data[i])
+					console.log(data.data[i].goodsid)
 					if(data.data[i].goodsid == goodsid){
 						
 						var number = 1;
 						var picName = data.data[i].images;
-						var order = 1;
+						console.log(picName);
+						// var order = 1;
 						var picNames = new Array()
-						picNames =picName.split("---")
-						
-						for(var i=1;i<picNames.length;i++){
-							newPic = picNames[i]
-							var ele = '<tr class="mytr"><td style="text-align: center;vertical-align: middle;" width="10%">'+number+'</td><td class="mytd" style="text-align: center;vertical-align: middle;" width="50%"><img src="http://localhost:8000/static/myfile/'+ newPic +'" /></td><td style="text-align: center;vertical-align: middle;" width="20%">'+order+'</td><td style="text-align: center;vertical-align: middle;" width="20%"><span class="glyphicon glyphicon-pencil"></span><span class="glyphicon glyphicon-trash delBtn" style="margin-left: 10px;"></span></td></tr>'
-							$(".userTable").append(ele);
-							
-							
+						if (picName)
+						{
+							console.log(picName.indexOf("---"));
+							if (picName.indexOf("---") >= 0)
+							{
+								console.log("hahhah");
+								picNames =picName.split("---");
+								console.log(picNames);
+							}
 						}
+						if (picNames.length != 0)
+						{
+							for(var i=0;i<picNames.length-1;i++){
+								newPic = picNames[i]
+								number = i +1;
+								var ele = '<tr class="mytr"><td style="text-align: center;vertical-align: middle;" width="10%">'+number+'</td><td class="mytd" style="text-align: center;vertical-align: middle;" width="50%"><img src="http://localhost:8000/static/myfile/'+ newPic +'" /></td><td style="text-align: center;vertical-align: middle;" width="20%">'+number+'</td><td style="text-align: center;vertical-align: middle;" width="20%"><span class="glyphicon glyphicon-trash delBtn" style="margin-left: 10px;"></span></td></tr>'
+								$(".userTable").append(ele);
+							}
+						}
+						else{
+							alert("此商品没有图片");
+							history.go(-1);
+						}
+						
 						
 						$(".delBtn").click(function(){
 								var that = $(this).parents("tr")
 								var a = that.children(".mytd")
 								var b = $(a).children()
-//								console.log(that.children())
-//								console.log(a)
-//								console.log(b)
 								
 //								获取图片链接c
 								c = $(b)[0].src
-//								console.log(c)
+								console.log(c)
 								var urls = new Array()
 								urls =c.split("/")
 								//获取图片名
 								getUrl = urls.pop()
-//								console.log(getUrl)
-								finalUrl = picName.replace('---'+getUrl,'')
-//								console.log(finalUrl)
-//								console.log(goodsid)
+								console.log(getUrl)
+								finalUrl = picName.replace(getUrl+'---','')
+								console.log(finalUrl)
+								console.log(goodsid)
 								
 								
 								$.ajax({
@@ -146,10 +159,5 @@
 		
 			}
 		});    
-		
-		
-		
-		
-		
 	</script>
 {% endblock%}

@@ -160,14 +160,14 @@
 					<div class="form-group">
 						<label class="col-sm-4 control-label">促销开始日期：</label>
 						<div class="col-sm-3">
-							<input  class="form-control only" type="date" onkeyup="myfun(this);"name="prostart" id="prostart" value="2015-03-27">
+							<input  class="form-control only" type="date" onkeyup="myfun(this);"name="prostart" id="prostart" value="1999-01-01">
 							
 						</div>
 					</div>
 					<div class="form-group">
 						<label class="col-sm-4 control-label">促销结束日期：</label>
 						<div class="col-sm-3">
-							<input  class="form-control only" type="date" onkeyup="myfun(this);"id="proend" name="proend"value="2015-03-27" >
+							<input  class="form-control only" type="date" onkeyup="myfun(this);"id="proend" name="proend"value="1999-01-01" >
 						</div>
 					</div>
 					<div class="form-group">
@@ -221,7 +221,7 @@
 					</tr>
 
 					<tbody class="myListTable">
-						<tr class="datails"style=" background-color: rgb(255, 255, 255);
+						<tr class="idatas"style=" background-color: rgb(255, 255, 255);
 						padding-left: 5px;">
 							<td></td>
 							<td></td>
@@ -235,8 +235,7 @@
 							<td></td>
 							<td></td>
 							<td></td>
-							<td></td>
-								
+							<td></td>								
 					</tbody>
 				</table>
 			</div>
@@ -244,21 +243,18 @@
 		<div class="col-md-12" style="width: 100%;height: 350px;padding-left: 0px;padding-right: 0px;">
 			<div class=row style="color:red" ;>
 				<div class="col-md-6"> (请在这里输入商品详情)</div>
-
+				<a style="display: inline-block;" href="javascript:;" class="a-upload">
+						<input class="myInput" type="file" name="details" id="">点击这里上传文件					
+						</a>
 			</div>
 			<div id="" style="background-color: red;width: 100%;height: 250px;float: left;">
 				<script id="editor" type="text/plain" style="width:100%;height:250px;">
-					<input class="myInput" type="file" name="details" id="">
 				</script>
-				<a style="display: inline-block;" href="javascript:;" class="a-upload">
-					<input class="myInput" type="file" name="details" id="">点击这里上传文件					
-					</a>
 			</div>
+
 		</div>
-		
 		<div class="form-group " >
 			<div class="col-sm-offset-4 col-md-12"style="margin-top:40px">
-	
 				<button type="button" class="btn btn-success " id="updata"> 更改</button>
 				<button type="button" class="btn btn-success" id="endata"> 确定</button>
 				<button type="button" class="btn btn-info" id="sub"> 提交</button>
@@ -287,7 +283,7 @@
 
 {% block script %}
 
-
+<script src="{% static 'layer/layer.js' %}" type="text/javascript" charset="utf-8"></script>
 
 <script type="text/javascript">
 	var ue = UE.getEditor('editor');
@@ -313,9 +309,14 @@ $( '#updata').click(function () {
 
 $( '#sub').click(function () {
 	console.log("3333")
+	
 	$("#addgoods").ajaxSubmit();
+	layer.msg("添加商品成功");
+
 })
-if (localStorage.length==1){
+
+
+if (localStorage.getItem("isEdit")=="true"){
 	$("h1").html("编辑商品<small>Version 5.0</small>");
 	var data = JSON.parse(localStorage.getItem("data"));
 	$("#goodsname").val(data.goodsname);
@@ -353,18 +354,13 @@ if (localStorage.length==1){
 
 
 
-
-
 function myfun(aaa){
 
 	var myValue = $(aaa).val();
 	var myIndex = $(aaa).parents(".form-group").index();
 
-	$($(".datails").children("td")[myIndex]).text(myValue)
+	$($(".idatas").children("td")[myIndex]).text(myValue)
 	
 }
-
-
-
 </script>
 {% endblock %}

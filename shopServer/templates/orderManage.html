@@ -6,23 +6,23 @@
 			<form class="form-inline" action="http://localhost:8000/ordertabalelistJaon/" id="searchForm" method="post">
 				<div class="form-group">
 					<label for="exampleInputName2">订单号:</label>
-					<input type="text" class="form-control" name = "orderid" id="orderid" placeholder="订单号">
+					<input type="text" class="form-control" name="orderid" id="orderid" placeholder="订单号">
 					<label for="exampleInputName2">用户名:</label>
-					<input type="text" class="form-control"id="userid" name="userid" placeholder="用户名">
+					<input type="text" class="form-control" id="userid" name="userid" placeholder="用户名">
 					<label for="exampleInputName2">订单状态:</label>
-					<select name="status" class="form-control" id = "myStatus">
+					<select name="status" class="form-control" id="myStatus">
 						<option value="0">请选择</option>
 						<option value="1">待审核</option>
 						<option value="2">已审核</option>
-						<option value = "3">待支付</option>
-						<option value = "4">已支付</option>
-						<option value = "5">代发货</option>
-						<option value = "6">待收货</option>
-						<option value = "7">已取消</option>
-						<option value = "8">已完成</option>
+						<option value="3">待支付</option>
+						<option value="4">已支付</option>
+						<option value="5">代发货</option>
+						<option value="6">待收货</option>
+						<option value="7">已取消</option>
+						<option value="8">已完成</option>
 					</select>
 				</div>
-				<input type="submit" id = "tijiao"  class="btn btn-success mybtn" aria-hidden="true" value="订单查询" >
+				<input type="submit" id="tijiao" class="btn btn-success mybtn" aria-hidden="true" value="订单查询">
 				<!-- <span class="glyphicon glyphicon-search" aria-hidden="true" value="订单查询"> -->
 			</form>
 		</div>
@@ -30,19 +30,19 @@
 			<thead>
 				<tr>
 					<th colspan="11">
-						
-							<button class="btn btn-default trash AllDelete"><span class = "glyphicon glyphicon-trash">批量删除</span></button>
-							<label id="userNumber" class="count" style="float: right; padding-right: 4%;">共有数据</label>
-						
+
+						<button class="btn btn-default trash AllDelete"><span class = "glyphicon glyphicon-trash">批量删除</span></button>
+						<label id="userNumber" class="count" style="float: right; padding-right: 4%;">共有数据</label>
+
 					</th>
 				</tr>
 			</thead>
 
 			<!-- <caption><strong style="color: #000000;">商品列表</strong></caption> -->
-			<thead>	
+			<thead>
 				<tr>
 					<th class="info nature">
-							<input type="checkbox" id = "checkbox-all">
+						<input type="checkbox" id="checkbox-all">
 					</th>
 					<th>序号</th>
 					<th>订单号</th>
@@ -67,24 +67,24 @@
 
 	</div>
 	<div id="exampleModal" class="modal fade" tabindex="-1" role="dialog" data-backdrop="false" data-show="true">
-			<div class="modal-dialog" role="document">
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-						<h4 class="modal-title">Modal title</h4>
-					</div>
-					<div class="modal-body">
-						<p>One fine body&hellip;</p>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-						<button type="button" class="btn btn-primary">Save changes</button>
-					</div>
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title">Modal title</h4>
 				</div>
-				<!-- /.modal-content -->
+				<div class="modal-body">
+					<p>One fine body&hellip;</p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					<button type="button" class="btn btn-primary">Save changes</button>
+				</div>
 			</div>
-			<!-- /.modal-dialog -->
+			<!-- /.modal-content -->
 		</div>
+		<!-- /.modal-dialog -->
+	</div>
 
 	{% endblock %} {% block contentRight %}
 
@@ -99,192 +99,196 @@
 	<small>Version 5.0</small> {% endblock %} {% block script %}
 	<script src="{% static 'layer/layer.js' %}" type="text/javascript" charset="utf-8"></script>
 	<script>
-        var thispage = 1
-		
+		var thispage = 1
+		var searchData = ""
 
 		//解析数据到页面
-		var m=0;
-		function orderListToPage(data) {
-			for (var i = 0; i < data.length; i++) {
-				m+=1;
-				oneOrder(data[i])
+		var m = 0;
+		var n = 0;
+		var thestatus = ""
+
+		function orderListToPage(data, page) {
+			for(var i = 0; i < data.length; i++) {
+				m += 1;
+				thestatus = ""
+				if(i >= (page - 1) * 10 && i <= page * 10 - 1) {
+					oneOrder(data[i])
+				}
 			}
-			
-			
 		}
-		
- 
 
 		function oneOrder(data) {
+			n = 0;
 			orderid = data["orderid"]
 			userid = data["userid"]
 			price = data["price"]
 			ordertime = data["ordertime"]
 			status = data["status"]
-			var myHtml = '<tr class="mytr" orderid="' + orderid + '"><td class="info ele"><input class="checkbox-one" name="checkbox-one" type="checkbox"/></td><td scope="row">'+m+'</td><td>' + orderid + '</td><td>' + userid + '</td><td>' + price + '</td><td>'+ordertime+'</td><td>' + status + '</td><td > <button class="btn btn-default delete">删除</button></td></tr>'
-			
+			n = parseInt(status);
+
+			if(n >= 1 && n <= tool_order_status.length) {
+				thestatus = tool_order_status[n - 1]
+			} else {
+				thestatus = "状态不正确";
+			}
+
+			var myHtml = '<tr class="mytr" orderid="' + orderid + '"><td class="info ele"><input class="checkbox-one" name="checkbox-one" type="checkbox"/></td><td scope="row">' + m + '</td><td>' + orderid + '</td><td>' + userid + '</td><td>' + price + '</td><td>' + ordertime + '</td><td>' + thestatus + '</td><td > <button class="btn btn-default delete">删除</button></td></tr>'
 			$(".myListTable").append(myHtml)
-			$('.delete').click(function () {
+			$('.delete').click(function() {
 				var that = $(this).parents('tr');
-                var objData = that.attr('orderid')
-				myPost("ordertableDelete" , {orderid:objData} , function () {
-					$(that).remove();
-					
+				var objData = that.attr('orderid')
+				deleteOneDataById(objData, that);
+			})
+		}
+
+		// 根据id删除一条数据
+		function deleteOneDataById(objId, ele) {
+			myPost("ordertableDelete", {
+				orderid: objId
+			}, function(data) {
+				// 警告,需要加判断,服务器删除成功之后才能移除标签 
+				// 另外删除成功之后 要增加弹框提示
+				console.log(data)
+				$(ele).remove();
+			})
+		}
+
+		function loadData() {	
+			myPost("orderSpilit/?page=" + thispage, {}, function(data) {
+				m = 0;
+				ordercount = data.ordercount
+				orderListPages = Math.ceil(parseInt(ordercount) / 10)
+				$(".myListTable").children("tr").remove()
+				mainData = data.data;
+				orderListToPage(mainData, 1)
+				$("#orderCount").text(ordercount)
+				$("#visible-pages-example").children(".sumdiv").remove()
+				var spanele = '<span class="sumdiv">共' + orderListPages + '页,当前第' + thispage + '页</span>'
+				$("#visible-pages-example").append($(spanele))
+
+				// 创建分页
+				createPageNav('#visible-pages-example', orderListPages, function(event, page) {
+					thispage = page;
+					loadData()
 				})
 			})
-			
-		}	
+		}
 
-		function loadData(){
-			$.ajax({
-				url: "http://localhost:8000/orderSpilit/?page=" + thispage,
-				type:"POST",
-				success:function(data){
-					m=0;
-					ordercount = data.ordercount
-					orderListPages = Math.ceil(parseInt(ordercount) / 10 )
-					$(".myListTable").children("tr").remove()
-					mainData = data.data;
-					orderListToPage(mainData)
-					$("#orderCount").text(ordercount)
-					$("#visible-pages-example").children(".sumdiv").remove()
-					var spanele = '<span class="sumdiv">共' + orderListPages + '页,当前第' + thispage + '页</span>'
-					$("#visible-pages-example").append($(spanele))
-					
-					$('#visible-pages-example').twbsPagination({
-						totalPages:orderListPages,
-						first: "首页",
-						last: "尾页",
-						prev: '上一页',
-						next: '下一页',
-						startPage: 1,
-						visiblePages: orderListPages>5?5:orderListPages,
-						version: '1.1',
-						onPageClick: function (event, page) {
-							thispage  = page;
-							loadData()
-							
-						}
-					});
-				},
-				error:function(msg){
-					console.log("加载数据error")
-				}
-			})
-		}		
-		
-		
-		$(document).ready(function(){
+		$(document).ready(function() {
 			loadData()
 		});
-	
+
 		//解析数据 data为数组
-		
-		$(".AllDelete").click(function(){
-			m=0;
-            console.log("批量删除");
-            $("[name = checkbox-one]:checkbox").each(function () {
-                if ($(this).is(":checked")) {
-                    var that = $(this).parents('tr');
-                    var objData = that.attr('orderid')
-                    myPost("ordertableDelete" , {orderid:objData} , function () {
-						$(that).remove();
-					})
+
+		$(".AllDelete").click(function() {
+			m = 0;
+			console.log("批量删除");
+			$("[name = checkbox-one]:checkbox").each(function() {
+				if($(this).is(":checked")) {
+					var that = $(this).parents('tr');
+					var objData = that.attr('orderid')
+					deleteOneDataById(objData, that)
 				}
 			})
 		})
-		
 
-        $('#checkbox-all').click(function () {
-            if($('#checkbox-all').is(':checked')) {
-                $(".checkbox-one").prop("checked",true);
-            }else{
-                $(".checkbox-one").prop("checked",false);
-            }
-        })
-
-
-		var selectpage = 1
-		function ajaxSubmitForm(){
-			
-			m=0;
-			var option = 
-			{
-				url : "http://localhost:8000/ordertabalelistJaon/",
-				type : 'POST',
-				data:{"selectpage":selectpage},
-				// dataType : 'json',
-				success : function(data)
-				{   
-					newData = data.data
-					if(data.data!=""){
-						layer.msg("查找成功")
-					}
-					else{
-						layer.msg("查找失败")
-					}
-					selectCount = data.selectCount
-					selectListPages = Math.ceil(parseInt(selectCount) / 10 )
-					$(".myListTable").children("tr").remove()
-					SelectData = data.data;
-					orderListToPage(SelectData)
-					$("#orderCount").text(selectCount)
-					$("#visible-pages-example").children(".sumdiv").remove()
-					
-					var spanele = '<span class="sumdiv">共' + selectListPages + '页,当前第' + selectpage + '页</span>'
-					$("#visible-pages-example").append($(spanele))
-					
-					$('#visible-pages-example').twbsPagination({
-						totalPages:selectListPages,
-						first: "首页",
-						last: "尾页",
-						prev: '上一页',
-						next: '下一页',
-						startPage: 1,
-						visiblePages: selectListPages>5?5:selectListPages,
-						version: '1.1',
-						onPageClick: function (event, page) {
-							selectpage  = page;
-							ajaxSubmitForm()
-						}
-					});
-
-					// $('.mytr').remove();
-					// orderListToPage(newData)
-					
-					// document.getElementById("orderid").value = "";
-					// document.getElementById("userid").value = "";
-					
-					
-				},
-				error: function(data)
-				{
-					console.log("chucuole");
-				}
-			};
-			$("#searchForm").ajaxSubmit(option);
-			return false;
-		}
-		
-
-		
-		$('#searchForm').on('submit', function(e) {
-			e.preventDefault(); 
-			$(this).ajaxSubmit({
-				data:{"selectpage":selectpage},
-				success: function () {
-					
-					var _form = document.getElementById("searchForm")
-					if(_form.orderid.value=="" && _form.userid.value==""){
-						layer.msg("用户名，订单号不能为空")
-					}
-					else{
-						$("#visible-pages-example").twbsPagination("destroy")
-						ajaxSubmitForm();
-					}
+		$('#checkbox-all').click(function() {
+			if($('#checkbox-all').is(':checked')) {
+				$(".checkbox-one").prop("checked", true);
+			} else {
+				$(".checkbox-one").prop("checked", false);
 			}
 		})
+
+		var selectpage = 1
+
+		// function ajaxSubmitForm() {
+	
+		// 	m = 0;
+		// 	var option = {
+		// 		url: "http://localhost:8000/ordertabalelistJaon/",
+		// 		type: 'POST',
+		// 		data: {
+		// 			"selectpage": selectpage
+		// 		},
+		// 		// dataType : 'json',
+		// 		success: function(data) {
+
+		// 			console.log("fffff");
+		// 			newData = data.data
+		// 			if(data.data != "") {
+		// 				layer.msg("查找成功")
+		// 			} else {
+		// 				layer.msg("查找失败")
+		// 			}
+		// 			selectCount = data.selectCount
+		// 			selectListPages = Math.ceil(parseInt(selectCount) / 10)
+		// 			$(".myListTable").children("tr").remove()
+		// 			SelectData = data.data;
+		// 			orderListToPage(SelectData, 1)
+		// 			$("#orderCount").text(selectCount)
+		// 			$("#visible-pages-example").children(".sumdiv").remove()
+
+		// 			var spanele = '<span class="sumdiv">共' + selectListPages + '页,当前第' + selectpage + '页</span>'
+		// 			$("#visible-pages-example").append($(spanele))
+
+		// 			// 创建分页
+		// 			createPageNav('#visible-pages-example', selectListPages, selectListPages > 5 ? 5 : selectListPages, function(event, page) {
+		// 				selectpage = page;
+		// 				ajaxSubmitForm()
+		// 			})
+
+		// 		},
+		// 		error: function(data) {
+		// 			layer.msg("请求出错");
+		// 		}
+		// 	};
+		// 	$("#searchForm").ajaxSubmit(option);
+		// 	return false;
+		// }
+
+		$('#searchForm').on('submit', function(e) {
+			e.preventDefault();
+			$(this).ajaxSubmit({
+				data: {
+					"selectpage": selectpage
+				},
+				success: function(data) {
+
+					searchData = data;
+
+					
+					parseData();
+
+				}
+			})
 		});
 
+		function parseData() {
+			if(searchData == "" || searchData.length == 0 || searchData.data.length == 0) {
+				layer.msg("查询失败");
+				return;
+			}
+			layer.msg("查询成功");
+			$("#visible-pages-example").twbsPagination("destroy") //销毁分页栏
+			selectCount = searchData.selectCount
+			selectListPages = Math.ceil(parseInt(selectCount) / 10)
+			createPageNav('#visible-pages-example' , selectListPages , function (event , page) {
+				dataToView(page);
+			})
+		}
+
+		function dataToView(page) {
+			newData = searchData.data
+
+			$(".myListTable").children("tr").remove()
+			SelectData = searchData.data;
+			orderListToPage(SelectData, page)
+			$("#orderCount").text(selectCount)
+			$("#visible-pages-example").children(".sumdiv").remove()
+
+			var spanele = '<span class="sumdiv">共' + selectListPages + '页,当前第' + selectpage + '页</span>'
+			$("#visible-pages-example").append($(spanele))
+		}
 	</script>
 	{% endblock %}
