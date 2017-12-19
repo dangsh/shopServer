@@ -138,18 +138,15 @@
     }
     //请求数据
     function ajaxfn(){
-        $.ajax({
-            type: "post",
-            url: 'http://localhost:8000/activeManageJsonSelect/?page=' + currpage,
-            success: function (result){
-                console.log(result);
+    	myPost('activeManageJsonSelect/?page=' + currpage,{},function(result){
+    		console.log(result);
                 parseDataFn(result);
                 adcounts = result.adcounts;
                 countPages = Math.ceil(parseInt(adcounts) / 8 );
                 
                 var spanele = '<span class="sumdiv">共' + countPages + '页,当前第' + countPages + '页,共' + adcounts + '条数据</span>';
                 $("#visible-pages-example").append(spanele);
-                    $('#visible-pages-example').twbsPagination({
+                $('#visible-pages-example').twbsPagination({
                     totalPages:countPages,
                     first: "首页",
                     last: "尾页",
@@ -165,12 +162,7 @@
                         ajaxfn();
                     }
                 });
-            },
-            error: function (err){
-                console.log("请求失败");
-                console.log(err);
-            }
-        });
+    	})
     }
     ajaxfn();
     

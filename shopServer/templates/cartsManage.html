@@ -201,13 +201,8 @@ $('#checkbox-all').click(function () {
 });
 
 function getDataFn(opt) {
-	$.ajax({
-		type: "post",
-		url: "http://localhost:8000/cartstableManageJsonGain/",
-		async: true,
-		success: function(res) 
-		{
-			console.log(res);
+	myPost("cartstableManageJsonGain/",{},function(res){
+		console.log(res);
 			for(var i = 0; i < res.length; i++) 
 			{
 				var oneData = res[i];
@@ -219,40 +214,67 @@ function getDataFn(opt) {
 				var ele = '<tr class="row"><th><input type="checkbox" class="checkbox-one"></th><th class="id">' + cartsid + '</th><th>huawei</th><th>' + goodsid + '</th><th>华为</th><th>手机</th><th>￥2999</th><th><div class="item-amount"><a href="#" class="J_Minus no-minus glyphicon glyphicon-minus decrease" name="-"></a><input type="text" value="' + number + '" class="text text-amount J_ItemAmount counts" data-max="281" data-now="1" autocomplete="off"><a href="#" class="J_Plus plus glyphicon glyphicon-plus increase"></a></div></th><th>金额</th><th><button class="btn btn-success">购 买</button><button class="btn btn-danger delbtn">删 除</button> </th></tr>' ;
 				$(".table-bordered").append(ele) ;
 			}
-		}
-	});
+		
+	})
+//	$.ajax({
+//		type: "post",
+//		url: "http://localhost:8000/",
+
+//		async: true,
+//		success: function(res) 
+//		{
+//			
+//		}
+//	});
+
+	var deleteArr = [];
+	var allSelect = 0;
 	$('.row').delegate('input', 'click', function(ev){
+		console.log("lllllll");
 		b = $(this).val();
+
+		allSelect = 0;
+		
+		var checkboxs = $('.checkbox-one');
+
+		for (var k = 0; k < checkboxs.length; k++) {
+			if($(checkboxs[k]).is(':checked')){
+				allSelect++;
+			}
+		}
+	
+		var checkboxs = $('.checkbox-one');
+
+		deleteArr = [];
 		var that = $(this).parent().parent(".row");
 		var cartsid = that.children(".id").html();
 		// console.log(that);
 		// console.log(cartsid);
-
 		var cartsArr = [];
-		var checkboxs = $('.checkbox-one');
-		
-		
+
 		if(b == "批量删除")
 		{
-			 
 			for (var i = 0; i < checkboxs.length; i++) 
 			{
-				
-				if($(checkboxs[i]).is(':checked')) 
-				{
-					var cartsidOne = $(checkboxs[i]).parents("tr").children(".id").html();
-					
-					cartsArr.push(cartsidOne);
-					console.log("--------------");
-					console.log(cartsidOne);
-					myPost("http://localhost:8000/cartstableManageJsonDelete/?id=" + cartsArr , 
-					{"cartsid":cartsidOne} , 
-					function () {
-						console.log("删除成功。。。。。");
-						$(that).remove();
-					})
-					
-				}
+					if($(checkboxs[i]).is(':checked')) 
+					{
+						var trs = $(checkboxs[i]).parents("tr");
+						deleteArr.push(trs);
+						console.log("&&&&&&&&");
+						// console.log(trs);
+						var cartsidOne = $(checkboxs[i]).parents("tr").children(".id").html();
+						
+						cartsArr.push(cartsidOne);
+						console.log("--------------");
+						console.log(cartsidOne);
+						myPost("cartstableManageJsonDelete/?id=" + cartsArr , 
+						{"cartsid":cartsidOne} , 
+						function () {
+							for (var j = 0; j < deleteArr.length; j++) {
+								$(deleteArr[j]).remove()
+							}
+						})
+					}
 			}
 			console.log(cartsArr);
 		}
@@ -261,20 +283,23 @@ function getDataFn(opt) {
 		}
 	});
 	
-
 	$('.row').delegate('button', 'click', function(ev)
 	{
 		console.log("&&&&&&&&&&");
 		a = $(this).html();
+		
+
+		console.log(allSelect);
 		var that = $(this).parent().parent(".row");
 		var cartsid = that.children(".id").html();
 		console.log(that);
-		console.log(cartsid);
+		// console.log(cartsid);
 		if (a == "删 除")
 		{
 			$.ajax({
 				url: "http://localhost:8000/cartstableManageJsonDelete/?id=" + cartsid,
 				success: function(res) {
+					console.log(res);
 					console.log("删除成功。。。。。");
 					$(that).remove();
 				},
@@ -343,26 +368,3 @@ getDataFn();
 </script>
 {% endblock %}
 
-<!-- <tr class="row">
-	<th>
-		<input type="checkbox" class="checkbox-one">
-	</th>
-	<th class="id">' + cartsid + '</th>
-	<th>huawei</th>
-	<th>' + goodsid + '</th>
-	<th>华为</th>
-	<th>手机</th>
-	<th>￥2999</th>
-	<th>
-		<div class="item-amount">
-		<a href="#" class="J_Minus no-minus glyphicon glyphicon-minus decrease" name="-"></a>
-		<input type="text" value="' + number + '" class="text text-amount J_ItemAmount counts" data-max="281" data-now="1" autocomplete="off">
-		<a href="#" class="J_Plus plus glyphicon glyphicon-plus increase"></a>
-		</div>
-	</th>
-	<th>金额</th>
-	<th>
-		<button class="btn btn-success">购 买</button>
-		<button class="btn btn-danger delbtn">删 除</button>
-	</th>
-</tr> -->

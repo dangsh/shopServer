@@ -71,20 +71,25 @@
 <script>
     function aaa(){
         var url="http://localhost:8000/redpackApi/";
-        $.ajax({
-                url: url, 
-                type: 'POST', 
-                success:"success",
-                success: function (data) {
-                    mydata=data.data;
-                    console.log(data);
-                    dataParse(data);
-                             
-                }, 
-                error: function (msg) {
-                    console.log(msg); //错误信息
-                }    
-            });
+        myPost("redpackApi/",{},function(data){
+        	mydata=data.data;
+            console.log(data);
+            dataParse(data);
+        })
+//      $.ajax({
+//              url: url, 
+//              type: 'POST', 
+//              success:"success",
+//              success: function (data) {
+//                  mydata=data.data;
+//                  console.log(data);
+//                  dataParse(data);
+//                           
+//              }, 
+//              error: function (msg) {
+//      console.log(msg); //错误信息
+//              }    
+//          });
 
     }
     aaa();

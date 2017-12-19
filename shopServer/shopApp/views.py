@@ -2,7 +2,7 @@ from django.shortcuts import render
 
 
 from django.http import HttpResponse
-import qrcode
+# import qrcode
 import os
 import random
 from PIL import Image
@@ -37,6 +37,7 @@ def home(request):
     
     return render(request , "base.html");
 def login(request):
+    
     return render(request,"login.html")
 
 def error(request):
@@ -82,6 +83,9 @@ def identificode(request):
     imgDic = {"imgPath":"static/myfile/code.jpg"}
     return HttpResponse(json.dumps(imgDic) , content_type = "application/json")
 def userManage(request):
+    print("uuuuuuuuuxxxxxxxxxxxx")
+    is_login = request.session.get('IS_LOGIN',False)
+    print(is_login)
     return render(request , "userManage.html");
 
 def orderManage(request):
@@ -139,7 +143,7 @@ def personal(request):
 
 # 登录界面
 def login(request):
-    
+    request.session['IS_LOGIN'] = True
     return render(request , "login.html");
 
 
@@ -811,7 +815,7 @@ def ordertabalelistJaon(request):
 
     mypage = (int(selectpage) - 1) * 10
     print(request.POST)
-    if request.POST and (request.POST["userid"]!="" or request.POST["orderid"]!="" or request.POST["status"]!=""):
+    if request.POST and (request.POST["userid"]!="" or request.POST["orderid"]!="" or request.POST["status"]!="0"):
         # print(request.POST)
         userid = request.POST["userid"]
         orderid = request.POST["orderid"];
@@ -853,6 +857,7 @@ def ordertabalelistJaon(request):
         else:
             pass;
     else:
+        print("xxxxxxxxxxx")
         sql = "SELECT * FROM ordertable";   
         cursor2 = connection.cursor();
         cursor2.execute("SELECT COUNT(*) FROM ordertable")
@@ -892,14 +897,16 @@ def activeManageJsonSelect(request):
     myData=[]
     cursor=connection.cursor()
 
-    cursor.execute("SELECT activeid,activedetail,activetime FROM activetable")
+    cursor.execute("SELECT * FROM activetable")
     try:
         for data in cursor.fetchall():
             activeid=data[0]
             activedetail=data[1]
-            activetime=data[2].strftime('%Y-%m-%d %H:%M:%S')
-        
-            tempDic={"activeid":activeid,"activedetail":activedetail,"activetime":activetime}
+            starttime=data[2].strftime('%Y-%m-%d %H:%M:%S')
+            imgs = data[3]
+            stoptime = data[4]
+            activetitle = data[5]
+            tempDic={"activeid":activeid,"activedetail":activedetail,"starttime":starttime,"imgs":imgs,"stoptime":stoptime,"activetitle":activetitle}
             myData.append(tempDic);
         cursor.close()
         return HttpResponse(json.dumps({'data':myData, 'status':'ok'}), content_type="application/json")
@@ -1099,22 +1106,20 @@ def cartstableManageJsonAdd(request):
 
 #购物车删除接口
 def cartstableManageJsonDelete(request):
+    for key in request.POST:
+        cartsid = request.POST.getlist(key)[0]
     cursor=connection.cursor()
-    # cartsid = request.POST["cartsid"];
 
     name = "liu";
-    cartsid = request.GET["id"];
+    # cartsid = request.GET["id"];
 
     try:
         result = cursor.execute("DELETE FROM %s_carts WHERE cartsid='%s'" % (name , cartsid))
         cursor.close()
-        print("***********")
-        print(result);
         if result == 1:
-             return HttpResponse(json.dumps({"message":"删除成功","status":"ok"}),content_type="application/json")
+            return HttpResponse(json.dumps({"message":"删除成功","status":"ok" , 'deleteCount':result}),content_type="application/json")
         else : 
-             return HttpResponse(json.dumps({"message":"删除失败","status":"error"}),content_type="application/json")
-       
+            return HttpResponse(json.dumps({"message":"删除失败","status":"error"}),content_type="application/json")
     except Exception as identifier:
         return HttpResponse(json.dumps({"message":"删除语句执行失败","status":"error"}),content_type="application/json")
 
@@ -1194,18 +1199,18 @@ def drawJsonDel(request):
 
 
 #更新抽奖接口
-# def drawJsonUpdate(request):
-#     cursor = connection.cursor()
-#     datas = request.POST
+def drawJsonUpdate(request):
+    cursor = connection.cursor()
+    datas = request.POST
 
-#     try:
-#         for key in list(datas):
-#             cursor.execute("update draw set %s='%s' where userid='%s'"%(key , datas[key] , datas["userid"]))
-#             statusDis = {'data':'修改成功', 'status':'ok'}
-#         return HttpResponse(json.dumps(statusDis) , content_type="application/json")
+    try:
+        for key in list(datas):
+            cursor.execute("update draw set %s='%s' where userid='%s'"%(key , datas[key] , datas["userid"]))
+            statusDis = {'data':'修改成功', 'status':'ok'}
+        return HttpResponse(json.dumps(statusDis) , content_type="application/json")
 
-#     except Exception as identifier:
-#         return HttpResponse(json.dumps({"message":"修改失败","status":"error"}),content_type="application/json")
+    except Exception as identifier:
+        return HttpResponse(json.dumps({"message":"修改失败","status":"error"}),content_type="application/json")
 
 def drawJsonQuery(request):
     cursor = connection.cursor()
@@ -1991,3 +1996,67 @@ def friendslistManageJsonSelect(request):
         myData.append(tempDic)
     cursor.close()
     return HttpResponse(json.dumps({'data':myData, 'status':'ok'}), content_type="application/json")
+def settings(request):
+    return render(request,"setting.html")
+def settingsApi(request):
+    sql="";
+    if request.POST and (request.POST["settingid"]!=""):
+        print("666666666666666666666666666666666")
+        settingid=request.POST["settingid"];     
+        sql="update settingtable redmoney='%s',rebatepercent='%s',rebatevalue='%s' WHERE settingid='%s'"%(redmoney,rebatepercent,rebatevalue,settingid);
+     
+    else:
+        sql = "SELECT * FROM settingtable";   
+    # try:
+    print(sql)
+    allOrdertables = [];
+    cursor = connection.cursor()
+    cursor.execute(sql)
+    for row in cursor.fetchall():
+        ordertable = {
+            'settingid':row[0],
+            'redmoney':row[1],
+            'rebatepercent':row[2],
+            'rebatevalue':row[3],
+        }
+        allOrdertables.append(ordertable)
+    cursor.close()
+    return HttpResponse(json.dumps({'data':allOrdertables, 'status':'ok'}), content_type="application/json")
+
+def settingsAdd(request):
+    settingid=request.POST["settingid"];
+    redmoney=request.POST["redmoney"];
+    rebatepercent=request.POST["rebatepercent"];
+    rebatevalue=request.POST["rebatevalue"];
+    print(settingid,redmoney,rebatevalue);
+    try:
+        cursor=connection.cursor();
+        cursor.execute("INSERT INTO settingtable(settingid,redmoney,rebatepercent,rebatevalue) VALUES (%s,%s,%s,%s)"% (settingid,redmoney,rebatepercent,rebatevalue))
+        statusDis={"status":"ok","message":"添加成功"};
+        return HttpResponse(json.dumps(statusDis),content_type="application/json");
+    except Exception as e :
+        statusDis={"status":"error","message":"添加失败"};
+        return HttpResponse(json.dumps(statusDis),content_type="application/json");
+def settingsUpdate(request):   
+    cursor = connection.cursor()
+    
+    datas = request.POST
+    settingid= request.POST["settingid"]
+    settingid = str(settingid)
+    for key in datas:
+        if key != 'settingid' and datas[key] != "":
+            cursor.execute("update settingtable set %s='%s' where settingid=%s"%(key , datas[key] , datas["settingid"]))
+    cursor.close();                   
+    return HttpResponse(json.dumps({"message":"更新成功" , "status":"ok"}) , content_type="application/json");
+
+def guestbookSelect(request):   
+    cursor = connection.cursor()
+    cursor.execute("SELECT * FROM guestbook")
+    data = cursor.fetchall()
+    cursor.close();
+    dataArr = []
+    for i in data:
+        ss = {"guestbookid":i[0] , "userid":i[1] , "leavemessage":i[2] , "leavtime":str(i[3]) , "status":i[4]}
+        dataArr.append(ss)
+                     
+    return HttpResponse(json.dumps({"data":dataArr , "status":"ok"}) , content_type="application/json");

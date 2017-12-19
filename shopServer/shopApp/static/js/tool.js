@@ -9,6 +9,8 @@ function myPost(url, data, fn) {
 	
 }
 
+var HomeUrl = "http://localhost:8000/"
+
 // 订单状态规则
 var tool_order_status = ["待审核", "已审核", "待支付", "已支付", "代发货", "已发货", "已取消", "已完成"];
 

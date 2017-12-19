@@ -144,6 +144,7 @@ urlpatterns = [
     url(r'^buyhistoryDelete/$',buyhistoryDelete), #购买历史查询接口 POST请求
 
     url(r'^personal/$' , personal),      
+    url(r'^guestbookSelect/$',guestbookSelect), #购买历史查询接口 POST请求
 
     url(r'^$' , login),
     url(r'^.' , error),

@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -94,24 +95,27 @@
 			</div>
 </body>
 <script>
-	
+	console.log(localStorage)
 	//ajax请求函数
 	function ajaxFn(url , data){
-		$.ajax({
-			url: url,
-			type: 'POST',
-			data: data,
-			success: function (data)
-			{
-				
-				alert(data.message);
-			},
-			error: function(err)
-			{
-				
-				alert("失败了..");
-			}
-		});
+		myPost(url,{data},function(data){
+			alert(data.message);
+		})
+//		$.ajax({
+//			url: url,
+//			type: 'POST',
+//			data: data,
+//			success: function (data)
+//			{
+//				
+//				alert(data.message);
+//			},
+//			error: function(err)
+//			{
+//				
+//				alert("失败了..");
+//			}
+//		});
 	}
 	//调用登陆按钮
 	$("#login").click(function(){
@@ -155,12 +159,19 @@
 				aa=result.status;
 				console.log(aa);
 				if (aa=="ok"){
-					localStorage.setItem("keySss" , "ok")
+					console.log("1111111111111111111")
+					aaa=document.getElementById("name").value
+					var str={names:aaa}
+					console.log(str)
+					localStorage.setItem("data" ,JSON.stringify(str));					
 					document.getElementById("name").value = "";
 					document.getElementById("pwd").value = "";
-					document.getElementById("code").value = ""
-					console.log("789797979797")
-					window.location.href="http://localhost:8000/goodsManage/"
+					document.getElementById("code").value = "";
+					localStorage.setItem("keySss" , "ok")
+					setTimeout(function(){
+						window.location.href="http://localhost:8000/goodsManage/";
+					},1000)
+					
 				}
 				else{
 					document.getElementById("pwd").value = "";
@@ -172,15 +183,5 @@
 			}
 		})
 		});
-//	$('.registerform').on('submit', function(e) {
-//	console.log("jjjjjj");
-//	e.preventDefault(); 
-//	$(this).ajaxSubmit({
-//		success: function (result) {
-//			console.log("89999999999999ng ");
-//			console.log(result);
-//			}
-//		})
-//	});
 </script>
 </html>

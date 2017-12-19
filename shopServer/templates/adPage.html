@@ -118,10 +118,18 @@
     $(document).ajaxComplete(function(){
     　　$("#loading").hide();
     })
-	
     var currpage = 1;
     var prePages = 0;
     //添加item函数
+    function Ajax(Url , fn)
+    {
+    	myPost(Url,{},function(result){
+    		fn(result);
+    		
+    	})
+    	
+    };
+
     function adEleFn(data){
         imgs = data.imgs;
         adid = data.adid;
@@ -140,48 +148,28 @@
     }
     //请求数据
     function ajaxfn(){
-        console.log("hhhhhhh");
-        $.ajax({
-            type: "post",
-            // async: false,
-            url: 'http://localhost:8000/adManageJsonSelect/?page=' + currpage,
-            success: function (result){
-                $(".myrow").remove();
-                $(".sumdiv").remove();
-                parseDataFn(result);
-                adcounts = result.adcounts;
-                countPages = Math.ceil(parseInt(adcounts) / 8 );
-                if(prePages!=countPages){  
-                    $(".pagediv").html('<ul id="visible-pages-example" class="page"></ul>');  
-                } 
-                prePages = countPages; 
-                var spanele = '<span class="sumdiv">共' + countPages + '页,当前第' + countPages + '页,共' + adcounts + '条数据</span>';
-                $("#visible-pages-example").append(spanele);
-                $('#visible-pages-example').twbsPagination({
-                    totalPages:countPages,
-                    first: "首页",
-                    last: "尾页",
-                    prev: '上一页',
-                    next: '下一页',
-                    startPage: 1,
-                    visiblePages: countPages>5?5:countPages,
-                    version: '1.1',
-                    onPageClick: function (event, page) {
-                        currpage  = page;
-                        ajaxfn();
-                    }
-                });
-            },
-            error: function (err){
-                console.log("请求失败");
-            }
+        Ajax(HomeUrl + "adManageJsonSelect/?page=" + currpage,function(result){
+            $(".myrow").remove();
+            $(".sumdiv").remove();
+            parseDataFn(result);
+            adcounts = result.adcounts;
+            countPages = Math.ceil(parseInt(adcounts) / 8 );
+            if(prePages!=countPages){  
+                $(".pagediv").html('<ul id="visible-pages-example" class="page"></ul>');  
+            } 
+            prePages = countPages; 
+            var spanele = '<span class="sumdiv">共' + countPages + '页,当前第' + currpage + '页,共' + adcounts + '条数据</span>';
+            $("#visible-pages-example").append(spanele);
+            createPageNav('#visible-pages-example' , countPages , function(event , page){
+                currpage = page;
+                ajaxfn();
+            });
         });
     }
     //ajaxform提交弹框表单
     function ajaxSubmitForm(){
-        console.log("submigtajax");
         var option = {
-            url : "http://localhost:8000/adManageJsonAdd/",
+            url : HomeUrl + "adManageJsonAdd/",
             type : 'POST',
             dataType : 'json',
             success : function(data)
@@ -190,21 +178,18 @@
                 ajaxfn();
             },
             error: function(data) {
-                console.log("chucuole ");
+                console.log(data);
             }
         };
         $("#myform").ajaxSubmit(option);
         return false;
     }
-    //调用Ajax 去请求数据
     ajaxfn();
-    //当modal关闭的时候数据清除
     $('#myModal').on('hide.bs.modal', function ()
     {
         $('#myform')[0].reset();
         $("#myimages").attr("src" , "###")
     });
-    //图片预览
     $(".myfile").change(function() {
         var $img = $("#myimages");
         var $file = $(this);
@@ -213,7 +198,6 @@
         var dataURL;
         if(fileObj && fileObj.files && fileObj.files[0]){
             var filesLen = fileObj.files.length;
-
             dataURL = windowURL.createObjectURL(fileObj.files[0]);
             $img.attr('src',dataURL);
         }
@@ -221,17 +205,9 @@
     $("#table").delegate("button","click",function(){
         if($(this).html() == "删 除"){
             dataId= $(this).parent().prev().prev().prev().prev().text();
-            that = this;
-            $.ajax({
-                type: "get",
-                url: "http://localhost:8000/adManageJsonDelete/?Id="+dataId,
-                success: function (result){
-                    if (result.status == "ok"){
+            Ajax(HomeUrl + "adManageJsonDelete/?Id="+dataId , function(result){
+                if (result.status == "ok"){
                         ajaxfn();
-                    }
-                },
-                error: function (err){
-                    console.log("请求失败");
                 }
             });
         }
@@ -239,29 +215,21 @@
     $(".AllDelete").click(function(){
         $("[name = checkbox-one]:checkbox").each(function () {
             if ($(this).is(":checked")) {
-                var that = $(this).parents('tr');
                 var objData = $(this).parent().text();
-                $.ajax({
-                    type: "get",
-                    url: "http://localhost:8000/adManageJsonDelete/?Id="+objData,
-                    success: function (result){
-                        if (result.status == "ok"){
+                Ajax(HomeUrl + "adManageJsonDelete/?Id="+objData , function(result){
+                    if (result.status == "ok"){
                             ajaxfn();
-                        }
-                    },
-                    error: function (err){
-                        console.log("请求失败");
                     }
                 });
             }
         });
     });
     $('#checkbox-all').click(function () {
-        if($('#checkbox-all').is(':checked')) {
-            console.log("get - all")
+        if($('#checkbox-all').is(':checked')) 
+        {
             $(".checkbox-one").prop("checked",true);
-        }else{
-            console.log("close - all")
+        }else
+        {
             $(".checkbox-one").prop("checked",false);
         }
     })
