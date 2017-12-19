@@ -250,68 +250,41 @@ function luckyListToPage(data, i) {
 	$(".delete").click(function(){
 		var that = $(this).parents("tr")
 		var luckyArr = [that.attr("luckyid")]
-		myPost("luckyManageJsonDelete/",{luckyids:luckyArr},function(data){
-			if (data["status"] == "ok") {
+		$.ajax({
+			url: HomeUrl + "luckyManageJsonDelete/",
+			type: 'POST',
+			data:{luckyids:luckyArr},
+			traditional:true,
+			success: function (data) {
+				if (data["status"] == "ok") {
 					var deleteCount = data['deleteCount']
 					loaddata()
 					layer.msg("删除" + deleteCount + "条记录成功");
 			   	} else {
 					layer.msg("删除失败")
 			   	}
-		})
-//		$.ajax({
-//			url: "http://localhost:8000/luckyManageJsonDelete/",
-//			type: 'POST',
-//			data:{luckyids:luckyArr},
-//			traditional:true,
-//			success: function (data) {
-//				if (data["status"] == "ok") {
-//					var deleteCount = data['deleteCount']
-//					loaddata()
-//					layer.msg("删除" + deleteCount + "条记录成功");
-//			   	} else {
-//					layer.msg("删除失败")
-//			   	}
-//			},
-//			error: function (msg) {
-//				console.log("error")
-//				layer.msg("删除失败")
-//			}
-//		});
+			}
+		});
 	});
 }
 
 $("#form-updataLucky").click(function(){
 	var updata_counts = $("#updataLucky-counts").val()
 	//console.log(updata_luckyid)
-	myPost("luckyManageJsonUpdata/",{counts:updata_counts,luckyid:updata_luckyid},function(data){
-		if (data["status"] == "ok") {
+	$.ajax({
+		url: HomeUrl + "luckyManageJsonUpdata/",
+		type: 'POST',
+		data:{counts:updata_counts,luckyid:updata_luckyid},
+		success: function (data) {
+			if (data["status"] == "ok") {
 				$("#exampleModal-updata").modal('hide')
 				loaddata()
 				layer.msg("修改记录成功");
 			} else {
 				layer.msg("修改失败")
 		   }
-	})
-//	$.ajax({
-//		url: "http://localhost:8000/luckyManageJsonUpdata/",
-//		type: 'POST',
-//		data:{counts:updata_counts,luckyid:updata_luckyid},
-//		success: function (data) {
-//			if (data["status"] == "ok") {
-//				$("#exampleModal-updata").modal('hide')
-//				loaddata()
-//				layer.msg("修改记录成功");
-//			} else {
-//				layer.msg("修改失败")
-//		   }
-//		},
-//		error: function (msg) {
-//			console.log("error")
-//			layer.msg("修改失败")
-//		}
-//	});
-
+		}
+	});
 });
 
 
@@ -333,36 +306,22 @@ $('#deleteBtn').click(function () {
 			luckyArr.push(luckyidOne)
 		}
 	}
-	myPost("luckyManageJsonDelete/",{luckyids:luckyArr},function(data){
-		if (data["status"] == "ok") {
+	$.ajax({
+		url: HomeUrl + "luckyManageJsonDelete/",
+		type: 'POST',
+		data:{luckyids:luckyArr},
+		traditional:true,
+		success: function (data) {
+			if (data["status"] == "ok") {
 				var deleteCount = data['deleteCount']
 				loaddata()
 				layer.msg("删除" + deleteCount + "条记录成功");
 		   } else {
 				layer.msg("删除失败")
 		   }
-	})
-//	$.ajax({
-//		url: "http://localhost:8000/luckyManageJsonDelete/",
-//		type: 'POST',
-//		data:{luckyids:luckyArr},
-//		traditional:true,
-//		success: function (data) {
-//			if (data["status"] == "ok") {
-//				var deleteCount = data['deleteCount']
-//				loaddata()
-//				layer.msg("删除" + deleteCount + "条记录成功");
-//		   } else {
-//				layer.msg("删除失败")
-//		   }
-//		},
-//		error: function (msg) {
-//			console.log("error")
-//			layer.msg("删除失败")
-//	
-//		}
-//	});
-})
+		}
+	});
+});
 
 
 $('#checkbox-all').click(function () {
@@ -375,23 +334,30 @@ $('#checkbox-all').click(function () {
 
 
 function loaddata() {
-	myPost("luckyManageJsonQuery/?page=" + thispage + "&commName=" + commName + "&timeUp=" + timeBtnUp,{},function(data){
-		luckyCount = data.luckycount
-		luckyListPages = Math.ceil(parseInt(luckyCount) / 10 )
-		$(".myListTable").children("tr").remove()
-		//解析数据
-		mainData = data.data;
-		console.log("ajlajlajlajlajlajl")
-		luckyListToPage(mainData)
-		//记录个数'
-		$("#luckyNumber").text(luckyCount);
-		$("#visible-pages-example").children(".sumdiv").remove()
-		var spanele = '<span class="sumdiv">共' + luckyListPages + '页,当前第' + thispage + '页,共' + luckyCount + '条数据</span>'
-		$("#visible-pages-example").append($(spanele))
-		createPageNav('#visible-pages-example' , luckyListPages , function(event , page){
-			thispage  = page;
-			loaddata();
-		});
+	$.ajax({
+		url: HomeUrl + "luckyManageJsonQuery/?page=" + thispage + "&commName=" + commName + "&timeUp=" + timeBtnUp,
+		success: function (data) {
+			luckyCount = data.luckycount
+			luckyListPages = Math.ceil(parseInt(luckyCount) / 10 )
+			$(".myListTable").children("tr").remove()
+			//解析数据
+			mainData = data.data;
+			console.log("ajlajlajlajlajlajl")
+			luckyListToPage(mainData)
+			//记录个数'
+			$("#luckyNumber").text(luckyCount);
+			$("#visible-pages-example").children(".sumdiv").remove()
+			var spanele = '<span class="sumdiv">共' + luckyListPages + '页,当前第' + thispage + '页,共' + luckyCount + '条数据</span>'
+			$("#visible-pages-example").append($(spanele))
+			createPageNav('#visible-pages-example' , luckyListPages , function(event , page){
+                thispage  = page;
+				loaddata();
+            });
+		},
+		error: function (msg) {
+			console.log("error:获取数据失败")
+			layer.msg("获取数据失败")
+		}
 	});
 }
 
@@ -400,41 +366,32 @@ function loaddata() {
 //添加模态框
 function addLucky(form_goodsId, form_counts){
 	console.log(form_goodsId, form_counts)
-	myPost("luckyManageJsonAdd/",{goodsid:form_goodsId, counts:form_counts},function(data){
-		if (data["status"] == "ok" ) {
+	$.ajax({
+		url: HomeUrl + "luckyManageJsonAdd/",
+		type: 'POST',
+		data:{goodsid:form_goodsId, counts:form_counts},
+		success: function (data) {
+			if (data["status"] == "ok" ) {
 				layer.msg("商品添加成功")
 				thispage = 1
 				loaddata()
 			} else {
 				layer.msg("商品添加失败")
 			}
-	})
-//	$.ajax({
-//		url: "http://localhost:8000/luckyManageJsonAdd/",
-//		type: 'POST',
-//		data:{goodsid:form_goodsId, counts:form_counts},
-//		success: function (data) {
-//			if (data["status"] == "ok" ) {
-//				layer.msg("商品添加成功")
-//				thispage = 1
-//				loaddata()
-//			} else {
-//				layer.msg("商品添加失败")
-//			}
-//		},
-//		error: function (msg) {
-//			console.log("error")
-//			layer.msg("商品添加失败")
-//		}
-//	});
+		}
+	});
 }
 var form_goodsId = ""
 var form_counts = ""
 $("#form-addLucky").click( function () {
 	form_goodsId = $("#addLucky-goodsId").val()
 	form_counts = $("#addLucky-counts").val()
-	myPost("goodsSelectByid/",{goodsid:form_goodsId},function(data){
-		if (data["status"] == "ok" && data["data"].length > 0) {
+	$.ajax({
+		url: HomeUrl + "goodsSelectByid/",
+		type: 'POST',
+		data:{goodsid:form_goodsId},
+		success: function (data) {
+			if (data["status"] == "ok" && data["data"].length > 0) {
 				if (form_counts < 0) {
 					layer.msg("数量不能为负")
 				} else {
@@ -446,30 +403,8 @@ $("#form-addLucky").click( function () {
 			} else {
 				layer.msg("商品不存在")
 			}
-	})
-//	$.ajax({
-//		url: "http://localhost:8000/goodsSelectByid/",
-//		type: 'POST',
-//		data:{goodsid:form_goodsId},
-//		success: function (data) {
-//			if (data["status"] == "ok" && data["data"].length > 0) {
-//				if (form_counts < 0) {
-//					layer.msg("数量不能为负")
-//				} else {
-//					$("#exampleModal-confirm").modal();
-//					$("#add-goodsname").text("商品名:" + data.data[0].goodsname)
-//					$("#add-counts").text("数量:" + form_counts)
-//					//addLucky(form_goodsId, form_counts)
-//				}
-//			} else {
-//				layer.msg("商品不存在")
-//			}
-//		},
-//		error: function (msg) {
-//			console.log("error")
-//			layer.msg("添加福袋失败")
-//		}
-//	});
+		}
+	});
 });
 
 $("#form-confirm").click( function () {
@@ -497,7 +432,7 @@ $("#timeBtn").click( function () {
 	}
 	thispage = 1
 	loaddata()
-})
+});
 
 
 

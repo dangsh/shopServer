@@ -12,6 +12,13 @@
 		<link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}">
 		<link rel="stylesheet" href="{% static 'dist/css/AdminLTE.min.css' %}">
 		
+		 <script type="text/javascript">
+			if (localStorage.getItem("keySss")!="ok"){
+				window.location.href="http://localhost:8000"
+				var data = JSON.parse(localStorage.getItem("data"));
+				console.log(data);
+			}
+		</script> 
 		
 		
 		<link rel="stylesheet" href="{% static 'dist/css/skins/_all-skins.min.css' %}">
@@ -50,17 +57,16 @@
 						<ul class="nav navbar-nav">
 							<!-- Messages: style can be found in dropdown.less-->
 							<li class="dropdown messages-menu">
-								<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+								<a href="#" id="messageNumber" class="dropdown-toggle" data-toggle="dropdown">
 									<i class="fa fa-envelope-o"></i>
-									<span class="label label-success">4</span>
+									<!--<span class="label label-success">4</span>-->
 								</a>
-								<ul class="dropdown-menu">
-									<li class="header">You have 4 messages</li>
+								<ul class="dropdown-menu" id="allMessage">
+									<!--<li class="header">You have 4 messages</li>-->
 									<li>
 										<!-- inner menu: contains the actual data -->
-										<ul class="menu">
-											<li>
-												<!-- start message -->
+										<ul class="menu" id="messageRead">
+											<!--<li>
 												<a href="#">
 													<div class="pull-left">
 														<img src="{% static 'dist/img/user2-160x160.jpg' %}" class="img-circle" alt="User Image">
@@ -69,11 +75,11 @@
                         Support Team
                         <small><i class="fa fa-clock-o"></i> 5 mins</small>
                       </h4>
-													<p>Why not buy a new awesome theme?</p>
+													<p>my name not buy a new awesome theme?</p>
 												</a>
-											</li>
+											</li>-->
 											<!-- end message -->
-											<li>
+											<!--<li>
 												<a href="#">
 													<div class="pull-left">
 														<img src="{% static 'dist/img/user3-128x128.jpg' %}" class="img-circle" alt="User Image">
@@ -84,8 +90,8 @@
                       </h4>
 													<p>Why not buy a new awesome theme?</p>
 												</a>
-											</li>
-											<li>
+											</li>-->
+											<!--<li>
 												<a href="#">
 													<div class="pull-left">
 														<img src="dist/img/user4-128x128.jpg" class="img-circle" alt="User Image">
@@ -96,8 +102,8 @@
                       </h4>
 													<p>Why not buy a new awesome theme?</p>
 												</a>
-											</li>
-											<li>
+											</li>-->
+											<!--<li>
 												<a href="#">
 													<div class="pull-left">
 														<img src="dist/img/user3-128x128.jpg" class="img-circle" alt="User Image">
@@ -108,19 +114,20 @@
                       </h4>
 													<p>Why not buy a new awesome theme?</p>
 												</a>
-											</li>
-											<li>
+											</li>-->
+											
+											<!--<li>
 												<a href="#">
 													<div class="pull-left">
 														<img src="dist/img/user4-128x128.jpg" class="img-circle" alt="User Image">
 													</div>
-													<h4>
+					<h4>
                         Reviewers
                         <small><i class="fa fa-clock-o"></i> 2 days</small>
-                      </h4>
+                    </h4>
 													<p>Why not buy a new awesome theme?</p>
 												</a>
-											</li>
+											</li>-->
 										</ul>
 									</li>
 									<li class="footer">
@@ -558,20 +565,51 @@
 					$(this).parents(".treeview").addClass('active');
 				}
 			});
-			if (localStorage.getItem("keySss")!="ok"){
-				window.location.href="http://localhost:8000"
-				var data = JSON.parse(localStorage.getItem("data"));
-				$("#goodsname").val(data.names);
-				myfun("#goodsname");
-				console.log(data);
-			}
-			else{
-				var data = JSON.parse(localStorage.getItem("data"));
-				aaa=data.names;
-				console.log(aaa);
-				document.getElementById('xxxxxxxx').innerHTML = aaa;
-				document.getElementById('yyy').innerHTML = aaa;			
-			}
+			
+			console.log("(((((((((((((((((((((");
+			
+			var unreadMess = 0;
+			var url = HomeUrl + "guestbookSelect/";
+			$.ajax({
+				url: url,
+				type: 'POST',
+				success: "success",
+				success: function(result) {
+					for(var sss = 0;sss<result["data"].length;sss++){
+						if (result["data"][sss]["status"] == "unread"){
+							var userName = result["data"][sss]["username"]
+							var userLeaveMessage = result["data"][sss]["leavemessage"]
+							var userHeading = result["data"][sss]["userHeading"]
+							var userLeavTime = result["data"][sss]["leavtime"]
+							unreadMess = unreadMess+1;
+							var spanAddss = '<li><a href="#"><div class="pull-left"><img src="" class="img-circle" alt="User Image"></div><h4>'+userName+'<small><i class="fa fa-clock-o"></i> '+userLeavTime+'</small></h4><p>'+userLeaveMessage+'</p></a></li>'
+							$("#messageRead").append(spanAddss)
+							$(".img-circle").each(function (i , item) {
+								if (i == sss) {
+									$(item).attr("src" , HomeUrl + "static/myfile/" + userHeading);
+								}
+							});
+						}
+					}
+					var spanAdd = "<span class='label label-success'>"+unreadMess+"</span>";
+					$("#messageNumber").append(spanAdd) 
+					var liAdd = "<li class='header'>You have "+unreadMess+" messages</li>";
+					$("#allMessage").append(liAdd) 
+				},
+				error: function(msg) {
+					console.log(msg); //错误信息
+				}
+			});
+			
+			
+			console.log("--------------------")
+			var data = JSON.parse(localStorage.getItem("data"));
+			console.log(data)
+			aaa=data.names;
+			console.log(aaa);
+			document.getElementById('xxxxxxxx').innerHTML = aaa;
+			document.getElementById('yyy').innerHTML = aaa;			
+		
 		</script>
 		{% block script %}{% endblock %}
 	</body>

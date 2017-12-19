@@ -150,6 +150,7 @@ def loginApi(request):
     userName = request.POST["username"]
     password = request.POST["password"]
     code=request.POST["code"]
+    code=str.lower(code);
     print(userName)
     print(xx);
     if xx==code:
@@ -1114,7 +1115,7 @@ def cartstableManageJsonDelete(request):
         result = cursor.execute("DELETE FROM %s_carts WHERE cartsid='%s'" % (name , cartsid))
         cursor.close()
         if result == 1:
-            return HttpResponse(json.dumps({"message":"删除成功","status":"ok" , 'deleteCount':result}),content_type="application/json")
+            return HttpResponse(json.dumps({"message":"删除成功","status":"ok"}),content_type="application/json")
         else : 
             return HttpResponse(json.dumps({"message":"删除失败","status":"error"}),content_type="application/json")
     except Exception as identifier:
@@ -1209,6 +1210,8 @@ def drawJsonUpdate(request):
     except Exception as identifier:
         return HttpResponse(json.dumps({"message":"修改失败","status":"error"}),content_type="application/json")
 
+
+# 查询抽奖余额接口
 def drawJsonQuery(request):
     cursor = connection.cursor()
     userid = request.POST["userid"]
@@ -1568,45 +1571,7 @@ def findAddress(request):
         return HttpResponse(json.dumps(statusDis),content_type="application/json");
     pass
 
-#应该是没用了
-# def uploadHeadImg(request):
-#     print ("请求成功");
-#     statusDic = "";
-#     if request.POST and request.FILES:
-#         cursor = connection.cursor();
-#         #前台传过来的图片
-#         headImgs = request.FILES["headImg"];
-#         #随机字符串存取图片名字
-#         headImgsName = randomString() + ".jpg";
-#         #当上传头像的时候必然会传过来用户的Id,方法根据前台来决定
-#         imgUserName= request.POST["imgUserName"]
-#         imgUserName = str(imgUserName)
-#         if cursor.execute("SELECT EXISTS(SELECT * FROM user WHERE username='%s')" % imgUserName):
-#             cursor.execute("select headimg from user where username='%s'" % imgUserName)
-#             data = cursor.fetchall();
-#             if data:
-#                 tempimg = data[0][0];
-#                 os.remove("../shopServer/shopApp/static/myfile/"+tempimg);
-#             filepath = "./shopApp/static/myfile/";
-#             #路径组合
-#             filepath = os.path.join(filepath,headImgsName)
-#             #在路径中创建图片名字
-#             fileobj = open(filepath , "wb");
-#             #并把前端传过来的数据写到文件中
-#             fileobj.write(headImgs.__dict__["file"].read());
-#             #关闭文件
-#             fileobj.close();
-#             #通过userId来给用户添加headimg数据
-#             result = cursor.execute("UPDATE user set headimg='%s' where username='%s'" % (headImgsName,imgUserName));
-#             if result == 1:
-#                 statusDic = {"status" : "ok" , "message" : "添加成功" , "imgUserName":imgUserName};
-#             else :
-#                 statusDic = {"status" : "error" , "message" : "添加失败"};
-#         else:
-#             statusDic = {"status" : "error" , "message" : "没有此用户"};
-#     else:
-#         statusDic = {"status" : "error" , "没有数据" : "添加成功"};
-#     return HttpResponse(json.dumps(statusDic) , content_type = "application/json");
+
 #删除余额接口实现，获取数据测试用GET ，具体情况具体使用  王贺
 def delMoney(request):
     statusDic = "";
@@ -2046,15 +2011,24 @@ def settingsUpdate(request):
     cursor.close();                   
     return HttpResponse(json.dumps({"message":"更新成功" , "status":"ok"}) , content_type="application/json");
 
-def guestbookSelect(request):   
+#base页面消息接口
+def guestbookSelect(request):  
     cursor = connection.cursor()
     cursor.execute("SELECT * FROM guestbook")
     data = cursor.fetchall()
-    cursor.close();
     dataArr = []
+    print(data);
     for i in data:
-        ss = {"guestbookid":i[0] , "userid":i[1] , "leavemessage":i[2] , "leavtime":str(i[3]) , "status":i[4]}
+        userid = i[1]
+        cursor.execute("SELECT * FROM user WHERE userid= %s "%(userid))
+        userA = cursor.fetchall()
+        userName = userA[0][1]
+        userHeading = userA[0][2]
+        print(userHeading)
+        ss = {"guestbookid":i[0] , "userid":i[1] , "leavemessage":i[2] , "leavtime":str(i[3]) , "status":i[4] , "username":userName , "userHeading":userHeading}
         dataArr.append(ss)
+
+    cursor.close();
                      
     return HttpResponse(json.dumps({"data":dataArr , "status":"ok"}) , content_type="application/json");
 

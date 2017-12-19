@@ -97,7 +97,7 @@ urlpatterns = [
 
     url(r'^drawJsonAdd/$',drawJsonAdd),   #添加抽奖余额接口
     url(r'^drawJsonDel/$',drawJsonDel),   #删除抽奖余额接口
-    # url(r'^drawJsonUpdate/$',drawJsonUpdate),   #修改抽奖余额接口
+    url(r'^drawJsonUpdate/$',drawJsonUpdate),   #更新抽奖余额接口
     url(r'^drawJsonQuery/$',drawJsonQuery),   #查找抽奖余额接口
     
     url(r'cartstableManageJsonGain/$' , cartstableManageJsonGain),#购物车获取接口
