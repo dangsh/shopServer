@@ -145,7 +145,8 @@ urlpatterns = [
 
     url(r'^personal/$' , personal),      
     url(r'^guestbookSelect/$',guestbookSelect), #购买历史查询接口 POST请求
-
+    url(r'^getSession/$',getSession), #请求session数据的接口
+    
     url(r'^$' , login),
     url(r'^.' , error),
 ]

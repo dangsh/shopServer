@@ -33,12 +33,12 @@ def home(request):
 
     # cursor.execute('CREATE TABLE Persons2(Id_P int,LastName varchar(255),FirstName varchar(255),Address varchar(255),City varchar(255))')
     # cursor.execute('CREATE TABLE carts(cartsid varchar(255),number int, goodsid varchar(255),userid varchar(255))')
-    
+    print("uuuuuuuuuxxxxxxxxxxxx")
+    is_login = request.session.get('IS_LOGIN')
+    print(is_login)
     
     return render(request , "base.html");
-def login(request):
-    
-    return render(request,"login.html")
+
 
 def error(request):
     return HttpResponse("我是404");
@@ -83,9 +83,6 @@ def identificode(request):
     imgDic = {"imgPath":"static/myfile/code.jpg"}
     return HttpResponse(json.dumps(imgDic) , content_type = "application/json")
 def userManage(request):
-    print("uuuuuuuuuxxxxxxxxxxxx")
-    is_login = request.session.get('IS_LOGIN',False)
-    print(is_login)
     return render(request , "userManage.html");
 
 def orderManage(request):
@@ -2060,3 +2057,8 @@ def guestbookSelect(request):
         dataArr.append(ss)
                      
     return HttpResponse(json.dumps({"data":dataArr , "status":"ok"}) , content_type="application/json");
+
+def getSession(request):
+    is_login = request.session.get('IS_LOGIN',False)
+    print(is_login)
+    return HttpResponse(json.dumps({"data":is_login , "status":"ok"}) , content_type="application/json");

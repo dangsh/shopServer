@@ -12,13 +12,7 @@
 		<link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}">
 		<link rel="stylesheet" href="{% static 'dist/css/AdminLTE.min.css' %}">
 		
-		<!-- <script type="text/javascript">
-			if (localStorage.getItem("keySss")!="ok"){
-				window.location.href="http://localhost:8000"
-				var data = JSON.parse(localStorage.getItem("data"));
-				console.log(data);
-			}
-		</script> -->
+		
 		
 		<link rel="stylesheet" href="{% static 'dist/css/skins/_all-skins.min.css' %}">
 
@@ -533,6 +527,25 @@
 		<script src="{% static 'js/jquery.twbsPagination.min.js' %}"></script>
 
 		<script src="{% static 'js/tool.js' %}"></script>
+
+		<script type="text/javascript">
+			$.ajax({
+				url: "http://localhost:8000/getSession/",
+				success: function (data) {
+					session=data.data.toString()
+					if (session!="true"){
+						window.location.href="http://localhost:8000"
+						var data = JSON.parse(localStorage.getItem("data"));
+					}
+				},
+				error: function (msg) {
+					console.log("error:获取数据失败")
+					alert(msg); //错误信息
+				}
+			});
+			
+		</script>
+
 		<script type="text/javascript">
 			$(".exit").click(function(){
 				localStorage.clear();
@@ -546,7 +559,6 @@
 				}
 			});
 			if (localStorage.getItem("keySss")!="ok"){
-				console.log("--------------------")
 				window.location.href="http://localhost:8000"
 				var data = JSON.parse(localStorage.getItem("data"));
 				$("#goodsname").val(data.names);
@@ -554,7 +566,6 @@
 				console.log(data);
 			}
 			else{
-				console.log("--------------------")
 				var data = JSON.parse(localStorage.getItem("data"));
 				aaa=data.names;
 				console.log(aaa);
