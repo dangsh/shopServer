@@ -1,48 +1,67 @@
-{% extends "base.html" %} {% load staticfiles %} {% block content %}
+{% extends "base.html" %} 
+{% load staticfiles %} 
+{% block css %}
+<style>
+	.black_overlay {
+		display: none;
+		position: absolute;
+		top: 0%;
+		left: 0%;
+		width: 100%;
+		height: 100%;
+		background-color: black;
+		z-index: 1001;
+		-moz-opacity: 0.8;
+		opacity: .50;
+		filter: alpha(opacity=80);
+	}
+	
+	.white_content {
+		display: none;
+		position: absolute;
+		top: 10%;
+		left: 10%;
+		width: 80%;
+		height: 80%;
+		border: 8px solid lightblue;
+		background-color: white;
+		z-index: 1002;
+		overflow: auto;
+	}
+</style>
+{% endblock %}
+{% block content %}
 <div class="container-fluid ">
 	<div class="row ">
 
 		<div class="col-md-11" style="text-align: center;">
-			<form class="form-inline" action="http://localhost:8000/ordertabalelistJaon/" id="searchForm" method="post">
-				<div class="form-group">
-					<label for="exampleInputName2">留言序号:</label>
-					<input type="text" class="form-control" name="orderid" id="orderid" placeholder="订单号">
-					<label for="exampleInputName2">用户名:</label>
-					<input type="text" class="form-control" id="userid" name="userid" placeholder="用户名">
-					<label for="exampleInputName2">留言状态:</label>
-					<select name="status" class="form-control" id="myStatus">
-						<option value="0">已查看</option>
-						<option value="1">未查看</option>
-					</select>
-				</div>
-				<input type="submit" id="tijiao" class="btn btn-success mybtn" aria-hidden="true" value="订单查询">
-				<!-- <span class="glyphicon glyphicon-search" aria-hidden="true" value="订单查询"> -->
-			</form>
+			
 		</div>
 		<table class="table">
 			<thead>
 				<tr>
-					<th colspan="11">
+					<th colspan="11" id="dataShuJu">
 
-						<button class="btn btn-default trash AllDelete"><span class = "glyphicon glyphicon-trash">批量删除</span></button>
-						<label id="userNumber" class="count" style="float: right; padding-right: 4%;">共有数据</label>
+						<button class="btn btn-default trash AllDelete"><span class = "glyphicon glyphicon-trash">批量已读</span></button>
+						
 
 					</th>
 				</tr>
 			</thead>
 
-			<!-- <caption><strong style="color: #000000;">商品列表</strong></caption> -->
+			<!--<caption><strong style="color: #000000;">商品列表</strong></caption>--> 
 			<thead>
 				<tr>
 					<th class="info nature">
 						<input type="checkbox" id="checkbox-all">
 					</th>
-					<th>序号</th>
 					<th>留言序号</th>
 					<th>用户ID</th>
+					<th>用户名</th>
 					<th>留言内容</th>
 					<th>留言时间</th>
 					<th>状态</th>
+					<th>编辑</th>
 				</tr>
 			</thead>
 			<tbody id="mytbody" class="myListTable">
@@ -77,6 +96,33 @@
 		</div>
 		<!-- /.modal-dialog -->
 	</div>
+	
+	<!--弹出层时背景层DIV-->
+	<div id="fade" class="black_overlay">
+	</div>
+	<div id="MyDiv" class="white_content">
+		<div style="text-align: right; cursor: default; height: 40px;" id="move">
+			<span style="font-size: 16px;" onclick="CloseDiv('MyDiv','fade')">关闭</span>
+		</div>
+		<!--目前来说，我还是喜欢这个自己改造的弹出层。自己在项目中也用的是这个。-->
+		<div id="">
+			<div>
+				<h1>留言内容：</h1>
+			</div>
+			<div id="btns">
+				<div id="leavingMessageOne" style="height: 250px;border: 2px solid bisque;width: 100%;font-size: 20px;">
+				</div>
+				<br />
+				<div style="height: 100px; border: 1px solid seagreen;width: 100%;" contentEditable="true" placeholder="输入回复内容">
+				</div>
+				<br />
+				<div style="text-align: center;">
+					<button class="btn btn-default delete" style="position: absolute;bottom: 0px;">回复</button>
+				</div>
+				<br />
+			</div>
+		</div>
+	</div>
 
 	{% endblock %} {% block contentRight %}
 
@@ -84,13 +130,74 @@
 		<li>
 			<a href="#"><i class="fa fa-dashboard"></i> Home</a>
 		</li>
-		<li class="active">订单管理</li>
+		<li class="active">留言管理</li>
 	</ol>
 
 	{% endblock %} {% block contentLeft %} 留言表
 	<small>Version 5.0</small> {% endblock %}
 	{% block script %}
 	<script type="text/javascript">
+		console.log("******************")
+		function callLeavingFn(leavingMessageData){
+			console.log(leavingMessageData)
+			var allDataNumber = leavingMessageData.length;
+			var ssss = '<label id="userNumber" class="count" style="float: right; padding-right: 4%;">共有'+ allDataNumber +'条数据</label>'
+			$('#dataShuJu').append(ssss)
+			for(var sss = 0;sss<leavingMessageData.length;sss++){
+				var userName = leavingMessageData[sss]["username"]
+				var userLeaveMessage = leavingMessageData[sss]["leavemessage"]
+				var userid = leavingMessageData[sss]["userid"]
+				var userLeavTime = leavingMessageData[sss]["leavtime"]
+				var userStatus = leavingMessageData[sss]["status"]
+				var guestbookid = leavingMessageData[sss]["guestbookid"]
+				if (userStatus == "unread"){
+					userStatus = "未读";
+				}else{
+					userStatus = "已读"
+				}
+				
+				var myHtml = '<tr class="mytr" guestbookid="' + guestbookid + '"><td class="info ele"><input class="checkbox-one" name="checkbox-one" type="checkbox"/></td><td>' + guestbookid + '</td><td>' + userid + '</td><td>' + userName + '</td><td>' + userLeaveMessage + '</td><td>' + userLeavTime + '</td><td>' + userStatus + '</td><td > <button class="btn btn-default delete guestbookidButton">编辑</button></td></tr>'
+				$(".myListTable").append(myHtml)
+//				$(".guestbookidButton").each(function (i , item) {
+//					if (i == sss) {
+//						$(item).attr("onclick" , "ShowDiv('MyDiv','fade' , " +userLeaveMessage +")");
+//					}
+//				});
+			}
+			
+			
+			$(".guestbookidButton").click(function () {
+				var btnIndex = $(this).parents(".mytr").index();
+				
+				ShowDiv('MyDiv','fade' , leavingMessageData[btnIndex])
+			});
+			
+			
+			
+		}
+		
+		
+		//弹出隐藏层
+			function ShowDiv(show_div, bg_div , userLeaveMessage) {
+				document.getElementById(show_div).style.display = 'block';
+				document.getElementById(bg_div).style.display = 'block';
+				var bgdiv = document.getElementById(bg_div);
+				bgdiv.style.width = document.body.scrollWidth;
+				// bgdiv.style.height = $(document).height();
+				$("#" + bg_div).height($(document).height());
+				
+				userLeaveMessage = userLeaveMessage["leavemessage"]
+				console.log(userLeaveMessage)
+				
+				var myHtml = '<div>'+ userLeaveMessage +'</div>'
+				$("#leavingMessageOne").children('div').remove();
+				$("#leavingMessageOne").append(myHtml)
+			};
+			//关闭弹出层
+			function CloseDiv(show_div, bg_div) {
+				document.getElementById(show_div).style.display = 'none';
+				document.getElementById(bg_div).style.display = 'none';
+			};
 		
 	</script>
 	{% endblock %}

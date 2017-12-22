@@ -27,6 +27,33 @@
 			body {
 				min-width: 1122px;
 			}
+			
+			.black_Overlay {
+				display: none;
+				position: absolute;
+				top: 0%;
+				left: 0%;
+				width: 100%;
+				height: 100%;
+				background-color: black;
+				z-index: 1001;
+				-moz-opacity: 0.8;
+				opacity: .50;
+				filter: alpha(opacity=80);
+			}
+			
+			.white_Content {
+				display: none;
+				position: absolute;
+				top: 10%;
+				left: 10%;
+				width: 80%;
+				height: 80%;
+				border: 8px solid lightblue;
+				background-color: white;
+				z-index: 1002;
+				overflow: auto;
+			}
 		</style>
 
 		{% block css %}{% endblock %}
@@ -59,75 +86,10 @@
 							<li class="dropdown messages-menu">
 								<a href="#" id="messageNumber" class="dropdown-toggle" data-toggle="dropdown">
 									<i class="fa fa-envelope-o"></i>
-									<!--<span class="label label-success">4</span>-->
 								</a>
 								<ul class="dropdown-menu" id="allMessage">
-									<!--<li class="header">You have 4 messages</li>-->
 									<li>
-										<!-- inner menu: contains the actual data -->
-										<ul class="menu" id="messageRead">
-											<!--<li>
-												<a href="#">
-													<div class="pull-left">
-														<img src="{% static 'dist/img/user2-160x160.jpg' %}" class="img-circle" alt="User Image">
-													</div>
-													<h4>
-                        Support Team
-                        <small><i class="fa fa-clock-o"></i> 5 mins</small>
-                      </h4>
-													<p>my name not buy a new awesome theme?</p>
-												</a>
-											</li>-->
-											<!-- end message -->
-											<!--<li>
-												<a href="#">
-													<div class="pull-left">
-														<img src="{% static 'dist/img/user3-128x128.jpg' %}" class="img-circle" alt="User Image">
-													</div>
-													<h4>
-                        AdminLTE Design Team
-                        <small><i class="fa fa-clock-o"></i> 2 hours</small>
-                      </h4>
-													<p>Why not buy a new awesome theme?</p>
-												</a>
-											</li>-->
-											<!--<li>
-												<a href="#">
-													<div class="pull-left">
-														<img src="dist/img/user4-128x128.jpg" class="img-circle" alt="User Image">
-													</div>
-													<h4>
-                        Developers
-                        <small><i class="fa fa-clock-o"></i> Today</small>
-                      </h4>
-													<p>Why not buy a new awesome theme?</p>
-												</a>
-											</li>-->
-											<!--<li>
-												<a href="#">
-													<div class="pull-left">
-														<img src="dist/img/user3-128x128.jpg" class="img-circle" alt="User Image">
-													</div>
-													<h4>
-                        Sales Department
-                        <small><i class="fa fa-clock-o"></i> Yesterday</small>
-                      </h4>
-													<p>Why not buy a new awesome theme?</p>
-												</a>
-											</li>-->
-											
-											<!--<li>
-												<a href="#">
-													<div class="pull-left">
-														<img src="dist/img/user4-128x128.jpg" class="img-circle" alt="User Image">
-													</div>
-					<h4>
-                        Reviewers
-                        <small><i class="fa fa-clock-o"></i> 2 days</small>
-                    </h4>
-													<p>Why not buy a new awesome theme?</p>
-												</a>
-											</li>-->
+										<ul class="menu daSB" id="messageRead">
 										</ul>
 									</li>
 									<li class="footer">
@@ -515,6 +477,35 @@
 			<div class="control-sidebar-bg"></div>
 
 		</div>
+		
+		
+			<!--弹出层时背景层DIV-->
+		<div id="fadeMe" class="black_Overlay">
+		</div>
+		<div id="MyDivMe" class="white_Content">
+			<div style="text-align: right; cursor: default; height: 40px;" id="move">
+				<span style="font-size: 16px;" onclick="CloseDiv('MyDivMe','fadeMe')">关闭</span>
+			</div>
+			<!--目前来说，我还是喜欢这个自己改造的弹出层。自己在项目中也用的是这个。-->
+			<div id="">
+				<div>
+					<h1>留言内容：</h1>
+				</div>
+				<div id="btns">
+					<div id="leavingMessageOne" style="height: 250px;border: 2px solid bisque;width: 100%;font-size: 20px;">
+					</div>
+					<br />
+					<div style="height: 100px; border: 1px solid seagreen;width: 100%;" contentEditable="true" placeholder="输入回复内容">
+					</div>
+					<br />
+					<div style="text-align: center;">
+						<button class="btn btn-default delete" style="position: absolute;bottom: 0px;">回复</button>
+					</div>
+					<br />
+				</div>
+			</div>
+		</div>
+
 
 		<script src="{% static 'js/jquery.js' %}"></script>
 		<script src="{% static 'js/bootstrap.min.js' %}"></script>
@@ -537,6 +528,22 @@
 
 		<!-- 获取session -->
 		<script type="text/javascript">
+<<<<<<< .mine
+			// $.ajax({
+			// 	url: "http://localhost:8000/getSession/",
+			// 	success: function (data) {
+			// 		session=data.data.toString()
+			// 		if (session!="true"){
+			// 			window.location.href="http://localhost:8000"
+			// 			var data = JSON.parse(localStorage.getItem("data"));
+			// 		}
+			// 	},
+			// 	error: function (msg) {
+			// 		console.log("error:获取数据失败")
+			// 		alert(msg); //错误信息
+			// 	}
+			// });
+||||||| .r469
 			$.ajax({
 				url: "http://localhost:8000/getSession/",
 				success: function (data) {
@@ -551,6 +558,22 @@
 					alert(msg); //错误信息
 				}
 			});
+=======
+//			$.ajax({
+//				url: "http://localhost:8000/getSession/",
+//				success: function (data) {
+//					session=data.data.toString()
+//					if (session!="true"){
+//						window.location.href="http://localhost:8000"
+//						var data = JSON.parse(localStorage.getItem("data"));
+//					}
+//				},
+//				error: function (msg) {
+//					console.log("error:获取数据失败")
+//					alert(msg); //错误信息
+//				}
+//			});
+>>>>>>> .r475
 			
 		</script>
 
@@ -585,6 +608,7 @@
 			
 			console.log("(((((((((((((((((((((");
 			
+			var leavingMessageData = ""
 			var unreadMess = 0;
 			var url = HomeUrl + "guestbookSelect/";
 			$.ajax({
@@ -592,6 +616,10 @@
 				type: 'POST',
 				success: "success",
 				success: function(result) {
+					leavingMessageData = result["data"]
+					if (window.location.href.indexOf("/leavingMessage/") != -1) {
+						callLeavingFn(leavingMessageData);
+					}
 					for(var sss = 0;sss<result["data"].length;sss++){
 						if (result["data"][sss]["status"] == "unread"){
 							var userName = result["data"][sss]["username"]
@@ -599,7 +627,8 @@
 							var userHeading = result["data"][sss]["userHeading"]
 							var userLeavTime = result["data"][sss]["leavtime"]
 							unreadMess = unreadMess+1;
-							var spanAddss = '<li><a href="#"><div class="pull-left"><img src="" class="img-circle" alt="User Image"></div><h4>'+userName+'<small><i class="fa fa-clock-o"></i> '+userLeavTime+'</small></h4><p>'+userLeaveMessage+'</p></a></li>'
+							var spanAddss = '<li class = "mytr leavingMess"><a><div class="pull-left"><img src="" class="img-circle" alt="User Image"></div><h4>'+userName+'<small><i class="fa fa-clock-o"></i> '+userLeavTime+'</small></h4><p>'+userLeaveMessage+'</p></a></li>'
+							
 							$("#messageRead").append(spanAddss)
 							$(".img-circle").each(function (i , item) {
 								if (i == sss) {
@@ -608,6 +637,7 @@
 							});
 						}
 					}
+					dianJi();
 					var spanAdd = "<span class='label label-success'>"+unreadMess+"</span>";
 					$("#messageNumber").append(spanAdd) 
 					var liAdd = "<li class='header'>You have "+unreadMess+" messages</li>";
@@ -627,6 +657,37 @@
 			document.getElementById('xxxxxxxx').innerHTML = aaa;
 			document.getElementById('yyy').innerHTML = aaa;			
 		
+			
+			function dianJi(){
+				$(".leavingMess").click(function () {
+				var btnIndex = $(this).index();
+				ShowDivMe('MyDivMe','fadeMe' , leavingMessageData[btnIndex])
+				});
+			}
+			
+		
+//		弹出隐藏层
+			function ShowDivMe(show_Div, bg_Div , userLeaveMessage) {
+				console.log(userLeaveMessage)
+				document.getElementById(show_Div).style.display = 'block';
+				document.getElementById(bg_Div).style.display = 'block';
+				var bgdiv = document.getElementById(bg_Div);
+				bgdiv.style.width = document.body.scrollWidth;
+				// bgdiv.style.height = $(document).height();
+				$("#" + bg_Div).height($(document).height());
+				
+				userLeaveMessage = userLeaveMessage["leavemessage"]
+				console.log(userLeaveMessage)
+				
+				var myHtml = '<div>'+ userLeaveMessage +'</div>'
+				$("#leavingMessageOne").children('div').remove();
+				$("#leavingMessageOne").append(myHtml)
+			};
+			//关闭弹出层
+			function CloseDiv(show_Div, bg_Div) {
+				document.getElementById(show_Div).style.display = 'none';
+				document.getElementById(bg_Div).style.display = 'none';
+			};
 		</script>
 		{% block script %}{% endblock %}
 	</body>

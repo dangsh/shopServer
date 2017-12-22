@@ -9,7 +9,8 @@ from PIL import Image
 from PIL import ImageDraw
 from PIL import ImageFilter
 from PIL import ImageFont
-
+import json, urllib
+from urllib.parse import urlencode
 
 import datetime 
 import time
@@ -166,7 +167,7 @@ def loginApi(request):
             return HttpResponse(json.dumps(errorMSG) , content_type="application/json")
     else:
         print("验证码错误请重新输入..............")
-        errorMSG = {"status":"error","message":"登录失败"}
+        errorMSG = {"status":"codeError","message":"登录失败"}
         return HttpResponse(json.dumps(errorMSG) , content_type="application/json")
 # 用户添加接口
 def userManageJsonAdd(request):
@@ -2039,9 +2040,155 @@ def getSession(request):
     # print(is_login)
     return HttpResponse(json.dumps({"data":is_login , "status":"ok"}) , content_type="application/json");
 
+
 #设置session接口
 def setSession(request):
     request.session['IS_LOGIN'] = False
     is_login = request.session.get('IS_LOGIN')
     print(is_login)
     return HttpResponse(json.dumps({"status":"ok"}) , content_type="application/json");
+
+#秒杀
+def secondkillManageJsonAdd(request):
+    cursor = connection.cursor();
+    killid = randomString();
+    goodsid = request.POST["goodsid"];
+    # goodstatus = request.POST["goodstatus"];
+    goodstatus = '0'
+    starttime = request.POST["starttime"];
+    hours = request.POST["hours"];
+    stoptime = int(starttime) + int(hours);
+    result = cursor.execute("INSERT INTO secondkill(killid , goodsid , goodstatus,starttime,hours , stoptime) VALUES ('%s' , '%s' ,'%s' , '%s' , '%s','%s')" % (killid , goodsid , goodstatus, starttime ,hours ,stoptime))
+    try:
+        if result == 1:
+            statusDis={"status":"ok","message":"添加成功"};
+            cursor.close()
+            return HttpResponse(json.dumps(statusDis),content_type="application/json");
+    except Exception as e:
+        statusDis={"status":"error","message":"添加失败"};
+        return HttpResponse(json.dumps(statusDis),content_type="application/json");
+def secondkillManageJsonSelect(request):
+    cursor=connection.cursor()
+    myData=[]
+    cursor.execute("SELECT killid , goodsid , goodstatus ,starttime , hours , stoptime FROM secondkill")
+    try:
+        print("*********")
+        for data in cursor.fetchall():
+            killid=data[0]
+            goodsid=data[1]
+            goodstatus=data[2]
+            starttime = data[3]
+            hours = data[4]
+            stoptime = data[5];
+            tempDic={"killid":killid,"goodsid":goodsid,"goodstatus":goodstatus,"starttime":starttime,"hours":hours , "stoptime":stoptime}
+            myData.append(tempDic)
+        cursor.close()
+        print(tempDic)
+        return HttpResponse(json.dumps({'data':myData, 'status':'ok'}), content_type="application/json")
+    except Exception as e:   
+        # raise e
+        return HttpResponse(json.dumps({"data":myData , "status":"error"}) , content_type="application/json");
+def secondkillManageJsonDelete(request):
+    killid = request.GET["killid"];
+    cursor=connection.cursor()
+    print(killid)
+    try:
+        cursor.execute("DELETE FROM secondkill where killid = %s" %killid)
+        print("***************")
+        statusDis={"status":"ok","message":"删除成功"};
+        cursor.close()
+        return HttpResponse(json.dumps(statusDis),content_type="application/json");
+    except:
+        statusDis={"status":"error","message":"删除失败"};
+        return HttpResponse(json.dumps(statusDis),content_type="application/json");
+
+def secondkillManageJsonUpdata(request):
+    cursor = connection.cursor()
+    datas = request.POST
+
+    try:
+        for key in list(datas):
+            cursor.execute("update secondkill set %s='%s' where killid='%s'"%(key , datas[key] , datas["killid"]))
+            statusDis = {'data':'修改成功', 'status':'ok'}
+        return HttpResponse(json.dumps(statusDis) , content_type="application/json")
+
+    except Exception as identifier:
+        return HttpResponse(json.dumps({"message":"修改失败","status":"error"}),content_type="application/json")
+def secondkillManageJsonstock(request):
+    killid = request.POST["killid"];
+    cursor = connection.cursor();
+    
+    print(killid)
+    try:
+        cursor.execute("select stock from goods where goodsid = (select goodsid from secondkill where killid = '%s')"%killid);
+        data = cursor.fetchall();
+        stock = data[0][0];
+        print(stock)
+        cursor.close();
+        return HttpResponse(json.dumps({'data':stock, 'status':'ok'}), content_type="application/json")
+    except Exception as e:
+        return HttpResponse(json.dumps({"message":"没有该商品", 'status':'error'} , content_type="application/json"))
+def secondkillAddgoodsidintogoods(request):
+    goodsid = request.POST['goodsid'];
+    cursor = connection.cursor();
+    killid = randomString();
+    print(goodsid)
+    try:
+        sql = "INSERT INTO secondkill(killid,goodsid) VALUES ('%s','%s')" %  (killid,goodsid) ;
+        cursor.execute(sql);
+        cursor.close();
+        return HttpResponse(json.dumps({'message':'添加成功', 'status':'ok'}), content_type="application/json")
+    except Exception as e:
+        return HttpResponse(json.dumps({"message":"添加失败", 'status':'error'}) , content_type="application/json")
+# 快递查询接口  测试版   （陈云飞）
+def express(appkey, m="GET"):
+        appkey = '6a5e822ae9dacf265266ea02bd27b5ba';
+        url = "http://v.juhe.cn/exp/index"
+        params = {
+            "com" : "sf", #需要查询的快递公司编号
+            "no" : "789421467311", #需要查询的订单号
+            "key" : appkey, #应用APPKEY(应用详细页查询)
+            "dtype" : "json", #返回数据的格式,xml或json，默认json
+    
+        }
+        params = urlencode(params)
+        if m =="GET":
+            f = urllib.request.urlopen("%s?%s" % (url, params))
+        else:
+            f = urllib.request.urlopen(url, params)
+    
+        content = f.read()
+        res = json.loads(content)
+        error_code = res["error_code"]    
+        if error_code == 0:
+             #成功请求
+            resultDic = (res['result'])
+            return HttpResponse(json.dumps(resultDic) , content_type="application/json");
+        else:
+            return HttpResponse(json.dumps({"error_code":res[error_code] , "reason":res["reason"]}) , content_type="application/json");
+
+#发送短信接口  测试用  （陈云飞）
+def shortMsg(request):
+    sendurl = 'http://v.juhe.cn/sms/send' #短信发送的URL,无需修改 
+    appkey = '0f2f46d95cfe854988012bf5a1da65cf';
+    mobile = "15824800782";
+    tpl_id = "56951";
+    code = str(random.randint(0,999999))
+    tpl_value = '#code#='+str(9987)
+    params = 'key=%s&mobile=%s&tpl_id=%s&tpl_value=%s' % \
+             (appkey, mobile, tpl_id, urllib.request.quote(tpl_value)) #组合参数
+ 
+    wp =urllib.request.urlopen(sendurl+"?"+params)
+    content = wp.read() #获取接口返回内容
+ 
+    result = json.loads(content)
+    error_code = result['error_code']
+    if error_code == 0:
+        #发送成功
+        smsid = result['result']['sid']
+        statusDic = {"status":"ok" , "smsid":smsid}
+        return HttpResponse(json.dumps(statusDic) , content_type="application/json");
+    else: 
+        #发送失败
+        statusDic = {"status":"error" , "reason":result['reason']}
+        return HttpResponse(json.dumps(statusDic) , content_type="application/json");

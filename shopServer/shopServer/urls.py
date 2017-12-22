@@ -142,7 +142,12 @@ urlpatterns = [
     url(r'^buyhistoryAdd/$',buyhistoryAdd), #购买历史添加接口
     url(r'^buyhistorySelect/$',buyhistorySelect), #购买历史删除接口 POST请求
     url(r'^buyhistoryDelete/$',buyhistoryDelete), #购买历史查询接口 POST请求
-
+    url(r'^secondkillManageJsonAdd/$' , secondkillManageJsonAdd),#秒杀活动添加     
+    url(r'^secondkillManageJsonSelect/$' , secondkillManageJsonSelect),#秒杀活动查询
+    url(r'^secondkillManageJsonDelete/$' , secondkillManageJsonDelete),#秒杀活动删除
+    url(r'^secondkillManageJsonUpdata/$' , secondkillManageJsonUpdata),#秒杀活动更新
+    url(r'^secondkillManageJsonstock/$' , secondkillManageJsonstock),#查询库存
+    url(r'^secondkillAddgoodsidintogoods/$' , secondkillAddgoodsidintogoods),
     url(r'^personal/$' , personal),      
     url(r'^guestbookSelect/$',guestbookSelect), #购买历史查询接口 POST请求
     url(r'^leavingMessage/$',leavingMessage), #留言查询接口 POST请求
