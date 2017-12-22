@@ -165,12 +165,14 @@
 			})
 		});
 
-		myPost("userManageJsonSelect/",{},function(result){
+		myPost("userManageJsonSelect",{},function(result){
+			console.log("88888888");
 			mainData = result;
 			dataParse(mainData);
 		})
 
 		function createList(page) {
+			console.log(mainData);
 			$("#userTable").empty()
 			for(i = 0; i < mainData.data.length; i++) {
 				if(i >= (page - 1) * 10 && i <= page * 10 - 1) {

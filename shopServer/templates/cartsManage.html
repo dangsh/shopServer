@@ -74,17 +74,15 @@
 	</div>
 	<div class="row" >
 		<div class="row3" style="height: 50px;">
-				<div class="col-md-6" style="text-align:left;">
-					<!-- <button id="deleteBtn" type="button" class="btn btn-danger delBtn"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span>批量删除</button>			 -->
-					<input id="deleteBtn" type="button" class="btn btn-danger delBtn" value="批量删除">
-				</div>
+			<div class="col-md-6" style="text-align:left;">
+				<input id="deleteBtn" type="button" class="btn btn-danger delBtn" value="批量删除">
+			</div>
 			
 			<div class="col-md-6" style="text-align: right;">
-				<p>共有数据:<strong id="goodsNumber">0</strong>条</p>
+				<p>共有数据:<strong id="cartsNumber">0</strong>条</p>
 			</div>
 		</div>
-		
-		
+
 		<div class=""  id="bigdiv">
 			
 			<table id="table" class="table table-bordered" >
@@ -104,6 +102,7 @@
 						<th>操作</th>
 					</tr>
 				</tbody>
+
 					<!-- <tr class="row">
 					<tbody>
 						<th>
@@ -129,45 +128,12 @@
 						 </th>
 						</tr>
 					</tbody> -->
-					
+				<tbody id="mytbody" class="myListTable">
 
-					
-				</table>
+				</tbody>	
+			</table>
+			
 		</div>
-		
-		
-
-		<div id="fade" class="black_overlay">
-		</div>
-		<div id="MyDiv" class="white_content">
-			<div style="text-align: right; cursor: default; height: 40px;" id="move">
-				<span style="font-size: 16px;" onclick="CloseDiv('MyDiv','fade')">关闭</span>
-			</div>
-		 	<div id="">
-				<div>
-					<h1>商品信息添加：</h1>
-					<script id="editor" type="text/plain" style="width:100%;height:300px;"></script>
-				</div>
-				<div id="btns">
-					<div id="div_Old" style="height: 300px;border: 2px solid red;width: 100%;">						
-					</div>
-					<br />
-					<div align="center">				
-						<form id="uploadForm" method="post" action="http://localhost:8000/adManageJsonAdd/" >  
-								<input type="file" name="imgsFile"></input>  
-								<input id="subbtn" type="submit" >  
-						</form> 
-					</div>
-					<br />
-					<div id="" align="center">
-						<button style="background-color: red;height: 30px;width: 50px;"onclick="addAll()">添加</button>
-					</div>
-				</div>
-				
-			</div>
-
-		</div>
-		
 		
 {% endblock %}
 
@@ -192,6 +158,8 @@
 
 {% block script %}
 <script>
+var thispage = 1
+
 $('#checkbox-all').click(function () {
 	if($('#checkbox-all').is(':checked')) {
 		$(".checkbox-one").prop("checked",true);
@@ -199,6 +167,7 @@ $('#checkbox-all').click(function () {
 		$(".checkbox-one").prop("checked",false);
 	}
 });
+
 //解析数据
 function getDataFn(opt) {
 	$.ajax({

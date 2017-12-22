@@ -1083,7 +1083,6 @@ def cartstableManageJsonAdd(request):
     # number = request.POST["number"]
     # goodsid = request.POST["goodsid"]
     # userid = request.POST["userid"]
-    # cursor=connection.cursor()
     
     cursor = connection.cursor()
 
@@ -1942,7 +1941,7 @@ def buyhistorySelect(request):
 
 #好友列表查询功能
 def friendslistManageJsonSelect(request):
-    # friendslistid = request.carts["friendslistid"]
+    # friendslistid = request.friendsList["friendslistid"]
     friendslistid = "11"
    
     myData = []
@@ -2017,14 +2016,12 @@ def guestbookSelect(request):
     cursor.execute("SELECT * FROM guestbook")
     data = cursor.fetchall()
     dataArr = []
-    print(data);
     for i in data:
         userid = i[1]
         cursor.execute("SELECT * FROM user WHERE userid= %s "%(userid))
         userA = cursor.fetchall()
         userName = userA[0][1]
         userHeading = userA[0][2]
-        print(userHeading)
         ss = {"guestbookid":i[0] , "userid":i[1] , "leavemessage":i[2] , "leavtime":str(i[3]) , "status":i[4] , "username":userName , "userHeading":userHeading}
         dataArr.append(ss)
 
@@ -2032,7 +2029,19 @@ def guestbookSelect(request):
                      
     return HttpResponse(json.dumps({"data":dataArr , "status":"ok"}) , content_type="application/json");
 
+
+def leavingMessage(request):
+    return render(request , "leavingMessage.html");
+
+#获取session接口
 def getSession(request):
     is_login = request.session.get('IS_LOGIN',False)
-    print(is_login)
+    # print(is_login)
     return HttpResponse(json.dumps({"data":is_login , "status":"ok"}) , content_type="application/json");
+
+#设置session接口
+def setSession(request):
+    request.session['IS_LOGIN'] = False
+    is_login = request.session.get('IS_LOGIN')
+    print(is_login)
+    return HttpResponse(json.dumps({"status":"ok"}) , content_type="application/json");

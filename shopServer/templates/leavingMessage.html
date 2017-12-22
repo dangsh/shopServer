@@ -1,0 +1,96 @@
+{% extends "base.html" %} {% load staticfiles %} {% block content %}
+<div class="container-fluid ">
+	<div class="row ">
+
+		<div class="col-md-11" style="text-align: center;">
+			<form class="form-inline" action="http://localhost:8000/ordertabalelistJaon/" id="searchForm" method="post">
+				<div class="form-group">
+					<label for="exampleInputName2">留言序号:</label>
+					<input type="text" class="form-control" name="orderid" id="orderid" placeholder="订单号">
+					<label for="exampleInputName2">用户名:</label>
+					<input type="text" class="form-control" id="userid" name="userid" placeholder="用户名">
+					<label for="exampleInputName2">留言状态:</label>
+					<select name="status" class="form-control" id="myStatus">
+						<option value="0">已查看</option>
+						<option value="1">未查看</option>
+					</select>
+				</div>
+				<input type="submit" id="tijiao" class="btn btn-success mybtn" aria-hidden="true" value="订单查询">
+				<!-- <span class="glyphicon glyphicon-search" aria-hidden="true" value="订单查询"> -->
+			</form>
+		</div>
+		<table class="table">
+			<thead>
+				<tr>
+					<th colspan="11">
+
+						<button class="btn btn-default trash AllDelete"><span class = "glyphicon glyphicon-trash">批量删除</span></button>
+						<label id="userNumber" class="count" style="float: right; padding-right: 4%;">共有数据</label>
+
+					</th>
+				</tr>
+			</thead>
+
+			<!-- <caption><strong style="color: #000000;">商品列表</strong></caption> -->
+			<thead>
+				<tr>
+					<th class="info nature">
+						<input type="checkbox" id="checkbox-all">
+					</th>
+					<th>序号</th>
+					<th>留言序号</th>
+					<th>用户ID</th>
+					<th>留言内容</th>
+					<th>留言时间</th>
+					<th>状态</th>
+				</tr>
+			</thead>
+			<tbody id="mytbody" class="myListTable">
+
+			</tbody>
+		</table>
+
+		<div class="text-center">
+			<ul id="visible-pages-example"></ul>
+		</div>
+		<div class="text-center">
+			<ul id="aaa"></ul>
+		</div>
+
+	</div>
+	<div id="exampleModal" class="modal fade" tabindex="-1" role="dialog" data-backdrop="false" data-show="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title">Modal title</h4>
+				</div>
+				<div class="modal-body">
+					<p>One fine body&hellip;</p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					<button type="button" class="btn btn-primary">Save changes</button>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+
+	{% endblock %} {% block contentRight %}
+
+	<ol class="breadcrumb">
+		<li>
+			<a href="#"><i class="fa fa-dashboard"></i> Home</a>
+		</li>
+		<li class="active">订单管理</li>
+	</ol>
+
+	{% endblock %} {% block contentLeft %} 留言表
+	<small>Version 5.0</small> {% endblock %}
+	{% block script %}
+	<script type="text/javascript">
+		
+	</script>
+	{% endblock %}

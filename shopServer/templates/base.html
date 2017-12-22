@@ -131,7 +131,7 @@
 										</ul>
 									</li>
 									<li class="footer">
-										<a href="#">See All Messages</a>
+										<a href="http://localhost:8000/leavingMessage/">See All Messages</a>
 									</li>
 								</ul>
 							</li>
@@ -535,6 +535,7 @@
 
 		<script src="{% static 'js/tool.js' %}"></script>
 
+		<!-- 获取session -->
 		<script type="text/javascript">
 			$.ajax({
 				url: "http://localhost:8000/getSession/",
@@ -555,8 +556,24 @@
 
 		<script type="text/javascript">
 			$(".exit").click(function(){
-				localStorage.clear();
-				$(".exit").attr("href" , "http://localhost:8000")
+				//清除缓存
+				localStorage.clear(); 
+
+				//清除session
+				$.ajax({
+					url: "http://localhost:8000/setSession/",
+					success: function (data) {
+
+						console.log(data)
+						window.location.href = "http://localhost:8000";
+					},
+				});
+
+
+
+				
+
+				
 			})
 			
 			$('.treeview-menu').find('a').each(function() {
