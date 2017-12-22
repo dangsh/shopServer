@@ -73,7 +73,7 @@
 						<div class="modal-body">
 							<form>
 								<div class="form-group">
-									<label for="recipient-name" class="control-label">商品号:</label>
+									<label for="recipient-name" class="control-label">商品名:</label>
 									<input type="text" class="form-control" id="addLucky-goodsId">
 								</div>
 								<div class="form-group">
@@ -237,7 +237,6 @@ function oneLucky(data, i) {
 
 //解析数据到页面
 function luckyListToPage(data, i) {
-	console.log("lllllllllllllllllllllllll")
 	for (var i = 0; i < data.length; i++) {
 		oneLucky(data[i], i)
 	}
@@ -337,12 +336,13 @@ function loaddata() {
 	$.ajax({
 		url: HomeUrl + "luckyManageJsonQuery/?page=" + thispage + "&commName=" + commName + "&timeUp=" + timeBtnUp,
 		success: function (data) {
+			console.log("*******************")
+			console.log(data)
 			luckyCount = data.luckycount
 			luckyListPages = Math.ceil(parseInt(luckyCount) / 10 )
 			$(".myListTable").children("tr").remove()
 			//解析数据
 			mainData = data.data;
-			console.log("ajlajlajlajlajlajl")
 			luckyListToPage(mainData)
 			//记录个数'
 			$("#luckyNumber").text(luckyCount);
@@ -369,8 +369,9 @@ function addLucky(form_goodsId, form_counts){
 	$.ajax({
 		url: HomeUrl + "luckyManageJsonAdd/",
 		type: 'POST',
-		data:{goodsid:form_goodsId, counts:form_counts},
+		data:{goodsName:form_goodsId, counts:form_counts},
 		success: function (data) {
+			console.log(data)
 			if (data["status"] == "ok" ) {
 				layer.msg("商品添加成功")
 				thispage = 1
@@ -387,10 +388,11 @@ $("#form-addLucky").click( function () {
 	form_goodsId = $("#addLucky-goodsId").val()
 	form_counts = $("#addLucky-counts").val()
 	$.ajax({
-		url: HomeUrl + "goodsSelectByid/",
+		url: HomeUrl + "goodsNameSelect/",
 		type: 'POST',
-		data:{goodsid:form_goodsId},
+		data:{goodsName:form_goodsId},
 		success: function (data) {
+			console.log(data)
 			if (data["status"] == "ok" && data["data"].length > 0) {
 				if (form_counts < 0) {
 					layer.msg("数量不能为负")
@@ -408,7 +410,6 @@ $("#form-addLucky").click( function () {
 });
 
 $("#form-confirm").click( function () {
-	console.log("88888888888888888888888")
 	addLucky(form_goodsId, form_counts)
 	$("#exampleModal").modal('hide')
 	$("#exampleModal-confirm").modal('hide')

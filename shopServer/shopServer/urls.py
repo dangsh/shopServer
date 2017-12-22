@@ -73,6 +73,7 @@ urlpatterns = [
     url(r'^goodsManageJsonDelete/$' , goodsManageJsonDelete),  # 商品列表删除接口
     url(r'^goodsSelectByid/$' , goodsSelectByid), # 根据商品id查找商品
     url(r'^commodityQuery/$' , commodityQuery), # 商品模糊查询接口查找商品
+    url(r'^goodsNameSelect/$' , goodsNameSelect), # 商品名模糊查询接口
 
     
     url(r'^activetableManageJsonAdd/$' , activetableManageJsonAdd),  # 活动添加接口

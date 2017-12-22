@@ -1315,12 +1315,11 @@ def luckyManageJsonUpdata(request):
 def luckyManageJsonAdd(request):
     luckyid = randomString()
     try:
-        goodsid = request.POST["goodsid"]
+        goodsName = request.POST["goodsName"]
         counts = request.POST["counts"]
-        print("**********************")
-        print(luckyid, goodsid, counts)
+        print(luckyid, goodsName, counts)
         cursor = connection.cursor()
-        sql = "INSERT INTO lucky (luckyid , goodsid , counts ) VALUES('%s','%s','%s')" % (luckyid, goodsid, counts)
+        sql = "INSERT INTO lucky (luckyid , goodsname , counts ) VALUES('%s','%s','%s')" % (luckyid, goodsName, counts)
         result = cursor.execute(sql)
         if result == 1 :
             statusDic = {"status" : "ok" , "message" : "添加成功"};
@@ -2192,3 +2191,40 @@ def shortMsg(request):
         #发送失败
         statusDic = {"status":"error" , "reason":result['reason']}
         return HttpResponse(json.dumps(statusDic) , content_type="application/json");
+
+#根据商品名模糊查询
+def goodsNameSelect(request):
+    myData = []
+    cursor = connection.cursor()
+    goodsName = request.POST["goodsName"]
+    cursor.execute("SELECT * FROM goods where goodsname like '%%%%%s%%%%'"%(goodsName));
+    datas = cursor.fetchall()
+    try:
+        for row in datas:
+            goods = {
+                'goodsid':row[0],
+                'rebate':row[1],
+                'lookhistoryid':row[2],
+                'standard':row[3],
+                'images':row[4],
+                'details':row[6],
+                'shopname':row[12],
+                'status':row[13],
+                'uptime':row[14].strftime('%Y-%m-%d %H:%M:%S'),
+                'downtime':row[15].strftime('%Y-%m-%d %H:%M:%S'),
+                'price':row[5],
+                'goodsname':row[16],
+                'stock':row[11],
+                'transportmoney':row[17],
+                'proprice':row[18],
+                'prostart':row[19].strftime('%Y-%m-%d'),
+                'proend':row[20].strftime('%Y-%m-%d'),
+                'addtime':row[21].strftime('%Y-%m-%d %H:%M:%S'),
+            }
+            myData.append(goods);
+        cursor.close();
+        return HttpResponse(json.dumps({'data':myData, 'status':'ok'}), content_type="application/json")
+    
+    except Exception as e: 
+        raise e   
+        return HttpResponse(json.dumps({'data':myData, 'status':'error'}), content_type="application/json");

@@ -140,7 +140,6 @@
     //解析数据函数
     function parseDataFn(result){
         data = result.data;
-        
         for (var i = 0; i < data.length; i++){
             perdata = data[i];
             adEleFn(perdata);
@@ -148,7 +147,7 @@
     }
     //请求数据
     function ajaxfn(){
-        Ajax(HomeUrl + "adManageJsonSelect/?page=" + currpage,function(result){
+        Ajax("adManageJsonSelect/?page=" + currpage,function(result){
             $(".myrow").remove();
             $(".sumdiv").remove();
             parseDataFn(result);
@@ -205,7 +204,7 @@
     $("#table").delegate("button","click",function(){
         if($(this).html() == "删 除"){
             dataId= $(this).parent().prev().prev().prev().prev().text();
-            Ajax(HomeUrl + "adManageJsonDelete/?Id="+dataId , function(result){
+            Ajax("adManageJsonDelete/?Id="+dataId , function(result){
                 if (result.status == "ok"){
                         ajaxfn();
                 }
@@ -216,7 +215,7 @@
         $("[name = checkbox-one]:checkbox").each(function () {
             if ($(this).is(":checked")) {
                 var objData = $(this).parent().text();
-                Ajax(HomeUrl + "adManageJsonDelete/?Id="+objData , function(result){
+                Ajax("adManageJsonDelete/?Id="+objData , function(result){
                     if (result.status == "ok"){
                             ajaxfn();
                     }
