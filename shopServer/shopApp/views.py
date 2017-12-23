@@ -1318,8 +1318,15 @@ def luckyManageJsonAdd(request):
         goodsName = request.POST["goodsName"]
         counts = request.POST["counts"]
         print(luckyid, goodsName, counts)
+        cursor2 = connection.cursor()
+        sql2 = "SELECT goodsid from goods where goodsname='%s'"%goodsName
+        cursor2.execute(sql2)
+        goodsid = cursor2.fetchall()[0][0]
+        cursor2.close()
+        print(goodsid)
+
         cursor = connection.cursor()
-        sql = "INSERT INTO lucky (luckyid , goodsname , counts ) VALUES('%s','%s','%s')" % (luckyid, goodsName, counts)
+        sql = "INSERT INTO lucky (luckyid , goodsname , counts , goodsid) VALUES('%s','%s','%s','%s')" % (luckyid, goodsName, counts , goodsid)
         result = cursor.execute(sql)
         if result == 1 :
             statusDic = {"status" : "ok" , "message" : "添加成功"};
