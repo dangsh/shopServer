@@ -70,8 +70,8 @@
 		
 	
 	var goodsid = getUrlParam("goodsid")
-
-
+	console.log("**********************")
+	console.log(goodsid)
     $(".myGoodsid").val(goodsid);
     
 
@@ -79,9 +79,16 @@
 			e.preventDefault(); 
 			$(this).ajaxSubmit({
 				success: function (result) {
-					console.log("chenggong ");
-                    console.log(result);
-                    window.location.href = "http://localhost:8000/goodsManage/";
+					console.log(result);
+					if (result.status == "ok") {
+						layer.msg(result.message);
+						setTimeout(function () {
+							window.location.href = "http://localhost:8000/changePic/?goodsid=" + goodsid;
+						} , 500)
+					} else {
+						layer.msg(result.message);
+					}
+                    
 				}
 			})
 		});

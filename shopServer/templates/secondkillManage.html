@@ -1,0 +1,272 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+
+{% block css %}
+<style type="text/css">
+    img{
+        height: 60px;
+    }
+    #table{
+        padding-right: 0;
+        margin-bottom: 0; 
+        text-align: center;
+        vertical-align: middle;
+    }
+    #table td {
+        vertical-align: middle;  
+    }
+    th{
+        text-align: center;
+    }	
+    #imagesdiv{
+			height: 60px;
+	}
+    #img{
+        src: static/myfile/1.jpg;
+        height: 60px;
+    }
+    .sumdiv{
+		background-color: #fff;
+		display: inline-block;
+		padding: 6px 12px;
+		margin-bottom: 0;
+		font-size: 14px;
+		font-weight: 400;
+		line-height: 1.42857143;
+		text-align: center;
+		border: 1px solid #ccc;
+		border-radius: 4px;
+	}
+	</style>
+
+{% endblock %}
+
+{% block content %}
+
+<button onclick = "window.location.href='/adsecondkill/'" type="button" id = "tianjia"class="btn btn-primary addBtn" style="margin:5px;"><span class="glyphicon glyphicon-plus"></span>添加</button>
+<div id="xxx" class=" col-sm-12" style="padding:0;">
+    <a class="col-sm-12" style="margin:5px; padding-left:0; color: black;margin-right:0;"><strong>秒杀活动列表</strong></a>
+    <table id="table" class="table table-bordered" >
+        <tr name="row">
+            <td id="item" style="display:none"></td>
+            <th>活动id</th>
+            <th>商品id</th>
+            <th>状态</th>
+            <th>开始时间</th>
+            <th>截止时间</th>
+            <th>编辑</th>
+        </tr>
+    </table>
+    <div class="text-center">
+        <ul id="visible-pages-example"></ul>
+    </div>
+</div>
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    添加活动
+                </h4>
+            </div>
+            <div class="modal-body">
+                <form id="myform" action="" enctype="multipart/form-data" method="post">
+                    <div style="padding-top:20px">
+                        <label for="">活动id：</label><input type="text"   readonly= "true " name="killid" id="killid">
+                    </div>
+                    <div style="padding-top:20px">
+                        <label for="">商品id：</label><input type="text"   readonly= "true " name="goodsid" id="goodsid">
+                    </div>
+                    <div style="padding-top:20px">
+                        <label for="">状态：</label><input type="text"   readonly= "true " name="goodstatus" id="goodstatus">
+                    </div>
+                    <div style="padding-top:20px">
+                        <label for="">开始时间：</label><input  class="form-control only" type="date" name="starttime" id="prostart">
+                    </div>
+                    <div style="padding-top:20px">
+                        <label for="">结束时间：</label><input  class="form-control only" type="date" name="stoptime" id="prostart">
+                    </div>
+                </form>
+                
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                </button>
+                <button type="button" class="btn btn-primary" id="submitBtn" onclick="ajaxSubmitForm()">
+                    提交
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+
+{% endblock %}
+{% block script %}
+<script src="{% static 'layer/layer.js' %}"></script>
+<script src="{% static 'js/jquery.form.min.js' %}"></script>
+<script type="text/javascript">
+
+var currpage = 1;
+var countPages = 0;
+var goodsListPages = 3
+var goodsCount = 1
+var thispage = 1
+var addGoodsIdRed = ""
+var commName = ""
+var timeBtnUp = 0
+    //添加item函数
+function adEleFn(data){
+        killid = data.killid;
+        starttime = data.starttime;
+        stoptime = data.stoptime;
+        goodstatus = data.goodstatus;
+        goodsid = data.goodsid;
+        var Tr = '<tr name="row" class="myrow"><td>' + killid + '</td><td>' + goodsid + '</td><td>' + goodstatus + '</td><td>' + starttime + '</td><td>'+stoptime+'</td><td><button class="btn btn-success edit">编 辑</button>  <button class="btn btn-danger delete">删 除</button> </td></tr>';
+        $("#table").append(Tr);
+    }
+    //当modal关闭的时候数据清除
+    $('#myModal').on('hide.bs.modal', function ()
+    {
+        $('#myform')[0].reset();
+        //这个方法来清除缓存
+        $(this).find("img").remove();
+    });
+    //解析数据函数
+    function parseDataFn(result){
+        data = result.data;
+        
+        for (var i = 0; i < data.length; i++){
+            perdata = data[i];
+            adEleFn(perdata);
+        }
+        
+    }
+    //请求数据
+function ajaxfn(){
+        $.ajax({
+            type: "post",
+            url: 'http://localhost:8000/secondkillcommodityQuery/?page=' + currpage,
+            success: function (result){
+                console.log(result);
+                parseDataFn(result);
+                adcounts = result.adcounts;
+                countPages = Math.ceil(parseInt(adcounts) / 8 );
+                var spanele = '<span class="sumdiv">共' + countPages + '页,当前第' + countPages + '页,共' + adcounts + '条数据</span>';
+                $("#visible-pages-example").append(spanele);
+                    $('#visible-pages-example').twbsPagination({
+                    totalPages:countPages,
+                    first: "首页",
+                    last: "尾页",
+                    prev: '上一页',
+                    next: '下一页',
+                    startPage: 1,
+                    visiblePages: countPages>5?5:countPages,
+                    version: '1.1',
+                    onPageClick: function (event, page) {
+                        currpage  = page;
+                        $(".myrow").remove();
+                        $(".sumdiv").remove();
+                        ajaxfn();
+                    }
+                });
+            },
+            error: function (err){
+                layer.msg("请求失败");
+                console.log(err);
+            }
+        });
+    }
+    ajaxfn();
+    
+    
+    //ajaxform提交表单
+    function ajaxSubmitForm(){
+        console.log("submigtajax");
+        var option = {
+            url : "http://localhost:8000/secondkillManageJsonUpdata/",
+            type : 'POST',
+            dataType : 'json',
+            success : function(data) 
+            {
+                layer.msg("修改成功");
+               setTimeout(function(){
+                
+               history.go(0)
+               } , 1000)
+
+                
+            },
+            error: function(data) {
+                layer.msg("修改失败");
+            }
+        };
+        $("#myform").ajaxSubmit(option);
+        return false;
+    }
+    //图片预览
+
+    var commName = ""
+    $(document).ready(function(){
+        $("#table").delegate("button","click",function(){
+            if($(this).html() == '编 辑'){
+
+                $("#myModal").modal("show");
+                var killid = $(this).parent().prev().prev().prev().prev().prev().html();
+                document.getElementById("killid").value=killid;
+                var goodsid = $(this).parent().prev().prev().prev().prev().html();
+                document.getElementById("goodsid").value=goodsid;
+                var goodstatus = $(this).parent().prev().prev().prev().html();
+                document.getElementById("goodstatus").value=goodstatus;
+                var starttime = $(this).parent().prev().prev().html();
+                document.getElementById("starttime").value=starttime;
+                var stoptime = $(this).parent().prev().html();
+                document.getElementById("stoptime").value = stoptime;
+
+            }
+            if($(this).html() == "删 除"){
+                console.log("hahhah");
+                // dataId = {"id":""};
+                dataId= $(this).parent().prev().prev().prev().prev().prev().html();
+                that = this;
+                console.log(dataId);
+                $.ajax({
+                    type: "get",
+                    url: "http://localhost:8000/secondkillManageJsonDelete/?killid="+dataId,
+                    success: function (result){
+                        if (result.status == "ok"){
+                            layer.msg("删除成功")
+                            $(that).parent().parent().remove();
+                        }
+                    },
+                    error: function (err){
+                        console.log("发生了未知错误，暂时无法修改");
+                        console.log(err);
+                    }
+                });
+            }
+        });
+    });
+
+
+
+</script>
+{% endblock %}
+
+{% block contentLeft %}
+秒杀管理
+<small>Version 5.0</small>
+{% endblock %}
+
+{% block contentRight %}
+<ol class="breadcrumb">
+        <li>
+            <a href="#"><i class="fa fa-dashboard"></i> Home</a>
+        </li>
+        <li class="active">秒杀管理</li>
+    </ol>
+{% endblock %}

@@ -75,7 +75,7 @@
 	<div class="row" >
 		<div class="row3" style="height: 50px;">
 			<div class="col-md-6" style="text-align:left;">
-				<input id="deleteBtn" type="button" class="btn btn-danger delBtn" value="批量删除">
+				<input id="deleteBtn" type="button" class="btn btn-danger deleteBtn" value="批量删除">
 			</div>
 			
 			<div class="col-md-6" style="text-align: right;">
@@ -103,8 +103,7 @@
 					</tr>
 				</tbody>
 
-					<!-- <tr class="row">
-					<tbody>
+				<!-- <tr class="row">
 						<th>
 							<input type="checkbox" class="checkbox-one">
 						</th>
@@ -114,10 +113,10 @@
 						<th>华为</th>
 						<th>手机</th>
 						<th>￥2999</th>
-						<th>
+						<th class="c">
 							<div class="item-amount">
 								<a href="#" class="J_Minus no-minus glyphicon glyphicon-minus decrease" name="-"></a>
-								<input type="text" value="' + number + '" class="text text-amount J_ItemAmount counts" data-max="281" data-now="1" autocomplete="off">
+								<input type="text" value="' + number + '" class="text text-amount J_ItemAmount counts" data-max="281" data-now="1" autocomplete="off" id="count">
 								<a href="#" class="J_Plus plus glyphicon glyphicon-plus increase"></a>
 							</div>
 						</th>
@@ -126,8 +125,7 @@
 							<button class="btn btn-success">购 买</button>
 							<button class="btn btn-danger delbtn">删 除</button>
 						 </th>
-						</tr>
-					</tbody> -->
+					</tr> -->
 				<tbody id="mytbody" class="myListTable">
 
 				</tbody>	
@@ -157,7 +155,9 @@
 {% endblock %}
 
 {% block script %}
+<script src="{% static 'layer/layer.js' %}" type="text/javascript" charset="utf-8"></script>
 <script>
+
 var thispage = 1
 
 $('#checkbox-all').click(function () {
@@ -185,7 +185,7 @@ function getDataFn(opt) {
 				var goodsid = oneData.goodsid;
 				var userid = oneData.userid;
 
-				var ele = '<tr class="row"><th><input type="checkbox" class="checkbox-one"></th><th class="id">' + cartsid + '</th><th>huawei</th><th>' + goodsid + '</th><th>华为</th><th>手机</th><th>￥2999</th><th><div class="item-amount"><a href="#" class="J_Minus no-minus glyphicon glyphicon-minus decrease" name="-"></a><input type="text" value="' + number + '" class="text text-amount J_ItemAmount counts" data-max="281" data-now="1" autocomplete="off"><a href="#" class="J_Plus plus glyphicon glyphicon-plus increase"></a></div></th><th>金额</th><th><button class="btn btn-success">购 买</button><button class="btn btn-danger delbtn">删 除</button> </th></tr>' ;
+				var ele = '<tr class="row"><th><input type="checkbox" class="checkbox-one"></th><th class="id">' + cartsid + '</th><th>huawei</th><th>' + goodsid + '</th><th>华为</th><th>手机</th><th>￥2999</th><th class="c"><div class="item-amount"><a href="#" class="J_Minus no-minus glyphicon glyphicon-minus decrease" name="-"></a><input type="text" value="' + number + '" class="text text-amount J_ItemAmount counts" data-max="281" data-now="1" autocomplete="off" id="count"><a href="#" class="J_Plus plus glyphicon glyphicon-plus increase"></a></div></th><th>金额</th><th><button class="btn btn-success">保 存</button><button class="btn btn-danger delbtn">删 除</button> </th></tr>' ;
 				$(".table-bordered").append(ele) ;
 			}
 		}
@@ -227,13 +227,15 @@ function getDataFn(opt) {
 					{"cartsid":cartsidOne} ,
 					function () {
 						console.log("删除成功。。。。。");
+						layer.msg("删除成功")
 						for (var j = 0; j < deleteArr.length; j++) {
 								$(deleteArr[j]).remove();
 						}
 					})
 				}
 			}
-			console.log(cartsArr);
+			console.log(cartsArr+"cartsArr");
+			layer.msg("选择要删除的内容");
 		}
 		else{
 			console.log(cartsid);
@@ -244,25 +246,41 @@ function getDataFn(opt) {
 	{
 		console.log("&&&&&&&&&&");
 		a = $(this).html();
-		var that = $(this).parent().parent(".row");
+		var that = $(this).parents(".row");
 		var cartsid = that.children(".id").html();
-		console.log(that);
-		console.log(cartsid);
+		var c = $(that).children(".c").children(".item-amount");
+		var number = $(c.children(".counts")).val();
+		// console.log(that);
+		// console.log(cartsid);
+		console.log(number);
+		// console.log("5261634563285+65+");
+		// console.log(c);
 		if (a == "删 除")
 		{
 			$.ajax({
 				url: "http://localhost:8000/cartstableManageJsonDelete/?id=" + cartsid,
 				success: function(res) {
-					console.log("删除成功。。。。。");
 					$(that).remove();
+					layer.msg("删除成功");
 				},
 				error: function(msg) {
-					console.log("error 加载数据失败");
+					layer.msg("删除失败");
 				}
 			});
 		}
 		else{
-			console.log("购买成功");
+			$.post("http://localhost:8000/cartstableManageJsonUpdate/?id=" + cartsid, 
+				{"num":number},
+				function(data){
+					if (data.status == "ok") {
+						$(that.children(".counts")).val(number);
+						// layer.msg("保存成功");
+						layer.msg("现在已有" + number + "件该商品");
+					} else {
+						console.log("保存失败");
+					}
+				}
+			);
 		}
     });
 
@@ -273,42 +291,29 @@ function getDataFn(opt) {
 		var a = $(that).parents(".row");
 		var cartsid = a.children(".id").html();
 		var number = $(that.children(".counts")).val();
-		
+		// console.log(that);
+		// console.log(number);
 		if (b == "-")
 		{
-			if (number > 0)
+			console.log("-----------");
+			if (number >= 1)
 			{
-				number -- ;
+				number --;
+				$(that.children(".counts")).val(number);
 			}
 			console.log(number);
-			$.post("http://localhost:8000/cartstableManageJsonUpdate/?id=" + cartsid, 
-				{"num":number},
-				function(data){
-					if (data.status == "ok") {
-						$(that.children(".counts")).val(number);
-					} else {
-						console.log(data);
-					}
-				}
-			);
+			layer.msg("减少1个");
 		}
 		else
 		{
+			console.log("+++++++++++");
 			if (number >= 0)
 			{
 				number ++ ;
+				$(that.children(".counts")).val(number);
 			}
 			console.log(number);
-			$.post("http://localhost:8000/cartstableManageJsonUpdate/?id=" + cartsid, 
-				{"num":number},
-				function(data){
-					if (data.status == "ok") {
-						$(that.children(".counts")).val(number);
-					} else {
-						console.log(data);
-					}
-				}
-			);
+			layer.msg("增加1个");
 		}
 	});
 }

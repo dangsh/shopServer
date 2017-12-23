@@ -48,37 +48,51 @@
 					<input class="text_password" name="password" id="pwd" type="password" placeholder="输入登录密码"/> <i class="login_password"></i>
 				</li>
 				
+				<!-- <li class = "code">
+					<input type="text" name="msgCode" id = "msgCode" placeholder="请输入手机接到的验证码">
+					<button class = "getMsgCode" >获取手机验证码</button>
+				</li> -->
+				<br>
 				<li>
 					<input class="text_password" name="code" id="code" type="text" placeholder="输入验证码"/> <i class="login_password"></i>
 				</li>
+				
+				<br>
 				<li>
 						<img id="imgclick" style="width:150px;height:50px" src="../static/myfile/code.jpg" alt="" srcset="">
 				</li>
 
 
-				<li class="login_more">
-					<dd ><input type="checkbox" style="vertical-align: middle;"/> 记住密码</dd>
-					<dd style=" text-align:right">忘记密码?</dd>
-				</li>
 				<p style="width:100%;height:20px;clear:both"><p>
-					
 					<li class="end"><input type="submit" id="submit" name="submit" value="登录" class="login_login"></li>
 				</ul>
 			</form>
+
 		</div>
 		<div class="login_box register_box" id="LoginForm" style="display:none">
 			<form id="registerForm" class="registerform" >
 				<p style="margin-left:110px;"><b style="float:left">会员注册</b></p>
-				<ul>				
+				<ul>
+					<li>
+						<input class="text_password ss" name="invitecode" type="text" placeholder="邀请码">
+					</li>
+					<!-- <li>
+						<input type="text" name="phone" id="phone" placeholder="请输入手机号码">
+						<button  class="msgcode">获取手机验证码</button>
+					</li> -->
+					<br>
 					<li class="click">
 					<input class="text_password ss" name="username" type="text" placeholder="用户名"/> <i class="login_user"></i>
 					</li>
 				<li>
 					<input class="text_password ss" name="password" type="password" placeholder="输入登录密码"/> <i class="login_password"></i>
 				</li>
+				<!-- <li>
+					<input type="text" name="msgcode" id="msgcode" placeholder="请输入收到的验证码">
+				</li> -->
 				<p style="width:100%;height:20px;clear:both">
 				</p>
-				<a href="" style="color:red; float:right;">已有账号>>>>></a>	
+				<a class="sbOne" style="color:red; float:right;">已有账号>>>>></a>	
 				<p style="width:100%;height:20px;clear:both"></p>
 				
 					<li class="end"><input id="register" name="submit"  value="注册" class="login_login"> </li>
@@ -93,30 +107,28 @@
 				</div>
 			
 			</div>
+
+
 </body>
 <script src="{% static 'layer/layer.js' %}" type="text/javascript" charset="utf-8"></script>
+<script src="{% static 'js/tool.js' %}"></script>
 <script>
+	$('body').append("<div style='display:none;width:100%; margin:0 auto;position:fixed;left:0;top:0;bottom: 0;z-index: 111;opacity: 0.5;' id='loading'><a style='left: 50%;position: absolute;top:50%'><img src='http://localhost:8000/static/myfile/loading.gif' /></a></div>")
+	$(document).ajaxStart(function(){
+	　　$("#loading").show();
+	})
+	$(document).ajaxComplete(function(){
+	　　$("#loading").hide();
+	})
 	console.log(localStorage)
+
+	console.log("-------");
+	console.log(myPost);
 	//ajax请求函数
 	function ajaxFn(url , data){
 		myPost(url,{data},function(data){
 			alert(data.message);
 		})
-//		$.ajax({
-//			url: url,
-//			type: 'POST',
-//			data: data,
-//			success: function (data)
-//			{
-//				
-//				alert(data.message);
-//			},
-//			error: function(err)
-//			{
-//				
-//				alert("失败了..");
-//			}
-//		});
 	}
 	//调用登陆按钮
 	$("#login").click(function(){
@@ -135,6 +147,11 @@
 		$(".login_box").css("display" , "none")
 		$(".register_box").css("display" , "block")
 	});
+	
+	$(".sbOne").click(function (){
+		$(".login_box").css("display" , "block")
+		$(".register_box").css("display" , "none")
+	});
 	$('#imgclick').click(function(e){
 		// e.preventDefault();
 		console.log("1111111") 
@@ -152,6 +169,39 @@
 			$("#imgclick").attr("src" , "http://localhost:8000/" + result.imgPath + "?aaa=" + Math.random()*35)
 		}});
 	}
+
+	// 不要删
+	// $(".getMsgCode").click(function(e){
+	// 	e.preventDefault()
+	// 	e.stopPropagation()
+	// 	var username = $("#name").val()
+	// 	var objData = "username=" + username;
+	// 	// console.log(username)
+	// 	myPost("shortMsgFromName" , objData , function(data){
+	// 		if (data["status"]=="ok"){
+	// 			layer.msg("短信验证码发送成功")
+	// 		}
+	// 		else{
+	// 			layer.msg("短信验证码发送失败")
+	// 		}
+	// 	})
+	// })
+
+	// $(".msgcode").click(function(e){
+	// 	e.preventDefault();
+	// 	e.stopPropagation();
+	// 	var phone = $("#phone").val();
+	// 	var objData = "phone=" + phone;
+	// 	myPost("shortMsgFromPhone" , objData , function(data){
+	// 		if (data["status"]=="ok"){
+	// 			layer.msg("短信验证码发送成功")
+	// 		}
+	// 		else{
+	// 			layer.msg("短信验证码发送失败")
+	// 		}
+	// 	})
+	// })
+
 	$('#loginForm').on('submit', function(e) {
 		var aa="";
 		e.preventDefault(); 
@@ -165,7 +215,7 @@
 				else if (aa=="ok") {
 					console.log("1111111111111111111")
 					aaa=document.getElementById("name").value
-					var str={names:aaa}
+					var str={'names':aaa}
 					console.log(str)
 					localStorage.setItem("data" ,JSON.stringify(str));					
 					document.getElementById("name").value = "";
@@ -175,12 +225,13 @@
 					setTimeout(function(){
 						window.location.href="http://localhost:8000/goodsManage/";
 					},1000)
+					layer.msg("厉害了我的哥，居然登录成功了.......！");
 				} 
 				else {
 					document.getElementById("pwd").value = "";
 					document.getElementById("code").value = ""
 					changeCode()
-					layer.msg("账号或密码输入错误！");
+					layer.msg("哎呦我去，登录失败了！");
 				}
 				console.log(result);
 			}

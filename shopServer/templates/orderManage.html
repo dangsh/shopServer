@@ -170,9 +170,6 @@
 				orderListToPage(mainData, 1)
 				$("#orderCount").text(ordercount)
 				$("#visible-pages-example").children(".sumdiv").remove()
-				var spanele = '<span class="sumdiv">共' + orderListPages + '页,当前第' + thispage + '页</span>'
-				$("#visible-pages-example").append($(spanele))
-
 				// 创建分页
 				createPageNav('#visible-pages-example', orderListPages, function(event, page) {
 					thispage = page;
@@ -188,15 +185,21 @@
 		//解析数据 data为数组
 
 		$(".AllDelete").click(function() {
+			var isEmeptySelect = true;
 			m = 0;
 			console.log("批量删除");
 			$("[name = checkbox-one]:checkbox").each(function() {
 				if($(this).is(":checked")) {
+					isEmeptySelect = false;
 					var that = $(this).parents('tr');
 					var objData = that.attr('orderid')
 					deleteOneDataById(objData, that)
 				}
 			})
+			if (isEmeptySelect == true) {
+	            console.log("000000");
+	            layer.msg("选择要删除的内容");
+	        }
 		})
 
 		$('#checkbox-all').click(function() {

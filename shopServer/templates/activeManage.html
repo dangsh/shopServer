@@ -48,18 +48,27 @@
 <div id="xxx" class=" col-sm-12" style="padding:0;">
     <a class="col-sm-12" style="margin:5px; padding-left:0; color: black;margin-right:0;"><strong>轮播图列表</strong></a>
     <table id="table" class="table table-bordered" >
-        <tr name="row">
-            <td id="item" style="display:none"></td>
-            <th>标题</th>
-            <th>开始时间</th>
-            <th>截止日期</th>
-            <th>详情</th>
-            <th>图片</th>
-            <th>编辑</th>
-        </tr>
+        <thead
+            <tr name="row">
+                <td id="item" style="display:none"></td>
+                <th>标题</th>
+                <th>开始时间</th>
+                <th>截止日期</th>
+                <th>位置</th>
+                <th>图片</th>
+                <th>编辑</th>
+            </tr>
+        </thead>
+        <tbody id="myListTable">
+		</tbody>
     </table>
-    <div class="text-center">
-        <ul id="visible-pages-example"></ul>
+</div>
+<div class="row" id="div3" style=" padding: 1% 0;">
+    <div class="col-md-12" style="text-align: left;">
+        <div class="text-center">
+            <ul id="visible-pages-example"></ul>
+            <ul id="xxx"></ul>
+        </div>
     </div>
 </div>
 <!-- 模态框（Modal） -->
@@ -76,15 +85,32 @@
             </div>
             <div class="modal-body">
                 <form id="myform" action="" enctype="multipart/form-data" method="post">
-                    <div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">标题:</label>
+                        <input type="text" class="form-control" id="addLucky-goodsId" name="active_name">
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">活动开始日期:</label>
+                        <input  class="form-control only" type="date" name="starttime" id="prostart">
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">活动结束日期:</label>
+                        <input  class="form-control only" type="date" id="proend" name="stoptime">
+                    </div>
+                    <div class="form-group">
+                        <label for="">位置:</label>
+                        <input type="text" class="form-control" name="active_position" id="location">
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">活动详情:</label>
+                        <textarea class="form-control" rows="6" style="resize: none;" name="activedetail"></textarea>  
+                    </div>
+                    <div class="form-group" enctype="multipart/form-data">
                         <label for="">添加图片:</label>
-                        <input type="file" class="myfile" name="images">
+                        <input type="file" class="myfile" name="imgs">
                     </div>
-                    <div id="img">
+                    <div id="img" class="form-group">
                         <img src="static/myfile/1.jpg" alt="" id="myimages">
-                    </div>
-                    <div style="padding-top:20px">
-                        <label for="">位置：</label><input type="text" name="location" id="location">
                     </div>
                 </form>
                 
@@ -92,7 +118,7 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">关闭
                 </button>
-                <button type="button" class="btn btn-primary" id="submitBtn" onclick="ajaxSubmitForm()">
+                <button type="button" class="btn btn-primary" id="submitBtn" data-dismiss="modal" onclick="ajaxSubmitForm()">
                     提交
                 </button>
             </div>
@@ -105,6 +131,7 @@
 <script src="{% static 'js/jquery.form.min.js' %}"></script>
 <script type="text/javascript">
 
+
     var currpage = 1;
     var countPages = 0;
 
@@ -116,8 +143,10 @@
         stoptime = data.stoptime;
         activedetail = data.activedetail;
         activetitle = data.activetitle;
-        var Tr = '<tr name="row" class="myrow"><td>' + activetitle + '</td><td>' + starttime + '</td><td>' + stoptime + '</td><td>' + activedetail + '</td><td><div id="imagesdiv"><img src="{% static 'myfile/1.jpg' %}"/></div></td><td><button class="btn btn-success edit">编 辑</button>  <button class="btn btn-danger delete">删 除</button> </td></tr>';
-        $("#table").append(Tr);
+        activePosition = data.activePosition;
+        activeName = data.activeName;
+        var Tr = '<tr name="row" class="myrow"><td>' + activeName + '</td><td>' + starttime + '</td><td>' + stoptime + '</td><td>' + activePosition + '</td><td><div id="imagesdiv"><img src="http://localhost:8000/static/myfile/' + imgs + '"/></div></td><td><button class="btn btn-success edit">编 辑</button>  <button class="btn btn-danger delete">删 除</button> </td></tr>';
+        $("#myListTable").append(Tr);
     }
     //当modal关闭的时候数据清除
     $('#myModal').on('hide.bs.modal', function ()
@@ -127,63 +156,85 @@
         $(this).find("img").remove();
     });
     //解析数据函数
-    function parseDataFn(result){
-        data = result.data;
+    function parseDataFn(result, currpage){
+        var data = result.data;
+        var start = (currpage - 1) * 10
+        var end = data.length > (currpage * 10)?(currpage * 10):data.length;
         
-        for (var i = 0; i < data.length; i++){
+        for (var i = start; i < end; i++){
             perdata = data[i];
             adEleFn(perdata);
         }
         
     }
     //请求数据
-    function ajaxfn(){
-    	myPost('activeManageJsonSelect/?page=' + currpage,{},function(result){
-    		console.log(result);
-                parseDataFn(result);
-                adcounts = result.adcounts;
-                countPages = Math.ceil(parseInt(adcounts) / 8 );
+    // function ajaxfn(){
+    // 	myPost('activeManageJsonSelect/?page=' + currpage,{},function(result){
+    // 		console.log(result);
+    //             parseDataFn(result);
+    //             adcounts = result.adcounts;
+    //             countPages = Math.ceil(parseInt(adcounts) / 8 );
                 
-                var spanele = '<span class="sumdiv">共' + countPages + '页,当前第' + countPages + '页,共' + adcounts + '条数据</span>';
-                $("#visible-pages-example").append(spanele);
-                $('#visible-pages-example').twbsPagination({
-                    totalPages:countPages,
-                    first: "首页",
-                    last: "尾页",
-                    prev: '上一页',
-                    next: '下一页',
-                    startPage: 1,
-                    visiblePages: countPages>5?5:countPages,
-                    version: '1.1',
-                    onPageClick: function (event, page) {
-                        currpage  = page;
-                        $(".myrow").remove();
-                        $(".sumdiv").remove();
-                        ajaxfn();
-                    }
-                });
-    	})
-    }
-    ajaxfn();
-    
+    //             var spanele = '<span class="sumdiv">共' + countPages + '页,当前第' + countPages + '页,共' + adcounts + '条数据</span>';
+    //             $("#visible-pages-example").append(spanele);
+    //             $('#visible-pages-example').twbsPagination({
+    //                 totalPages:countPages,
+    //                 first: "首页",
+    //                 last: "尾页",
+    //                 prev: '上一页',
+    //                 next: '下一页',
+    //                 startPage: 1,
+    //                 visiblePages: countPages>5?5:countPages,
+    //                 version: '1.1',
+    //                 onPageClick: function (event, page) {
+    //                     currpage  = page;
+    //                     $(".myrow").remove();
+    //                     $(".sumdiv").remove();
+    //                     ajaxfn();
+    //                 }
+    //             });
+    // 	})
+    // }
+    // ajaxfn();
+
+    function ajaxfn() {
+        myPost('activeManageJsonSelect/?',{}, function (result) {
+            adcounts = result.data.length;
+            countPages = Math.ceil(parseInt(adcounts) / 8 );
+            // console.log($("#myListTable").children("tr"))
+			$("#myListTable").children("tr").remove()
+			//解析数据	
+			parseDataFn(result, currpage);
+			//记录个数
+			$("#visible-pages-example").children(".sumdiv").remove()
+			var spanele = '<span class="sumdiv">共' + countPages + '页,当前第' + currpage + '页,共' + adcounts + '条数据</span>'
+			$("#visible-pages-example").append($(spanele))
+			createPageNav('#visible-pages-example' , countPages , function(event , page){
+                currpage = page;
+                ajaxfn();
+            });
+			// addFenyeHtml(goodsListPages)
+	});
+}
+ajaxfn()   
     
     //ajaxform提交表单
     function ajaxSubmitForm(){
         console.log("submigtajax");
         var option = {
-            url : "http://localhost:8000/activeManageJsonAdd/",
+            url : "http://localhost:8000/activetableManageJsonAdd/",
             type : 'POST',
-            dataType : 'json',
             success : function(data) 
             {
-                console.log("调用添加item函数");
+                // $("#myModal").hide();
+                alert("成功添加一条活动");
             },
             error: function(data) {
                 alert("企业用户升级失败,请联系管理员！");
+                console.log(data)
             }
         };
         $("#myform").ajaxSubmit(option);
-        return false;
     }
     //图片预览
     $(".myfile").change(function() {

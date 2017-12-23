@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_crontab',
 ]
 
 MIDDLEWARE = [
@@ -134,3 +135,9 @@ STATIC_URL = '/static/'
 
 SESSION_SAVE_EVERY_REQUEST = True
 SESSION_COOKIE_AGE = 60*10
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+CRONJOBS = [
+    ('*/1 * * * *', 'django manage.py clearsessions',  ),
+    # ('*/5 * * * *','django.core.management.call_command',['clearsessions']),
+]

@@ -111,8 +111,8 @@ urlpatterns = [
     url(r'luckyManageJsonAdd/$' , luckyManageJsonAdd), #福袋添加接口
     url(r'luckyManageJsonUpdata/$' , luckyManageJsonUpdata), #福袋修改接口
     url(r'selectLuckyJsonByGoodsId/$' , selectLuckyJsonByGoodsId), #通过商品号查询福袋
-    
 
+           
     url(r'commentJsonQuery/$' , commentJsonQuery), #评论查询接口(分页)    
     url(r'commentJsonDelete/$' , commentJsonDelete), #评论删除接口
     url(r'commentJsonAdd/$' , commentJsonAdd), #评论添加接口
@@ -147,11 +147,20 @@ urlpatterns = [
     url(r'^secondkillManageJsonSelect/$' , secondkillManageJsonSelect),#秒杀活动查询
     url(r'^secondkillManageJsonDelete/$' , secondkillManageJsonDelete),#秒杀活动删除
     url(r'^secondkillManageJsonUpdata/$' , secondkillManageJsonUpdata),#秒杀活动更新
+    url(r'^secondkillcommodityQuery/$',secondkillcommodityQuery),
     url(r'^secondkillManageJsonstock/$' , secondkillManageJsonstock),#查询库存
+    url(r'^adsecondkill/$' , adsecondkill),
+    url(r'^secondkillManage' , secondkillManage),
     url(r'^secondkillAddgoodsidintogoods/$' , secondkillAddgoodsidintogoods),
     url(r'^personal/$' , personal),      
     url(r'^guestbookSelect/$',guestbookSelect), #购买历史查询接口 POST请求
     url(r'^leavingMessage/$',leavingMessage), #留言查询接口 POST请求
+
+    url(r'^express/$',express),#测试用查询快递接口  
+    url(r'^expressCompany/$',expressCompany),#测试用查询快递公司编号接口      
+    url(r'^shortMsgFromName/$',shortMsgFromName),#测试用发送短信接口
+    url(r'^shortMsgFromPhone/$',shortMsgFromPhone),#测试用发送短信接口  
+
 
     url(r'^getSession/$',getSession), #请求session数据的接口
     url(r'^setSession/$',setSession), #设置session数据的接口

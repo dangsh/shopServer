@@ -173,11 +173,14 @@
             dataType : 'json',
             success : function(data)
             {   
-                $("#myModal").modal("hide");
                 ajaxfn();
+                $("#myModal").modal("hide");
+                layer.msg("添加成功")
             },
             error: function(data) {
-                console.log(data);
+                ajaxfn();
+                $("#myModal").modal("hide");
+                layer.msg("添加失败")    
             }
         };
         $("#myform").ajaxSubmit(option);
@@ -207,21 +210,30 @@
             Ajax("adManageJsonDelete/?Id="+dataId , function(result){
                 if (result.status == "ok"){
                         ajaxfn();
+                        layer.msg("删除成功");
                 }
             });
         }
     });
     $(".AllDelete").click(function(){
+        var isEmeptySelect = true;
         $("[name = checkbox-one]:checkbox").each(function () {
             if ($(this).is(":checked")) {
                 var objData = $(this).parent().text();
-                Ajax("adManageJsonDelete/?Id="+objData , function(result){
+                isEmeptySelect = false;
+            	Ajax("adManageJsonDelete/?Id="+objData , function(result){
                     if (result.status == "ok"){
                             ajaxfn();
+                            layer.msg("批量删除成功");
                     }
-                });
+               });
             }
         });
+
+        if (isEmeptySelect == true) {
+            console.log("000000");
+            layer.msg("选择要删除的内容");
+        }
     });
     $('#checkbox-all').click(function () {
         if($('#checkbox-all').is(':checked')) 

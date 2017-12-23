@@ -60,7 +60,7 @@
 
 	</head>
 
-	<body class="hold-transition skin-blue sidebar-mini">
+	<body class="hold-transition skin-blue sidebar-mini"onbeforeunload="RunOnBeforeUnload()" >
 		<div class="wrapper">
 
 			<!-- 头部 -->
@@ -460,6 +460,7 @@
 						</label> -->
 										</div>
 										<h3 class="control-sidebar-heading" href="###"><a href="##" style="color:white">福袋设置</a></h3>
+										<h3 class="control-sidebar-heading" href="###"><a href="/secondkillManage/" style="color:white">秒杀活动</a></h3>
 									</form>
 								</div>
 					</li>
@@ -525,30 +526,18 @@
 		<script src="{% static 'js/jquery.twbsPagination.min.js' %}"></script>
 
 		<script src="{% static 'js/tool.js' %}"></script>
-
+		
+		<script src="{% static 'layer/layer.js' %}" type="text/javascript" charset="utf-8"></script>
+		
 		<!-- 获取session -->
 		<script type="text/javascript">
-<<<<<<< .mine
-			// $.ajax({
-			// 	url: "http://localhost:8000/getSession/",
-			// 	success: function (data) {
-			// 		session=data.data.toString()
-			// 		if (session!="true"){
-			// 			window.location.href="http://localhost:8000"
-			// 			var data = JSON.parse(localStorage.getItem("data"));
-			// 		}
-			// 	},
-			// 	error: function (msg) {
-			// 		console.log("error:获取数据失败")
-			// 		alert(msg); //错误信息
-			// 	}
-			// });
-||||||| .r469
+			
 			$.ajax({
 				url: "http://localhost:8000/getSession/",
 				success: function (data) {
 					session=data.data.toString()
 					if (session!="true"){
+						localStorage.clear();
 						window.location.href="http://localhost:8000"
 						var data = JSON.parse(localStorage.getItem("data"));
 					}
@@ -558,26 +547,13 @@
 					alert(msg); //错误信息
 				}
 			});
-=======
-//			$.ajax({
-//				url: "http://localhost:8000/getSession/",
-//				success: function (data) {
-//					session=data.data.toString()
-//					if (session!="true"){
-//						window.location.href="http://localhost:8000"
-//						var data = JSON.parse(localStorage.getItem("data"));
-//					}
-//				},
-//				error: function (msg) {
-//					console.log("error:获取数据失败")
-//					alert(msg); //错误信息
-//				}
-//			});
->>>>>>> .r475
+
+
 			
 		</script>
 
 		<script type="text/javascript">
+
 			$(".exit").click(function(){
 				//清除缓存
 				localStorage.clear(); 
@@ -586,16 +562,11 @@
 				$.ajax({
 					url: "http://localhost:8000/setSession/",
 					success: function (data) {
-
+						
 						console.log(data)
 						window.location.href = "http://localhost:8000";
 					},
 				});
-
-
-
-				
-
 				
 			})
 			
@@ -689,6 +660,11 @@
 				document.getElementById(bg_Div).style.display = 'none';
 			};
 		</script>
+
+
+
+
+		
 		{% block script %}{% endblock %}
 	</body>
 
