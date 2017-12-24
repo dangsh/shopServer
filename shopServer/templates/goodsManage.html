@@ -551,6 +551,7 @@ function goodsListToPage(data) {
 
 $("#goodsSelectBtn").click(function(){
 	thispage = 1
+	$("#visible-pages-example").twbsPagination("destroy") //销毁分页栏
 	commName = $("#goodsSelectName").val()
 	loaddata()
 });
@@ -712,30 +713,6 @@ myflag=0
 // 	}
 // }
 
-// 从base中获取数据，跳转到goodsManage,并搜索
-function getPar(par){
-    //获取当前URL
-    var local_url = document.location.href; 
-    //获取要取得的get参数位置
-    var get = local_url.indexOf(par +"=");
-    if(get == -1){
-        return false;   
-    }   
-    //截取字符串
-    var get_par = local_url.slice(par.length + get + 1);    
-    //判断截取后的字符串是否还有其他get参数
-    var nextPar = get_par.indexOf("&");
-    if(nextPar != -1){
-        get_par = get_par.slice(0, nextPar);
-    }
-    return get_par;
-}
-console.log("xxxxxxxxxxxxxxxxxxxx")
-aaa = ""
-aaa = getPar("baseSelectName")
-aaa = decodeURI(aaa)
-console.log(aaa)
-commName = aaa
 
 
 
@@ -743,6 +720,7 @@ function loaddata() {
 	$.ajax({
 		url: "http://localhost:8000/commodityQuery/?page=" + thispage + "&commName=" + commName + "&timeUP=" +timeBtnUp,
 		success: function (data) {
+			
 			goodsCount = data.goodscount
 			goodsListPages = Math.ceil(parseInt(goodsCount) / 10 )
 			console.log("thispage",thispage)
@@ -751,6 +729,7 @@ function loaddata() {
 			//解析数据
 			mainData = data.data;
 			
+
 			goodsListToPage(mainData)
 			
 			if(data.data!="" && myflag==1){
@@ -762,6 +741,7 @@ function loaddata() {
 			//记录个数
 			$("#goodsNumber").text(goodsCount);
 			$("#visible-pages-example").children(".sumdiv").remove()
+			
 			var spanele = '<span class="sumdiv">共' + goodsListPages + '页,当前第' + thispage + '页,共' + goodsCount + '条数据</span>'
 			$("#visible-pages-example").append($(spanele))
 			createPageNav('#visible-pages-example' , goodsListPages , function(event , page){
@@ -777,6 +757,14 @@ function loaddata() {
 	});
 }
 
+var Dict = {{ Dict|safe }};
+a = ""
+for(i in Dict) {//注意，此处 i 为键值
+	a = Dict[i]
+}
+
+console.log(a)
+commName = a
 loaddata()
 
 $("#timeBtn").click( function () {

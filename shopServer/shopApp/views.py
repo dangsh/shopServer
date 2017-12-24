@@ -50,7 +50,15 @@ def secondkillManage(request):
     return render(request , "secondkillManage.html");
 
 def goodsManage(request):
-    return render(request , "goodsManage.html");
+    baseSelectName = ''
+    try:
+        baseSelectName = request.POST["baseSelectName"]
+        
+        print(baseSelectName)
+    except:
+        pass
+    Dict = {'baseSelectName':baseSelectName}
+    return render(request , "goodsManage.html" , {'Dict':json.dumps(Dict)});
 
 def adPage(request):
     return render(request , "adPage.html");
