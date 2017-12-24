@@ -757,14 +757,19 @@ function loaddata() {
 	});
 }
 
-var Dict = {{ Dict|safe }};
-a = ""
-for(i in Dict) {//注意，此处 i 为键值
-	a = Dict[i]
-}
+var a = ""
 
+var Dict = {{ Dict|safe }}
+console.log(typeof(Dict))
+if (this.Dict) {
+	for(i in Dict) {//注意，此处 i 为键值
+		a = Dict[i]
+	}
+}
 console.log(a)
-commName = a
+if(a!=""){
+	commName = a
+}
 loaddata()
 
 $("#timeBtn").click( function () {

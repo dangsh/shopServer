@@ -58,7 +58,13 @@ def goodsManage(request):
     except:
         pass
     Dict = {'baseSelectName':baseSelectName}
-    return render(request , "goodsManage.html" , {'Dict':json.dumps(Dict)});
+    print(baseSelectName)
+    if baseSelectName == "":
+        return render(request , "goodsManage.html");
+    else:
+        return render(request , "goodsManage.html" , {'Dict':json.dumps(Dict)});
+    
+
 
 def adPage(request):
     return render(request , "adPage.html");
