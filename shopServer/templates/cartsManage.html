@@ -68,7 +68,7 @@
 
 
 {% block content %}
-<div class="row1" style="height: 60px;">
+	<div class="row1" style="height: 60px;">
 		<div class="col-md-12" style="text-align: center;">
 		</div>
 	</div>
@@ -77,14 +77,12 @@
 			<div class="col-md-6" style="text-align:left;">
 				<input id="deleteBtn" type="button" class="btn btn-danger deleteBtn" value="批量删除">
 			</div>
-			
 			<div class="col-md-6" style="text-align: right;">
 				<p>共有数据:<strong id="cartsNumber">0</strong>条</p>
 			</div>
 		</div>
 
-		<div class=""  id="bigdiv">
-			
+		<div class=""  id="bigdiv">	
 			<table id="table" class="table table-bordered" >
 				<tbody>
 					<tr class="row">
@@ -127,11 +125,13 @@
 						 </th>
 					</tr> -->
 				<tbody id="mytbody" class="myListTable">
-
 				</tbody>	
 			</table>
-			
 		</div>
+	</div>
+	
+	
+	
 		
 {% endblock %}
 
@@ -184,9 +184,8 @@ function getDataFn(opt) {
 				var number = oneData.number;
 				var goodsid = oneData.goodsid;
 				var userid = oneData.userid;
-
 				var ele = '<tr class="row"><th><input type="checkbox" class="checkbox-one"></th><th class="id">' + cartsid + '</th><th>huawei</th><th>' + goodsid + '</th><th>华为</th><th>手机</th><th>￥2999</th><th class="c"><div class="item-amount"><a href="#" class="J_Minus no-minus glyphicon glyphicon-minus decrease" name="-"></a><input type="text" value="' + number + '" class="text text-amount J_ItemAmount counts" data-max="281" data-now="1" autocomplete="off" id="count"><a href="#" class="J_Plus plus glyphicon glyphicon-plus increase"></a></div></th><th>金额</th><th><button class="btn btn-success">保 存</button><button class="btn btn-danger delbtn">删 除</button> </th></tr>' ;
-				$(".table-bordered").append(ele) ;
+				$(".table-bordered").append(ele);
 			}
 		}
 	});
@@ -217,24 +216,21 @@ function getDataFn(opt) {
 				{
 					var trs = $(checkboxs[i]).parents("tr");
 					deleteArr.push(trs);
-					console.log("&&&&&&&&");
 					var cartsidOne = $(checkboxs[i]).parents("tr").children(".id").html();
 					
 					cartsArr.push(cartsidOne);
-					console.log("--------------");
 					console.log(cartsidOne);
 					myPost("http://localhost:8000/cartstableManageJsonDelete/?id=" + cartsArr , 
 					{"cartsid":cartsidOne} ,
 					function () {
-						console.log("删除成功。。。。。");
 						layer.msg("删除成功")
 						for (var j = 0; j < deleteArr.length; j++) {
-								$(deleteArr[j]).remove();
+							$(deleteArr[j]).remove();
 						}
 					})
 				}
 			}
-			console.log(cartsArr+"cartsArr");
+			console.log(cartsArr + "cartsArr");
 			layer.msg("选择要删除的内容");
 		}
 		else{
@@ -244,7 +240,6 @@ function getDataFn(opt) {
 	
 	$('.row').delegate('button', 'click', function(ev)
 	{
-		console.log("&&&&&&&&&&");
 		a = $(this).html();
 		var that = $(this).parents(".row");
 		var cartsid = that.children(".id").html();
@@ -253,8 +248,6 @@ function getDataFn(opt) {
 		// console.log(that);
 		// console.log(cartsid);
 		console.log(number);
-		// console.log("5261634563285+65+");
-		// console.log(c);
 		if (a == "删 除")
 		{
 			$.ajax({
@@ -295,7 +288,6 @@ function getDataFn(opt) {
 		// console.log(number);
 		if (b == "-")
 		{
-			console.log("-----------");
 			if (number >= 1)
 			{
 				number --;
@@ -306,7 +298,6 @@ function getDataFn(opt) {
 		}
 		else
 		{
-			console.log("+++++++++++");
 			if (number >= 0)
 			{
 				number ++ ;

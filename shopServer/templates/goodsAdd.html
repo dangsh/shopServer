@@ -103,7 +103,7 @@
 <div class="post">
 		<div class="container">
 			<div class="rt_content">
-				<form class="form-horizontal" id= "addgoods"action="/goodsManageJsonAdd/" method="post">
+				<form class="form-horizontal" id= "addgoods"action="" method="post">
 					<div class="form-group">
 						<label class="col-sm-4 control-label">商品名称：</label>
 						<div class="col-sm-3">
@@ -310,8 +310,15 @@ $( '#updata').click(function () {
 $( '#sub').click(function () {
 	console.log("3333")
 	
-	$("#addgoods").ajaxSubmit();
-	layer.msg("添加商品成功");
+	$("#addgoods").ajaxSubmit({
+		url:"/goodsManageJsonAdd/",
+		success: function (data) {
+			console.log(data)
+			layer.msg("添加商品成功");
+			window.location.href = "http://localhost:8000/goodsManage/";}
+		
+	});
+	
 
 })
 

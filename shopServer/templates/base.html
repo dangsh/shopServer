@@ -305,9 +305,7 @@
 			            		</span>
 							</a>
 							<ul class="treeview-menu">
-								<li >
-									<a href="/luckyManage/"><i class="fa fa-dashboard"></i> 福袋管理</a>
-								</li>
+								
 								<li >
 									<a href="/userManage/"><i class="fa fa-dashboard"></i> 会员管理</a>
 								</li>
@@ -349,9 +347,7 @@
 								<li >
 									<a href="/cartsManage/"><i class="fa fa-flag"></i>购物车</a>
 								</li>
-								<li >
-									<a href="/redpack/"><i class="fa fa-flag"></i> 红包设置</a>
-								</li>
+								
 								<li >
 									<a href="/settings/"><i class="fa fa-flag"></i> 店铺消费记录</a>
 								</li>
@@ -430,8 +426,8 @@
 					<li>
 							<div class="tab-pane" id="control-sidebar-settings-tab" style="margin-left:25px">
 									<form method="post">
-										<h3 class="control-sidebar-heading"><a href="##" style="color:white">红包设置</a></h3>
-			
+										<h3 class="control-sidebar-heading"><a href="/redpack/" style="color:white">红包记录</a></h3>
+										
 										
 										<div class="form-group">
 										</div>
@@ -458,8 +454,9 @@
 						  Delete chat history
 						  <a href="javascript:void(0)" class="text-red pull-right"><i class="fa fa-trash-o"></i></a>
 						</label> -->
+					
 										</div>
-										<h3 class="control-sidebar-heading" href="###"><a href="##" style="color:white">福袋设置</a></h3>
+										<h3 class="control-sidebar-heading" href="###"><a href="/luckyManage/" style="color:white">福袋设置</a></h3>
 										<h3 class="control-sidebar-heading" href="###"><a href="/secondkillManage/" style="color:white">秒杀活动</a></h3>
 									</form>
 								</div>
@@ -548,7 +545,6 @@
 				}
 			});
 
-
 			
 		</script>
 
@@ -557,7 +553,7 @@
 			$(".exit").click(function(){
 				//清除缓存
 				localStorage.clear(); 
-
+    
 				//清除session
 				$.ajax({
 					url: "http://localhost:8000/setSession/",
@@ -576,8 +572,6 @@
 					$(this).parents(".treeview").addClass('active');
 				}
 			});
-			
-			console.log("(((((((((((((((((((((");
 			
 			var leavingMessageData = ""
 			var unreadMess = 0;
@@ -620,7 +614,6 @@
 			});
 			
 			
-			console.log("--------------------")
 			var data = JSON.parse(localStorage.getItem("data"));
 			console.log(data)
 			aaa=data.names;

@@ -77,12 +77,6 @@
 	</form>
 	<hr/>
 
-	<form action="http://localhost:8000/shortMsg/" method="post">
-		<input type="text" name="username" placeholder="请输入用户名">
-		<input type="submit" value="提交">
-	
-	</form>
-
 	<table class="table table-bordered">
 		<th colspan="12">
 
@@ -192,11 +186,10 @@
 					var acountmoney = mydata["acountmoney"];
 					var power = mydata["power"];
 					var activecode = mydata["activecode"];
-					var ele = '<tr class="mytr" NO="' + NO + '" userid = "' + userid + '" username = "' + username + '" pwd = "' + pwd + '" phone = "' + phone + '" wxid = "' + wxid + '" acountmoney = "' + acountmoney + '" headimg="' + headimg + '"  power = "' + power + '" activecode = "' + activecode + '"><td class="info ele"><input class="checkbox-one" name="checkbox-one" type="checkbox"/></td><td class="info ele">' + NO + '</td><td class="info ele">' + userid + '</td><td class="info ele">' + username + '</td><td class="info ele">' + pwd + '</td><td class="info ele">' + phone + '</td><td class="info ele">' + wxid + '</td><td class="info ele"><img height="40px" width="40px" src="http://localhost:8000/static/myfile/' + headimg + '" alt=""></td><td class="info ele">' + acountmoney + '</td><td class="info ele">' + power + '</td><td class="info ele">' + activecode + '</td><td class="info ele"><button class="btn btn-default edit btn-primary" data-toggle="modal" data-target="#editModal' + userid + '">编辑111</button>     <button class="btn btn-default delete">删除</button></td></tr>'
+					var ele = '<tr class="mytr" NO="' + NO + '" userid = "' + userid + '" username = "' + username + '" pwd = "' + pwd + '" phone = "' + phone + '" wxid = "' + wxid + '" acountmoney = "' + acountmoney + '" headimg="' + headimg + '"  power = "' + power + '" activecode = "' + activecode + '"><td class="info ele"><input class="checkbox-one" name="checkbox-one" type="checkbox"/></td><td class="info ele">' + NO + '</td><td class="info ele">' + userid + '</td><td class="info ele">' + username + '</td><td class="info ele">' + pwd + '</td><td class="info ele">' + phone + '</td><td class="info ele">' + wxid + '</td><td class="info ele"><img height="40px" width="40px" src="http://localhost:8000/static/myfile/' + headimg + '" alt=""></td><td class="info ele">' + acountmoney + '</td><td class="info ele">' + power + '</td><td class="info ele">' + activecode + '</td><td class="info ele"><button class="btn btn-default edit btn-primary" data-toggle="modal" data-target="#editModal' + userid + '">编辑</button>     <button class="btn btn-default delete">删除</button></td></tr>'
 					$(".myModal").empty();
 
 					$("#userTable").append(ele);
-					console.log("98888888888888");
 				}
 
 			}

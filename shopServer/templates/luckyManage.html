@@ -373,22 +373,36 @@ $("#form-addLucky").click( function () {
 	form_goodsId = $("#addLucky-goodsId").val()
 	form_counts = $("#addLucky-counts").val()
 	$.ajax({
-		url: HomeUrl + "goodsNameSelect/",
+		url: HomeUrl + "goodsNameOneSelect/",
 		type: 'POST',
 		data:{goodsName:form_goodsId},
 		success: function (data) {
-			if (data["status"] == "ok" && data["data"].length > 0) {
-				if (form_counts < 0) {
-					layer.msg("数量不能为负")
-				} else {
-					$("#exampleModal-confirm").modal();
-					$("#add-goodsname").text("商品名:" + data.data[0].goodsname)
-					$("#add-counts").text("数量:" + form_counts)
-					//addLucky(form_goodsId, form_counts)
+			goodsids = data.data[0]["goodsid"]
+			console.log(goodsids)
+			$.ajax({
+				url: HomeUrl + "selectLuckyJsonByGoodsId/",
+				type: 'POST',
+				data:{goodsids:goodsids},
+				success: function (data2) {
+					console.log(data2["luckycount"])
+					if(data2["luckycount"]!=0){
+						layer.msg("该福袋已存在")
+					}else{
+						if (data["status"] == "ok" && data["data"].length > 0) {
+							if (form_counts < 0) {
+								layer.msg("数量不能为负")
+							} else {
+								$("#exampleModal-confirm").modal();
+								$("#add-goodsname").text("商品名:" + data.data[0].goodsname)
+								$("#add-counts").text("数量:" + form_counts)
+								//addLucky(form_goodsId, form_counts)
+							}
+						} else {
+							layer.msg("商品不存在")
+						}
+					}
 				}
-			} else {
-				layer.msg("商品不存在")
-			}
+			});
 		}
 	});
 });

@@ -74,11 +74,13 @@ urlpatterns = [
     url(r'^goodsSelectByid/$' , goodsSelectByid), # 根据商品id查找商品
     url(r'^commodityQuery/$' , commodityQuery), # 商品模糊查询接口查找商品
     url(r'^goodsNameSelect/$' , goodsNameSelect), # 商品名模糊查询接口
-
+    url(r'^goodsNameOneSelect/$' , goodsNameOneSelect), # 商品名准确查询接口
     
     url(r'^activetableManageJsonAdd/$' , activetableManageJsonAdd),  # 活动添加接口
     url(r'^activeManageJsonSelect/$' , activeManageJsonSelect), # 活动列表接口
+    
     url(r'^activetableManageJsonDelete/$' , activetableManageJsonDelete), # 活动删除接口接口
+    url(r'^activetableManageJsonchange/$' , activetableManageJsonchange),  # 活动改变接口
     url(r'^redpack/$',redpack),#红包页面
     url(r'^redpackApi/$',redpackApi),#红包查询
     url(r'^redpackAdd/$',redpackAdd),#红包添加
@@ -147,7 +149,6 @@ urlpatterns = [
     url(r'^secondkillManageJsonSelect/$' , secondkillManageJsonSelect),#秒杀活动查询
     url(r'^secondkillManageJsonDelete/$' , secondkillManageJsonDelete),#秒杀活动删除
     url(r'^secondkillManageJsonUpdata/$' , secondkillManageJsonUpdata),#秒杀活动更新
-    url(r'^secondkillcommodityQuery/$',secondkillcommodityQuery),
     url(r'^secondkillManageJsonstock/$' , secondkillManageJsonstock),#查询库存
     url(r'^adsecondkill/$' , adsecondkill),
     url(r'^secondkillManage' , secondkillManage),
@@ -156,11 +157,10 @@ urlpatterns = [
     url(r'^guestbookSelect/$',guestbookSelect), #购买历史查询接口 POST请求
     url(r'^leavingMessage/$',leavingMessage), #留言查询接口 POST请求
 
-    url(r'^express/$',express),#测试用查询快递接口  
-    url(r'^expressCompany/$',expressCompany),#测试用查询快递公司编号接口      
+    url(r'^express/$',express),#测试用查询快递接口        
     url(r'^shortMsgFromName/$',shortMsgFromName),#测试用发送短信接口
     url(r'^shortMsgFromPhone/$',shortMsgFromPhone),#测试用发送短信接口  
-
+    url(r'^secondkillcommodityQuery/$',secondkillcommodityQuery),
 
     url(r'^getSession/$',getSession), #请求session数据的接口
     url(r'^setSession/$',setSession), #设置session数据的接口

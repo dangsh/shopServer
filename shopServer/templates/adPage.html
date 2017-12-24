@@ -53,7 +53,7 @@
 {% endblock %}
 
 {% block content %}
-<button class="btn btn-default trash AllDelete"><span class = "glyphicon glyphicon-trash">批量删除</span></button>
+<button class="btn btn-default trash AllDelete" id ="deleteAll"><span class = "glyphicon glyphicon-trash">批量删除</span></button>
 <button type="button" class="btn btn-default btn-primary addBtn" data-toggle="modal" data-target="#myModal" style="margin:5px;"><span class="glyphicon glyphicon-plus"></span>添加广告</button>
 <div id="xxx" class=" col-md-12" style="padding:0;">
     <a class="col-md-12" style="margin:5px; padding-left:0; color: black;margin-right:0;"><strong>广告列表</strong></a>
@@ -134,7 +134,7 @@
         imgs = data.imgs;
         adid = data.adid;
         adtime = data.adtime;
-        var Tr = '<tr name="row" class="myrow"><td><input class="checkbox-one" name="checkbox-one" type="checkbox"/>' + adid + '</td><td><div id="imagesdiv"><img src="/static/myfile/'+ imgs +'"/></div></td><td>' + imgs + '</td><td>' + adtime + '</td><td><button class="btn btn-danger delete">删 除</button> </td></tr>';
+        var Tr = '<tr name="row" adid='+ adid +' class="myrow"><td><input class="checkbox-one" name="checkbox-one" type="checkbox"/>' + adid + '</td><td><div id="imagesdiv"><img src="/static/myfile/'+ imgs +'"/></div></td><td>' + imgs + '</td><td>' + adtime + '</td><td><button class="btn btn-danger delete">删 除</button> </td></tr>';
         $("#table").append(Tr);
     }
     //解析数据函数
@@ -144,6 +144,7 @@
             perdata = data[i];
             adEleFn(perdata);
         }
+        addEvent();
     }
     //请求数据
     function ajaxfn(){
@@ -204,36 +205,50 @@
             $img.attr('src',dataURL);
         }
     });
-    $("#table").delegate("button","click",function(){
-        if($(this).html() == "删 除"){
-            dataId= $(this).parent().prev().prev().prev().prev().text();
-            Ajax("adManageJsonDelete/?Id="+dataId , function(result){
-                if (result.status == "ok"){
-                        ajaxfn();
-                        layer.msg("删除成功");
-                }
-            });
-        }
-    });
-    $(".AllDelete").click(function(){
-        var isEmeptySelect = true;
-        $("[name = checkbox-one]:checkbox").each(function () {
-            if ($(this).is(":checked")) {
-                var objData = $(this).parent().text();
-                isEmeptySelect = false;
-            	Ajax("adManageJsonDelete/?Id="+objData , function(result){
-                    if (result.status == "ok"){
-                            ajaxfn();
-                            layer.msg("批量删除成功");
+    function addEvent(){
+        $(".delete").click(function(e){
+            e.preventDefault();
+            adsArr = [];
+            var that = $(this).parents("tr");
+            dataId= that.attr('adid')
+            adsArr.push(dataId)
+            myPost("adManageJsonDelete" , {adsIds:adsArr} , function(data){
+                    if(data["status"]=="ok"){
+                        layer.msg("删除成功")
+                        that.remove()
                     }
-               });
+                    else{
+                        layer.msg("删除失败")
+                    }
+                })
             }
-        });
+        );
+    };
+    
+    $(".AllDelete").click(function(){
+        var adsArr = []
+        var checkboxs = $('.checkbox-one')
+        for (var i = 0; i < checkboxs.length; i++) {
+                if($(checkboxs[i]).is(':checked')) {
+                    var isEmeptySelect = false;
+                    var that=$(checkboxs[i]).parents("tr");
 
-        if (isEmeptySelect == true) {
-            console.log("000000");
-            layer.msg("选择要删除的内容");
-        }
+                    var adidOne = that.attr("adid")
+                    adsArr.push(adidOne)
+                }   
+                else{
+                    var isEmeptySelect = true;
+                }
+            }
+            if (isEmeptySelect == true) {
+                layer.msg("选择要删除的内容");
+            }
+        myPost("adManageJsonDelete" , {adsIds:adsArr} , function(data){
+            if(data["status"]=="ok"){
+                ajaxfn();
+                layer.msg("批量删除成功")
+            }
+        })
     });
     $('#checkbox-all').click(function () {
         if($('#checkbox-all').is(':checked')) 
