@@ -561,24 +561,19 @@ def redpackApi(request):
 
 # 广告删除接口 韩乐天
 def adManageJsonDelete(request):
-    adid = request.GET["Id"];
-    
-    adid = str(adid);
+    adidDic = request.POST;
+    adidArr = adidDic.getlist("adsIds[]")
     cursor=connection.cursor();
-    print (adid);
     try:
-        print ("hahhaahahhh")
-        cursor.execute("SELECT * FROM ad WHERE adid = '%s'" % adid);
-        filename = cursor.fetchall()[0][1];
-        #删除图片
-        aa = os.listdir("../shopServer/shopApp/static/myfile/")
-        for item in aa:
-            print (item);
-            if item == filename:
-                os.remove("../shopServer/shopApp/static/myfile/"+filename);
-        if cursor.execute("DELETE FROM ad where adid = '%s'" % adid):
-            cursor.close();
-            return HttpResponse(json.dumps({'message': '删除成功','status':'ok'}), content_type="application/json");
+        for adid in adidArr:
+            cursor.execute("SELECT * FROM ad WHERE adid = '%s'" % adid);
+            filename = cursor.fetchall()[0][1];
+            #删除图片
+            if os.path.exists("../shopServer/shopApp/static/myfile/"+filename):
+                os.remove("../shopServer/shopApp/static/myfile/"+filename)
+                cursor.execute("DELETE FROM ad where adid = '%s'" % adid)
+        cursor.close();
+        return HttpResponse(json.dumps({'message': '删除成功','status':'ok'}), content_type="application/json");
         
     except Exception as e:
         return HttpResponse(json.dumps({"message":'删除失败' , "status":"error"}) , content_type="application/json");
@@ -2382,6 +2377,31 @@ def shortMsgFromPhone(request):
     else:
         statusDic = {"status":"error" , "reason":"手机号码格式出错"}
         return HttpResponse(json.dumps(statusDic) , content_type="application/json")
+
+
+def audioToStr(request):
+     return render(request , "audiotostr.html");
+
+
+def audioToStrApi(request):
+
+
+
+
+    return HttpResponse(json.dumps() , content_type = "application/json");
+
+
+
+
+
+
+
+
+
+
+
+
+
 def activetableManageJsonchange(request):     
     imgs = request.FILES["sb"];
     activeid = request.POST["activeid"]
@@ -2403,6 +2423,21 @@ def activetableManageJsonchange(request):
     else :
         statusDic = {"status" : "error" , "message" : "添加失败"};
     return HttpResponse(json.dumps(statusDic) , content_type = "application/json");
+
+
+#留言删除接口
+def leavingMessDelete(request):
+    cursor=connection.cursor();
+    for key in request.POST:
+        orderid = request.POST.getlist(key)[0]
+        result = cursor.execute("DELETE FROM guestbook WHERE guestbookid='%s'" % orderid)
+    cursor.close();
+    if result == 1:
+        return HttpResponse(json.dumps({'message': '删除成功','status':'ok'}), content_type="application/json");
+    else:
+        return HttpResponse(json.dumps({'message': '删除失败','status':'error'}), content_type="application/json");
+
+
 
 #根据商品名模糊查询
 def goodsNameSelect(request):
@@ -2441,7 +2476,7 @@ def goodsNameSelect(request):
         raise e   
         return HttpResponse(json.dumps({'data':myData, 'status':'error'}), content_type="application/json");
 
-#根据商品名模糊查询
+#根据商品名准确查询
 def goodsNameOneSelect(request):
     myData = []
     cursor = connection.cursor()
@@ -2477,3 +2512,22 @@ def goodsNameOneSelect(request):
     except Exception as e: 
         raise e   
         return HttpResponse(json.dumps({'data':myData, 'status':'error'}), content_type="application/json");
+
+
+#留言接口
+def leavingMessAdd(request):
+    data = request.POST
+    #测试数据
+    # userid = "2017121610132964" 
+    # leavemessage = "啊实打实大所大是打算打算啊实打实大所大所大所大所大所，"
+    userid = data["userid"];
+    leavemessage = data["leavemessage"]
+    #根据时间随机生成guestbookid
+    guestbookid = randomString()
+    cursor=connection.cursor();
+    result = cursor.execute("INSERT INTO guestbook(guestbookid , userid , leavemessage)VALUES('%s' , '%s' , '%s')"%(guestbookid , userid , leavemessage))
+    cursor.close();
+    if result == 1:
+        return HttpResponse(json.dumps({'message': '留言成功','status':'ok'}), content_type="application/json");
+    else:
+        return HttpResponse(json.dumps({'message': '留言失败','status':'error'}), content_type="application/json");

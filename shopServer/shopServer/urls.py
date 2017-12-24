@@ -96,6 +96,9 @@ urlpatterns = [
     url(r'cartstableManageJsonUpdate/$' , cartstableManageJsonUpdate), #购物车修改接口
     url(r'cartstableManageJsonSelect/$' , cartstableManageJsonSelect), #购物车查询接口
 
+    
+    url(r'^audioToStr/$' , audioToStr), #语音查询页面
+    url(r'^audioToStrApi/$' , audioToStrApi), #语音查询页面
 
 
     url(r'^drawJsonAdd/$',drawJsonAdd),   #添加抽奖余额接口
@@ -164,6 +167,9 @@ urlpatterns = [
 
     url(r'^getSession/$',getSession), #请求session数据的接口
     url(r'^setSession/$',setSession), #设置session数据的接口
+
+    url(r'^leavingMessDelete/$',leavingMessDelete), #l留言删除接口
+    url(r'^leavingMessAdd/$',leavingMessAdd), #l留言接口
     
     url(r'^$' , login),
     url(r'^.' , error),

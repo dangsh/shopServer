@@ -229,26 +229,29 @@
         var adsArr = []
         var checkboxs = $('.checkbox-one')
         for (var i = 0; i < checkboxs.length; i++) {
-                if($(checkboxs[i]).is(':checked')) {
-                    var isEmeptySelect = false;
-                    var that=$(checkboxs[i]).parents("tr");
+            if($(checkboxs[i]).is(':checked')) {
+                var that=$(checkboxs[i]).parents("tr");
 
-                    var adidOne = that.attr("adid")
+                var adidOne = that.attr("adid")
+                if (adidOne)
+                {
                     adsArr.push(adidOne)
-                }   
-                else{
-                    var isEmeptySelect = true;
                 }
-            }
-            if (isEmeptySelect == true) {
-                layer.msg("选择要删除的内容");
-            }
-        myPost("adManageJsonDelete" , {adsIds:adsArr} , function(data){
-            if(data["status"]=="ok"){
-                ajaxfn();
-                layer.msg("批量删除成功")
-            }
-        })
+                
+            } 
+        }
+        console.log(adsArr.length)
+        if (adsArr.length == 0) {
+            layer.msg("选择要删除的内容");
+        }
+        else{
+            myPost("adManageJsonDelete" , {adsIds:adsArr} , function(data){
+                if(data["status"]=="ok"){
+                    ajaxfn();
+                    layer.msg("批量删除成功")
+                }
+            })
+        }
     });
     $('#checkbox-all').click(function () {
         if($('#checkbox-all').is(':checked')) 

@@ -20,7 +20,7 @@
 		<a href="http://localhost:8000"><i class="fa fa-dashboard"></i> Home</a>
 	</li>
 	<li>商品列表</li>
-	<li class="active">轮播图</li>
+	<li class="active">商品：<strong class="lb"></strong> 的轮播图</li>
 </ol>
 
 {% endblock %} {% block contentLeft %} 轮播图
@@ -33,25 +33,16 @@
 			<th colspan="15" style="background-color:#E0EEEE;">商品图片修改</th>
 		</tr>
 		<tr style="background-color: #E0EEEE; text-align: center;vertical-align: middle;">
+				<!-- <td>
+					<input type="checkbox" id="checkbox-all" value="$(goodsid)">
+					</td> -->
+			<td width="10%"><input type="checkbox" id="checkbox-all"/></td>
 			<td width="10%"><b>序号</b></td>
-			<td width="50%"><b>图片</b></td>
+			<td width="40%"><b>图片</b></td>
 			<td width="20%"><b>顺序</b></td>
 			<td width="20%"><b>编辑</b></td>
-		</tr>
-		
-		<!--<tr>
-			<td style="text-align: center;vertical-align: middle;" width="10%">1</td>
-			<td style="text-align: center;vertical-align: middle;" width="50%"><img src="http://localhost:8000/static/dist/img/photo3.jpg" /></td>
-			<td style="text-align: center;vertical-align: middle;" width="20%">1</td>
-			<td style="text-align: center;vertical-align: middle;" width="20%">
-				<span class="glyphicon glyphicon-pencil"></span>
-				<span class="glyphicon glyphicon-trash" style="margin-left: 10px;"></span>
-			</td>
-		</tr>-->
-		
-		
-		
-		
+			
+		</tr>	
 		
 	</table>
 </div>
@@ -67,6 +58,7 @@
 		}
 	var goodsid = getUrlParam("goodsid")
 	console.log(goodsid)
+	$(".lb").text(goodsid)
 	myPost("goodsSelectByid",{"goodsid":goodsid},function(data){
 			for(var i=0;i<data.data.length;i++){
 				console.log(data.data[i])
@@ -93,7 +85,7 @@
 						for(var i=0;i<picNames.length-1;i++){
 							newPic = picNames[i]
 							number = i +1;
-							var ele = '<tr class="mytr"><td style="text-align: center;vertical-align: middle;" width="10%">'+number+'</td><td class="mytd" style="text-align: center;vertical-align: middle;" width="50%"><img src="http://localhost:8000/static/myfile/'+ newPic +'" /></td><td style="text-align: center;vertical-align: middle;" width="20%">'+number+'</td><td style="text-align: center;vertical-align: middle;" width="20%"><span class="glyphicon glyphicon-trash delBtn" style="margin-left: 10px;"></span></td></tr>'
+							var ele = '<tr class="mytr"><td style="text-align: center;vertical-align: middle;" width="10%"><input type="checkbox" id="checkbox-all"/></td><td style="text-align: center;vertical-align: middle;" width="10%">'+number+'</td><td class="mytd" style="text-align: center;vertical-align: middle;" width="50%"><img src="http://localhost:8000/static/myfile/'+ newPic +'" /></td><td style="text-align: center;vertical-align: middle;" width="20%">'+number+'</td><td style="text-align: center;vertical-align: middle;" width="20%"><span class="glyphicon glyphicon-trash delBtn" style="margin-left: 10px;"></span></td></tr>'
 							$(".userTable").append(ele);
 						}
 					}

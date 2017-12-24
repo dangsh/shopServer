@@ -35,7 +35,21 @@
 	<div class="row ">
 
 		<div class="col-md-11" style="text-align: center;">
-			
+			<form class="form-inline" action="http://localhost:8000/ordertabalelistJaon/" id="searchForm" method="post">
+				<div class="form-group">
+					<label for="exampleInputName2">用户ID:</label>
+					<input type="text" class="form-control" name="orderid" id="orderid" placeholder="用户ID">
+					<label for="exampleInputName2">用户名:</label>
+					<input type="text" class="form-control" id="userid" name="userid" placeholder="用户名">
+					<label for="exampleInputName2">留言状态:</label>
+					<select name="status" class="form-control" id="myStatus">
+						<option value="0">未知</option>
+						<option value="1">已读</option>
+						<option value="2">未读</option>
+					</select>
+				</div>
+				<input type="submit" id="tijiao" class="btn btn-success mybtn" aria-hidden="true" value="留言查询">
+			</form>
 		</div>
 		<table class="table">
 			<thead>
@@ -158,17 +172,11 @@
 				
 				var myHtml = '<tr class="mytr" guestbookid="' + guestbookid + '"><td class="info ele"><input class="checkbox-one" name="checkbox-one" type="checkbox"/></td><td>' + guestbookid + '</td><td>' + userid + '</td><td>' + userName + '</td><td>' + userLeaveMessage + '</td><td>' + userLeavTime + '</td><td>' + userStatus + '</td><td > <button class="btn btn-default delete guestbookidButton">编辑</button></td></tr>'
 				$(".myListTable").append(myHtml)
-//				$(".guestbookidButton").each(function (i , item) {
-//					if (i == sss) {
-//						$(item).attr("onclick" , "ShowDiv('MyDiv','fade' , " +userLeaveMessage +")");
-//					}
-//				});
 			}
 			
 			
 			$(".guestbookidButton").click(function () {
 				var btnIndex = $(this).parents(".mytr").index();
-				
 				ShowDiv('MyDiv','fade' , leavingMessageData[btnIndex])
 			});
 			
@@ -198,6 +206,51 @@
 				document.getElementById(show_div).style.display = 'none';
 				document.getElementById(bg_div).style.display = 'none';
 			};
+			
+			$('#checkbox-all').click(function() {
+				if($('#checkbox-all').is(':checked')) {
+					$(".checkbox-one").prop("checked", true);
+				} else {
+					$(".checkbox-one").prop("checked", false);
+				}
+			})
+			
+			//全选按钮
+			$(".AllDelete").click(function() {
+				var isEmeptySelect = true;
+				var deleLen = []
+				var that = ""
+				console.log("批量删除");
+				$("[name = checkbox-one]:checkbox").each(function() {
+					if($(this).is(":checked")) {
+						isEmeptySelect = false;
+						that = $(this).parents('tr');
+						var objData = that.attr('guestbookid')
+						deleLen.push(objData)
+					}
+				})
+				deleteOneDataById(deleLen , that)
+				if (isEmeptySelect == true) {
+		            console.log("000000");
+		            layer.msg("选择要删除的内容");
+		        }
+			})
+			
+			// 根据id删除一条数据
+		function deleteOneDataById(objId, ele) {
+			myPost("leavingMessDelete", {
+				orderid: objId
+			}, function(data) {
+				// 警告,需要加判断,服务器删除成功之后才能移除标签 
+				// 另外删除成功之后 要增加弹框提示
+				if (data.status == "ok") {
+					layer.msg("删除成功");
+					$(ele).remove();
+				} else {
+					layer.msg("删除失败");
+				}
+			})
+		}
 		
 	</script>
 	{% endblock %}
