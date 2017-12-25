@@ -62,6 +62,8 @@ urlpatterns = [
     url(r'^adManageJsonAdd/$' , adManageJsonAdd), # 广告添加的接口
     url(r'^adManageJsonSelect/$' , adManageJsonSelect), # 广告列表的接口  
     url(r'^adManageJsonDelete/$' , adManageJsonDelete), # 广告删除的接口
+    
+    url(r'^adManageSelect/$' , adManageSelect),#广告查询接口
 
     url(r'^goodsManageJsonAdd/$' , goodsManageJsonAdd),  # 商品添加接口
     url(r'^goodsManageJsonSelect/$' , goodsManageJsonSelect),  # 商品查询接口   
@@ -156,7 +158,7 @@ urlpatterns = [
     url(r'^adsecondkill/$' , adsecondkill),
     url(r'^secondkillManage' , secondkillManage),
     url(r'^secondkillAddgoodsidintogoods/$' , secondkillAddgoodsidintogoods),
-    url(r'^personal/$' , personal),  
+    # url(r'^personal/$' , personal),  
     url(r'^guestbookSelect/$',guestbookSelect), #base页面留言请求接口
     url(r'^leavingMessage/$',leavingMessage), #留言查询接口 POST请求
     url(r'^leavingMessageSelectAll/$',leavingMessageSelectAll), #留言页面留言查询接口 POST请求

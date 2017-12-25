@@ -267,6 +267,8 @@ function luckyListToPage(data, i) {
 					var deleteCount = data['deleteCount']
 					loaddata()
 					layer.msg("删除" + deleteCount + "条记录成功");
+					$("#visible-pages-example").twbsPagination("destroy") //销毁分页栏
+					loaddata()
 			   	} else {
 					layer.msg("删除失败")
 			   	}
@@ -403,6 +405,7 @@ $("#form-addLucky").click( function () {
 							layer.msg("商品不存在")
 						}
 					}
+					
 				}
 			});
 		}
@@ -414,6 +417,7 @@ $("#form-confirm").click( function () {
 	$("#exampleModal-confirm").modal('hide')
 	$("#addLucky-goodsId").val("")
 	$("#addLucky-counts").val(1)
+	$("#visible-pages-example").twbsPagination("destroy") //销毁分页栏
 })
 
 loaddata()

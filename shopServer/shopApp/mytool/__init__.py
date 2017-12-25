@@ -5,14 +5,18 @@ from django.shortcuts import render_to_response
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.shortcuts import render
 from django.http import HttpResponse
+import json, urllib
 #用django自带的forms将图片下载到本地并返回地址
 
 class MyTool():
-    def resultOk(msg="操作成功"):
-        return {"status" : "ok" , "message" : msg};
+    def resultOk(msg="操作成功" , data={}):
+        return {"status" : "ok" , "message" : msg , "data":data};
 
-    def resultError(msg="操作失败"):
-        return {"status" : "error" , "message" : msg};
+    def resultError(msg="操作失败" , data={}):
+        return {"status" : "error" , "message" : msg , "data":data};
+
+    def returnJson(dic):
+        return HttpResponse(json.dumps(dic) , content_type="application/json")
     
 
 class UserForm(forms.Form):
