@@ -112,7 +112,8 @@
 		<div class="col-md-6" style="text-align: left;">
 			<button id="deleteBtn" type="button" class="btn btn-danger"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span>批量删除</button>
 			<a href="/addGoods/" class="btn btn-info"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>添加商品</a>
-			<button id="timeBtn" type="button" class="btn btn-warning"><span class="glyphicon glyphicon-download" aria-hidden="true">当前时间降序</span></button>			
+			<button id="timeBtn" type="button" class="btn btn-warning"><span class="glyphicon glyphicon-download" aria-hidden="true">当前时间降序</span></button>
+			<button id="sellcountBtn" type="button" class="btn btn-primary"><span class="glyphicon glyphicon-download" aria-hidden="true">当前销量降序</span></button>		
 		</div>
 		<div class="col-md-6" style="text-align: right;">
 			<p>共有数据:<strong id="goodsNumber">0</strong>条</p>
@@ -252,6 +253,7 @@ var thispage = 1
 var addGoodsIdRed = ""
 var commName = ""
 var timeBtnUp = 0
+var sellcountBtnUp = 0
 
 var fenye = $('#visible-pages-example');
 var defaultOptions = ""
@@ -266,10 +268,10 @@ function addAll(goodsid) {
 	data = encodeURIComponent(data);
 	myPost("goodsManageJsonUpdata" ,{"goodsid":addGoodsIdRed , "details":data} ,function(data){
 		if(data["data"] == "success") {
-				alert("商品详情添加成功。。。"); //请求传输成功回调函数
+				layer.msg("商品详情添加成功。。。"); //请求传输成功回调函数
 				location.reload()
 			} else {
-				alert("商品详情添加失败。。。"); //请求传输失败回调函数
+				layer.msg("商品详情添加失败。。。"); //请求传输失败回调函数
 			}
 	})
 }
@@ -363,6 +365,7 @@ function oneGoods(data, i) {
 	var goodsName = data["goodsname"];
 	var stock = data["stock"];
 	var addtime = data["addtime"];
+	var sellcount = data["sellcount"];
 
 	var goodsStatusStr = "未知"
 	var goodsStatusColour = "black"
@@ -381,7 +384,7 @@ function oneGoods(data, i) {
 		downDisabled = "disabled"
 	}
 	var row = (thispage - 1) * 10 + i
-	var ele = '<tr class="biaojuzhong" goodsid="' + goodsid + '"><td><input class="checkbox-one" type="checkbox"></td><th scope="row">' + row + '</th><td>' + goodsid + '</td><td>' + goodsName + '</td><td>' + standard + '</td><td>' + addtime + '</td><td></td><td class="goodsStatus" style="color: ' + goodsStatusColour +';">' + goodsStatusStr + '</td><td><button class="btn btn-default up" type="button" ' + upDisabled + '><span class="glyphicon glyphicon-upload " aria-hidden="true">上架 </span></button><button class="btn btn-default down" type="button" ' + downDisabled + '><span class="glyphicon glyphicon-download" aria-hidden="true">下架</span></button></td><td></button><button class="btn btn-default  demo4" type="button"><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span></button></td><td><button class="btn btn-default demo5" type="button"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button></td><td><button class="btn btn-default demo7" type="button"><span class="glyphicon glyphicon-file"  aria-hidden="true"></span></button><button class="btn btn-default demo8" type="button"><span class="glyphicon glyphicon-trash"  aria-hidden="true"></span></button></td></tr>'
+	var ele = '<tr class="biaojuzhong" goodsid="' + goodsid + '"><td><input class="checkbox-one" type="checkbox"></td><th scope="row">' + row + '</th><td>' + goodsid + '</td><td>' + goodsName + '</td><td>' + standard + '</td><td>' + addtime + '</td><td>'+sellcount+'</td><td class="goodsStatus" style="color: ' + goodsStatusColour +';">' + goodsStatusStr + '</td><td><button class="btn btn-default up" type="button" ' + upDisabled + '><span class="glyphicon glyphicon-upload " aria-hidden="true">上架 </span></button><button class="btn btn-default down" type="button" ' + downDisabled + '><span class="glyphicon glyphicon-download" aria-hidden="true">下架</span></button></td><td></button><button class="btn btn-default  demo4" type="button"><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span></button></td><td><button class="btn btn-default demo5" type="button"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button></td><td><button class="btn btn-default demo7" type="button"><span class="glyphicon glyphicon-file"  aria-hidden="true"></span></button><button class="btn btn-default demo8" type="button"><span class="glyphicon glyphicon-trash"  aria-hidden="true"></span></button></td></tr>'
 	$(".myListTable").append(ele)
 	
 }
@@ -547,12 +550,33 @@ function goodsListToPage(data) {
 		})
 	});
 }
-
+// 按下enter键查询
+document.onkeydown = function(event){
+	var keyCode = event.keyCode ? event.keyCode : event.which ? event.which : event.charCode;
+	if (keyCode == 13){
+		thispage = 1
+		commName = $("#goodsSelectName").val()
+		if (commName == ""){
+			layer.msg("请输入商品名");
+		}
+		else{
+			loaddata();
+		}
+		loaddata()
+	}
+}
 
 $("#goodsSelectBtn").click(function(){
 	thispage = 1
 	$("#visible-pages-example").twbsPagination("destroy") //销毁分页栏
 	commName = $("#goodsSelectName").val()
+	if (commName == ""){
+		layer.msg("请输入商品名");
+	}
+	else{
+		layer.msg("请稍候");
+		loaddata();
+	}
 	loaddata()
 });
 var luckyGoods = {}
@@ -715,10 +739,9 @@ myflag=0
 
 
 
-
 function loaddata() {
 	$.ajax({
-		url: "http://localhost:8000/commodityQuery/?page=" + thispage + "&commName=" + commName + "&timeUP=" +timeBtnUp,
+		url: "http://localhost:8000/commodityQuery/?page=" + thispage + "&commName=" + commName + "&timeUP=" +timeBtnUp+ "&sellcountBtnUp=" +sellcountBtnUp,
 		success: function (data) {
 			
 			goodsCount = data.goodscount
@@ -728,7 +751,7 @@ function loaddata() {
 			$(".myListTable").children("tr").remove()
 			//解析数据
 			mainData = data.data;
-			
+	
 
 			goodsListToPage(mainData)
 			
@@ -752,7 +775,7 @@ function loaddata() {
 		},
 		error: function (msg) {
 			console.log("error:获取数据失败")
-			alert(msg); //错误信息
+			console.log(msg); //错误信息
 		}
 	});
 }
@@ -778,14 +801,35 @@ $("#timeBtn").click( function () {
 		var ele = '<span class="glyphicon glyphicon-upload" aria-hidden="true">当前时间升序</span>'
 		$(this).append(ele)
 		timeBtnUp = 1
+		sellcountBtnUp = ''
 	} else {
 		$(this).children("span").remove()
 		var ele = '<span class="glyphicon glyphicon-download" aria-hidden="true">当前时间降序</span>'
 		$(this).append(ele)
 		timeBtnUp = 0
+		sellcountBtnUp = ''
 	}
-	thispage = 1
+	thispage = fenye.twbsPagination('getCurrentPage');
 	loaddata()
 })
+
+$("#sellcountBtn").click( function () {
+	if (sellcountBtnUp == 0) {
+		$(this).children("span").remove()
+		var ele = '<span class="glyphicon glyphicon-upload" aria-hidden="true">当前销量升序</span>'
+		$(this).append(ele)
+		sellcountBtnUp = 1
+		timeBtnUp = ''
+	} else {
+		$(this).children("span").remove()
+		var ele = '<span class="glyphicon glyphicon-download" aria-hidden="true">当前销量降序</span>'
+		$(this).append(ele)
+		sellcountBtnUp = 0
+		timeBtnUp = ''
+	}
+	thispage = fenye.twbsPagination('getCurrentPage');
+	loaddata()
+})
+
 </script>
 {% endblock %}

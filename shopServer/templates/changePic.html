@@ -51,23 +51,26 @@
 {%block script %}
 <script src="{% static 'layer/layer.js' %}" type="text/javascript" charset="utf-8"></script>
 <script type="text/javascript">
+var bb="";
+
 	function getUrlParam(name){
 		var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
 		var r = window.location.search.substr(1).match(reg);
 		if (r!=null) return unescape(r[2]); return null;
 		}
 	var goodsid = getUrlParam("goodsid")
-	console.log(goodsid)
-	$(".lb").text(goodsid)
 	myPost("goodsSelectByid",{"goodsid":goodsid},function(data){
 			for(var i=0;i<data.data.length;i++){
-				console.log(data.data[i])
-				console.log(data.data[i].goodsid)
+				
+				
 				if(data.data[i].goodsid == goodsid){
 					
 					var number = 1;
 					var picName = data.data[i].images;
-					console.log(picName);
+					
+					var goodsname = data.data[i].goodsname
+					bb=goodsname
+					
 					// var order = 1;
 					var picNames = new Array()
 					if (picName)
@@ -75,9 +78,9 @@
 						console.log(picName.indexOf("---"));
 						if (picName.indexOf("---") >= 0)
 						{
-							console.log("hahhah");
+						
 							picNames =picName.split("---");
-							console.log(picNames);
+							
 						}
 					}
 					if (picNames.length != 0)
@@ -94,6 +97,7 @@
 						console.log('............000...........')
 						
 					}
+					$(".lb").text(bb)
 					
 					
 					$(".delBtn").click(function(){

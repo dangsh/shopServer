@@ -7,6 +7,14 @@ from django.shortcuts import render
 from django.http import HttpResponse
 #用django自带的forms将图片下载到本地并返回地址
 
+class MyTool():
+    def resultOk(msg="操作成功"):
+        return {"status" : "ok" , "message" : msg};
+
+    def resultError(msg="操作失败"):
+        return {"status" : "error" , "message" : msg};
+    
+
 class UserForm(forms.Form):
     headImg = forms.FileField()
 class imagesupload(object):

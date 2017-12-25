@@ -1,373 +1,353 @@
 {% extends "base.html" %} {% load staticfiles %} {% block css %}
 
-
 <style type="text/css">
-			.a-upload {
-				position: relative;
-				overflow: hidden;
-			}
-			
-			.a-upload input {
-				position: absolute;
-				font-size: 100px;
-				right: 0;
-				top: 0;
-				opacity: 0;
-				display: inline-block;
-				filter: alpha(opacity=0);
-				cursor: pointer;
-				border: 1px solid blue;
-			}
-			
-			.a-upload:hover {
-				color: #444;
-				background: #eee;
-				border-color: #ccc;
-				text-decoration: none
-			}
-			
-			.biaojuzhong th {
-				text-align: center;
-			}
-			
-			.biaojuzhong td {
-				text-align: center;
-			}
-			
-			.biaojuzhong td button {
-				padding: 2px 8px;
-				background-color: white;
-			}
-			
-			.sumdiv {
-				background-color: #fff;
-				display: inline-block;
-				padding: 6px 12px;
-				margin-bottom: 0;
-				font-size: 14px;
-				font-weight: 400;
-				line-height: 1.42857143;
-				text-align: center;
-				border: 1px solid #ccc;
-				border-radius: 4px;
-			}
-			
-			#bigdiv {
-				background-color: #fff;
-				border: 1px solid #ccc;
-				border-collapse: collapse;
-			}
-			
-			.black_overlay {
-				display: none;
-				position: absolute;
-				top: 0%;
-				left: 0%;
-				width: 100%;
-				height: 100%;
-				background-color: black;
-				z-index: 1001;
-				-moz-opacity: 0.8;
-				opacity: .50;
-				filter: alpha(opacity=80);
-			}
-			
-			.white_content {
-				display: none;
-				position: absolute;
-				top: 10%;
-				left: 10%;
-				width: 80%;
-				height: 80%;
-				border: 8px solid lightblue;
-				background-color: white;
-				z-index: 1002;
-				overflow: auto;
-			}
-		</style>
-{% endblock %} 
-{% block contentRight %}
+	.a-upload {
+		position: relative;
+		overflow: hidden;
+	}
+	
+	.a-upload input {
+		position: absolute;
+		font-size: 100px;
+		right: 0;
+		top: 0;
+		opacity: 0;
+		display: inline-block;
+		filter: alpha(opacity=0);
+		cursor: pointer;
+		border: 1px solid blue;
+	}
+	
+	.a-upload:hover {
+		color: #444;
+		background: #eee;
+		border-color: #ccc;
+		text-decoration: none
+	}
+	
+	.biaojuzhong th {
+		text-align: center;
+	}
+	
+	.biaojuzhong td {
+		text-align: center;
+	}
+	
+	.biaojuzhong td button {
+		padding: 2px 8px;
+		background-color: white;
+	}
+	
+	.sumdiv {
+		background-color: #fff;
+		display: inline-block;
+		padding: 6px 12px;
+		margin-bottom: 0;
+		font-size: 14px;
+		font-weight: 400;
+		line-height: 1.42857143;
+		text-align: center;
+		border: 1px solid #ccc;
+		border-radius: 4px;
+	}
+	
+	#bigdiv {
+		background-color: #fff;
+		border: 1px solid #ccc;
+		border-collapse: collapse;
+	}
+	
+	.black_overlay {
+		display: none;
+		position: absolute;
+		top: 0%;
+		left: 0%;
+		width: 100%;
+		height: 100%;
+		background-color: black;
+		z-index: 1001;
+		-moz-opacity: 0.8;
+		opacity: .50;
+		filter: alpha(opacity=80);
+	}
+	
+	.white_content {
+		display: none;
+		position: absolute;
+		top: 10%;
+		left: 10%;
+		width: 80%;
+		height: 80%;
+		border: 8px solid lightblue;
+		background-color: white;
+		z-index: 1002;
+		overflow: auto;
+	}
+</style>
+{% endblock %} {% block contentRight %}
 
-	<ol class="breadcrumb">
-		<li>
-			<a href="#"><i class="fa fa-dashboard"></i> Home</a>
-		</li>
-		<li class="active">添加商品</li>
-	</ol>
+<ol class="breadcrumb">
+	<li>
+		<a href="#"><i class="fa fa-dashboard"></i> Home</a>
+	</li>
+	<li class="active">添加商品</li>
+</ol>
 
-	{% endblock %} {% block contentLeft %} 商品添加
-<small>Version 5.0</small> {% endblock %} 
+{% endblock %} {% block contentLeft %} 商品添加
+<small>Version 5.0</small> {% endblock %} {% block content %}
 
-{% block content %}
-		
 <div class="post">
-		<div class="container">
-			<div class="rt_content">
-				<form class="form-horizontal" id= "addgoods"action="" method="post">
-					<div class="form-group">
-						<label class="col-sm-4 control-label">商品名称：</label>
-						<div class="col-sm-3">
-							<input class="form-control only"  onkeyup="myfun(this);"name="goodsname" id="goodsname" value="" placeholder="goodsname">
-						</div>
+	<div class="container">
+		<div class="rt_content">
+			<form class="form-horizontal" id="addgoods" action="" method="post">
+				<div class="form-group">
+					<label class="col-sm-4 control-label">商品名称：</label>
+					<div class="col-sm-3">
+						<input class="form-control only" onkeyup="myfun(this);" name="goodsname" id="goodsname" value="">
 					</div>
-					<div class="form-group">
-						<label class="col-sm-4 control-label">所属商家：</label>
-						<div class="col-sm-3">
-							<input class="form-control only" onkeyup="myfun(this);"name="shopname" id="shopname" value="" placeholder="shopname">
-						</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-4 control-label">所属商家：</label>
+					<div class="col-sm-3">
+						<input class="form-control only" onkeyup="myfun(this);" name="shopname" id="shopname" value="">
 					</div>
-					<div class="form-group">
-						<label class="col-sm-4 control-label">商家类别：</label>
-						<div class="col-sm-3">
-							<input  class="form-control only" onkeyup="myfun(this);"id="standard" name="standard" value="" placeholder="standard">
-						</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-4 control-label">商家类别：</label>
+					<div class="col-sm-3">
+						<input class="form-control only" onkeyup="myfun(this);" id="standard" name="standard" value="">
 					</div>
-					<div class="form-group">
-						<label class="col-sm-4 control-label">颜色/口味：</label>
-						<div class="col-sm-3">
-							<input  class="form-control only" onkeyup="myfun(this);"name="color" id="color" value="" placeholder="color">
-						</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-4 control-label">颜色/口味：</label>
+					<div class="col-sm-3">
+						<input class="form-control only" onkeyup="myfun(this);" name="color" id="color" value="">
 					</div>
-					<div class="form-group">
-						<label class="col-sm-4 control-label">尺寸/参数：</label>
-						<div class="col-sm-3">
-							<input  class="form-control only" onkeyup="myfun(this);"id="size" name="size" value="" placeholder="size">
-						</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-4 control-label">尺寸/参数：</label>
+					<div class="col-sm-3">
+						<input class="form-control only" onkeyup="myfun(this);" id="size" name="size" value="">
 					</div>
-					<div class="form-group">
-						<label class="col-sm-4 control-label">数量：</label>
-						<div class="col-sm-3">
-							<input class="form-control only"  onkeyup="myfun(this);"name="counts" id="counts" value="" placeholder="counts ">
-						</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-4 control-label">数量：</label>
+					<div class="col-sm-3">
+						<input type="number" class="form-control only" onkeyup="myfun(this);" name="counts" id="counts" value="">
 					</div>
-					<div class="form-group">
-						<label class="col-sm-4 control-label">本金：</label>
-						<div class="col-sm-3">
-							<input class="form-control only"  onkeyup="myfun(this);"name="principal" id="principal" value="" placeholder="principal ">
-						</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-4 control-label">本金：</label>
+					<div class="col-sm-3">
+						<input type="number" step="0.01" class="form-control only" onkeyup="myfun(this);" name="principal" id="principal" value="">
 					</div>
-					<div class="form-group">
-						<label class="col-sm-4 control-label">单价：</label>
-						<div class="col-sm-3">
-							<input class="form-control only" onkeyup="myfun(this);"id="price" name="price" value="" placeholder="price">
-						</div>
-					</div><div class="form-group">
-						<label class="col-sm-4 control-label">促销价格：</label>
-						<div class="col-sm-3">
-							<input class="form-control only" onkeyup="myfun(this);"name="proprice" id="proprice"value="" placeholder="proprice">
-						</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-4 control-label">单价：</label>
+					<div class="col-sm-3">
+						<input type="number" step="0.01" class="form-control only" onkeyup="myfun(this);" id="price" name="price" value="">
 					</div>
-					<div class="form-group">
-						<label class="col-sm-4 control-label">促销开始日期：</label>
-						<div class="col-sm-3">
-							<input  class="form-control only" type="date" onkeyup="myfun(this);"name="prostart" id="prostart" value="1999-01-01">
-							
-						</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-4 control-label">促销价格：</label>
+					<div class="col-sm-3">
+						<input type="number" step="0.01" class="form-control only" onkeyup="myfun(this);" name="proprice" id="proprice" value="">
 					</div>
-					<div class="form-group">
-						<label class="col-sm-4 control-label">促销结束日期：</label>
-						<div class="col-sm-3">
-							<input  class="form-control only" type="date" onkeyup="myfun(this);"id="proend" name="proend"value="1999-01-01" >
-						</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-4 control-label">促销开始日期：</label>
+					<div class="col-sm-3">
+						<input class="form-control only" type="date" onkeyup="myfun(this);" name="prostart" id="prostart" value="1999-01-01">
+
 					</div>
-					<div class="form-group">
-							<label class="col-sm-4 control-label">返利</label>
-							<div class="col-sm-3">
-								<input  class="form-control only" onkeyup="myfun(this);"id="rebate" name="rebate"value="" placeholder="rebate">
-							</div>
-						</div>
-					<div class="form-group">
-						<label class="col-sm-4 control-label">                
+				</div>
+				<div class="form-group">
+					<label class="col-sm-4 control-label">促销结束日期：</label>
+					<div class="col-sm-3">
+						<input class="form-control only" type="date" onkeyup="myfun(this);" id="proend" name="proend" value="1999-01-01">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-4 control-label">返利</label>
+					<div class="col-sm-3">
+						<input type="number" step="0.01" class="form-control only" onkeyup="myfun(this);" id="rebate" name="rebate" value="">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-4 control-label">                
 			<div class="checkbox" >
 				  <label>
 			<input type="checkbox" id="checkboxread" > 运费：</label>
-					</div>
-					</label>
+				</div>
+				</label>
 
-					<div class="col-sm-3">
-						<input  class="form-control readon" onkeyup="myfun(this);"id="transportmoney" name="transportmoney"value="" placeholder="transportmoney" readonly="true">
-					</div>
-			</div>
+				<div class="col-sm-3">
+					<input type="number" step="0.01" class="form-control readon" onkeyup="myfun(this);" id="transportmoney" name="transportmoney" value="" readonly="true">
+				</div>
 		</div>
+	</div>
 
-		<div class="form-group">
-			<div class="table-responsive table-bordered ">
+	<div class="form-group">
+		<div class="table-responsive table-bordered ">
 
-				<table class="table table-bordered " style="margin-bottom: 0px;">
-					
-					<!--<table class="table table-bordered table-hover" contenteditable="true">-->
-					<thead>
+			<table class="table table-bordered " style="margin-bottom: 0px;">
 
-					</thead>
-					<tr style=" background-color: rgb(255, 255, 255);
+				<!--<table class="table table-bordered table-hover" contenteditable="true">-->
+				<thead>
+
+				</thead>
+				<tr style=" background-color: rgb(255, 255, 255);
 										padding-left: 5px;">
-						<th colspan="13">商品详情</th>
-					</tr>
+					<th colspan="13">商品详情</th>
+				</tr>
 
-					<tr style=" background-color: rgb(250, 250, 250);
+				<tr style=" background-color: rgb(250, 250, 250);
 										padding-left: 5px;">
-						<th>商品名称</th>
-						<th>所属商家</th>
-						<th>商品介绍</th>
-						<th>颜色/口味</th>
-						<th>尺寸/参数</th>
-						<th>数量</th>
-						<th>本金</th>
-						<th>单价</th>
-						<th>促销价格</th>
-						<th>促销开始日期</th>
-						<th>促销结束日期</th>
-						<th>返利</th>
-					</tr>
+					<th>商品名称</th>
+					<th>所属商家</th>
+					<th>商品介绍</th>
+					<th>颜色/口味</th>
+					<th>尺寸/参数</th>
+					<th>数量</th>
+					<th>本金</th>
+					<th>单价</th>
+					<th>促销价格</th>
+					<th>促销开始日期</th>
+					<th>促销结束日期</th>
+					<th>返利</th>
+				</tr>
 
-					<tbody class="myListTable">
-						<tr class="idatas"style=" background-color: rgb(255, 255, 255);
+				<tbody class="myListTable">
+					<tr class="idatas" style=" background-color: rgb(255, 255, 255);
 						padding-left: 5px;">
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>								
-					</tbody>
-				</table>
-			</div>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+				</tbody>
+			</table>
 		</div>
-		<div class="col-md-12" style="width: 100%;height: 350px;padding-left: 0px;padding-right: 0px;">
-			<div class=row style="color:red" ;>
-				<div class="col-md-6"> (请在这里输入商品详情)</div>
-				<a style="display: inline-block;" href="javascript:;" class="a-upload">
-						<input class="myInput" type="file" name="details" id="">点击这里上传文件					
-						</a>
-			</div>
-			<div id="" style="background-color: red;width: 100%;height: 250px;float: left;">
-				<script id="editor" type="text/plain" style="width:100%;height:250px;">
-				</script>
-			</div>
-
+	</div>
+	<div class="form-group ">
+		<div class="col-sm-offset-5 col-md-12" style="margin-top:40px">
+			<button type="button" class="btn btn-success hidden" id="updata">更新</button>
+			<button type="button" class="btn btn-info" id="sub"> 提交</button>
 		</div>
-		<div class="form-group " >
-			<div class="col-sm-offset-4 col-md-12"style="margin-top:40px">
-				<button type="button" class="btn btn-success " id="updata"> 更改</button>
-				<button type="button" class="btn btn-success" id="endata"> 确定</button>
-				<button type="button" class="btn btn-info" id="sub"> 提交</button>
-			</div>
-			</div>
-		
-		</div>
-
-	
-
-		</form>
-
-			
-		</div>
-							
-				
-
-
-
-
-
-
-		{% endblock %} 
-		
-
-
-{% block script %}
-
-<script src="{% static 'layer/layer.js' %}" type="text/javascript" charset="utf-8"></script>
-
+	</div>
+</div>
+</form>
+</div>
+{% endblock %} {% block script %}
 <script type="text/javascript">
-	var ue = UE.getEditor('editor');
-	var ue = UE.getEditor('editor1');
-	$('#checkboxread').click(function () {
-	if($('#checkboxread').is(':checked')) {
+	$('#checkboxread').click(function() {
+		if($('#checkboxread').is(':checked')) {
 
-		$(".readon").prop("readonly",false);
-	}else{
+			$(".readon").prop("readonly", false);
+		} else {
 
-		$(".readon").prop("readonly",true);
+			$(".readon").prop("readonly", true);
+		}
+	})
+
+	$('#sub').click(function() {
+
+		$("#addgoods").ajaxSubmit({
+			url: "/goodsManageJsonAdd/",
+			success: function(data) {
+				console.log(data)
+				layer.msg("添加商品成功");
+				window.location.href = "http://localhost:8000/goodsManage/";
+			}
+
+		});
+
+	})
+
+	if(localStorage.getItem("isEdit") == "true") {
+		$("h1").html("编辑商品<small>Version 5.0</small>");
+		$("#updata").removeClass("hidden");
+		$("#sub").addClass("hidden");
+		var data = JSON.parse(localStorage.getItem("data"));
+		$("#goodsname").val(data.goodsname);
+		$("#shopname").val(data.shopname);
+		$("#standard").val(data.standard);
+		$("#color").val(data.color);
+		$("#size").val(data.size);
+		$("#counts").val(data.counts);
+		$("#principal").val(data.principal);
+		$("#price").val(data.price);
+		$("#proprice").val(data.proprice);
+		$("#rebate").val(data.rebate);
+		$("#prostart").val(data.prostart);
+		$("#proend").val(data.proend);
+		myfun("#goodsname");
+		myfun("#shopname");
+		myfun("#standard");
+		myfun("#color");
+		myfun("#size");
+		myfun("#counts");
+		myfun("#principal");
+		myfun("#price");
+		myfun("#proprice");
+		myfun("#rebate");
+		myfun("#prostart");
+		myfun("#proend");
+		$('#updata').click(function() {
+			var goodsid = data.goodsid;
+			var goodsname = $("#goodsname").val();
+			var shopname = $("#shopname").val();
+			var standard = $("#standard").val();
+			var color = $("#color").val();
+			var size = $("#size").val();
+			var counts = $("#counts").val();
+			var principal = $("#principal").val();
+			var price = $("#price").val();
+			var proprice = $("#proprice").val();
+			var rebate = $("#rebate").val();
+			var prostart = $("#prostart").val();
+			var proend = $("#proend").val();
+			var objData = {
+				"#goodsid": data.goodsid,
+				"#goodsname": goodsname,
+				"#shopname": shopname,
+				"#standard": standard,
+				"#color": color,
+				"#size": size,
+				"#counts": counts,
+				"#principal": principal,
+				"#price": price,
+				"#proprice": proprice,
+				"#rebate": rebate
+			}
+			localStorage.setItem("data", "");
+			localStorage.setItem("isEdit", "flase")
+			myPost("goodsManageJsonUpdata", objData, function(data) {
+				if(data["status"] == "ok") {
+					layer.msg("修改商品信息成功");
+					window.location.href = "http://localhost:8000/goodsManage/"
+				} else {
+					layer.msg("修改商品信息失败");
+				}
+			})
+		})
 	}
-})
-$('#endata').click(function () {
 
-		$(".only").prop("readonly",true);
+	function myfun(aaa) {
 
+		var myValue = $(aaa).val();
+		var myIndex = $(aaa).parents(".form-group").index();
 
-})
-$( '#updata').click(function () {
-		$(".only").prop("readonly",false);
-})
+		$($(".idatas").children("td")[myIndex]).text(myValue)
 
-$( '#sub').click(function () {
-	console.log("3333")
-	
-	$("#addgoods").ajaxSubmit({
-		url:"/goodsManageJsonAdd/",
-		success: function (data) {
-			console.log(data)
-			layer.msg("添加商品成功");
-			window.location.href = "http://localhost:8000/goodsManage/";}
-		
-	});
-	
-
-})
-
-
-if (localStorage.getItem("isEdit")=="true"){
-	$("h1").html("编辑商品<small>Version 5.0</small>");
-	var data = JSON.parse(localStorage.getItem("data"));
-	$("#goodsname").val(data.goodsname);
-	$("#shopname").val(data.shopname);
-	$("#standard").val(data.standard);
-	$("#color").val(data.color);
-	$("#size").val(data.size);
-	$("#counts").val(data.counts);
-	$("#principal").val(data.principal);
-	$("#price").val(data.price);
-	$("#proprice").val(data.proprice);
-	$("#goodsname").val(data.goodsname);
-	$("#rebate").val(data.rebate);
-	$("#proprice").val(data.proprice);
-	$("#prostart").val(data.prostart);
-	$("#proend").val(data.proend);
-	myfun("#goodsname");
-	myfun("#shopname");
-	myfun("#standard");
-	myfun("#color");
-	myfun("#size");
-	myfun("#counts");
-	myfun("#principal");
-	myfun("#price");
-	myfun("#proprice");
-	myfun("#goodsname");
-	myfun("#rebate");
-	myfun("#proprice");
-	myfun("#prostart");
-	myfun("#proend");
-	localStorage.clear();
-}
-
-
-
-
-
-function myfun(aaa){
-
-	var myValue = $(aaa).val();
-	var myIndex = $(aaa).parents(".form-group").index();
-
-	$($(".idatas").children("td")[myIndex]).text(myValue)
-	
-}
+	}
 </script>
 {% endblock %}

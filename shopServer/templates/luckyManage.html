@@ -357,6 +357,8 @@ function addLucky(form_goodsId, form_counts){
 		type: 'POST',
 		data:{goodsName:form_goodsId, counts:form_counts},
 		success: function (data) {
+			console.log("aaaaaaaaaaaaaaaaaaaaaaaa")
+			console.log(data)
 			if (data["status"] == "ok" ) {
 				layer.msg("商品添加成功")
 				thispage = 1
@@ -406,7 +408,6 @@ $("#form-addLucky").click( function () {
 		}
 	});
 });
-
 $("#form-confirm").click( function () {
 	addLucky(form_goodsId, form_counts)
 	$("#exampleModal").modal('hide')

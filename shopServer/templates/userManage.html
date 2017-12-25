@@ -173,6 +173,7 @@
 
 		myPost("userManageJsonSelect",{},function(result){
 			console.log("88888888");
+			console.log(result)
 			mainData = result;
 			dataParse(mainData);
 		})
@@ -192,11 +193,10 @@
 					var acountmoney = mydata["acountmoney"];
 					var power = mydata["power"];
 					var activecode = mydata["activecode"];
-					var ele = '<tr class="mytr" NO="' + NO + '" userid = "' + userid + '" username = "' + username + '" pwd = "' + pwd + '" phone = "' + phone + '" wxid = "' + wxid + '" acountmoney = "' + acountmoney + '" headimg="' + headimg + '"  power = "' + power + '" activecode = "' + activecode + '"><td class="info ele"><input class="checkbox-one" name="checkbox-one" type="checkbox"/></td><td class="info ele">' + NO + '</td><td class="info ele">' + userid + '</td><td class="info ele">' + username + '</td><td class="info ele">' + pwd + '</td><td class="info ele">' + phone + '</td><td class="info ele">' + wxid + '</td><td class="info ele"><img height="40px" width="40px" src="http://localhost:8000/static/myfile/' + headimg + '" alt=""></td><td class="info ele">' + acountmoney + '</td><td class="info ele">' + power + '</td><td class="info ele">' + activecode + '</td><td class="info ele"><button class="btn btn-default edit btn-primary" data-toggle="modal" data-target="#editModal' + userid + '">编辑111</button>     <button class="btn btn-default delete">删除</button></td></tr>'
+					var ele = '<tr class="mytr" NO="' + NO + '" userid = "' + userid + '" username = "' + username + '" pwd = "' + pwd + '" phone = "' + phone + '" wxid = "' + wxid + '" acountmoney = "' + acountmoney + '" headimg="' + headimg + '"  power = "' + power + '" activecode = "' + activecode + '"><td class="info ele"><input class="checkbox-one" name="checkbox-one" type="checkbox"/></td><td class="info ele">' + NO + '</td><td class="info ele">' + userid + '</td><td class="info ele">' + username + '</td><td class="info ele">' + pwd + '</td><td class="info ele">' + phone + '</td><td class="info ele">' + wxid + '</td><td class="info ele"><img height="40px" width="40px" src="http://localhost:8000/static/myfile/' + headimg + '" alt=""></td><td class="info ele">' + acountmoney + '</td><td class="info ele">' + power + '</td><td class="info ele">' + activecode + '</td><td class="info ele"><button class="btn btn-default edit btn-primary" data-toggle="modal" data-target="#editModal' + userid + '">编辑</button>     <button class="btn btn-default delete">删除</button></td></tr>'
 					$(".myModal").empty();
 
 					$("#userTable").append(ele);
-					console.log("98888888888888");
 				}
 
 			}
@@ -211,7 +211,8 @@
 				var url = HomeUrl + "userManageJsonDelete/";
 				console.log(objData)
 				ajaxFn(url, objData, function() {
-					$(that).remove();
+					// $(that).remove();
+					window.location.reload()
 					layer.msg('删除成功');
 
 				})
@@ -258,7 +259,7 @@
 
 			
 			defaultPageOptioins = {
-				totalPages: data.data.length / 10 + 1,
+				totalPages: Math.ceil(data.data.length / 10),
 				first: "首页",
 				last: "尾页",
 				prev: '上一页',
@@ -378,8 +379,8 @@
 						$('#visible-pages-example').twbsPagination('destroy');
 						$('#visible-pages-example').twbsPagination($.extend({}, defaultPageOptioins, currentPageOption));
 						defaultPageOptioins = currentPageOption;
-
-					} else {
+					}
+					else {
 						layer.msg("没有查找到数据")
 					}
 
@@ -392,7 +393,15 @@
 			$(".searchForm").ajaxSubmit(option);
 		}
 		$(".search").click(function() {
-			ajaxSubmitForm()
+			username = $("#exampleUsername").val();
+					phone = $("#exampleInputPhoneNumber").val();
+					if (username == ""){
+						layer.msg("请输入用户名");
+					}
+					else{
+						layer.msg("请稍候");
+						ajaxSubmitForm();
+					}
 		});
 
 
@@ -408,6 +417,24 @@
 			xmlhttp.open("POST", urlString, true);
 			xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
 			xmlhttp.send("data = " + postdata);
+		}
+
+		// 按下enter键查询
+		document.onkeydown = function(event){
+			if ($("#obj1").focus() || $("#obj2").focus()){
+				var keyCode = event.keyCode ? event.keyCode : event.which ? event.which : event.charCode;
+				if (keyCode == 13){
+					username = $("#exampleUsername").val();
+					phone = $("#exampleInputPhoneNumber").val();
+					if (username == ""){
+						layer.msg("请输入用户名");
+					}
+					else{
+						layer.msg("请稍候");
+						ajaxSubmitForm();
+					}
+				}
+			}
 		}
 	</script>
 

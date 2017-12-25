@@ -156,9 +156,10 @@ urlpatterns = [
     url(r'^adsecondkill/$' , adsecondkill),
     url(r'^secondkillManage' , secondkillManage),
     url(r'^secondkillAddgoodsidintogoods/$' , secondkillAddgoodsidintogoods),
-    url(r'^personal/$' , personal),      
-    url(r'^guestbookSelect/$',guestbookSelect), #购买历史查询接口 POST请求
+    url(r'^personal/$' , personal),  
+    url(r'^guestbookSelect/$',guestbookSelect), #base页面留言请求接口
     url(r'^leavingMessage/$',leavingMessage), #留言查询接口 POST请求
+    url(r'^leavingMessageSelectAll/$',leavingMessageSelectAll), #留言页面留言查询接口 POST请求
 
     url(r'^express/$',express),#测试用查询快递接口        
     url(r'^shortMsgFromName/$',shortMsgFromName),#测试用发送短信接口

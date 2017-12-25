@@ -285,7 +285,7 @@
 					<!-- 左侧搜索框部分 -->
 					<form action="http://localhost:8000/goodsManage/" method="post" class="sidebar-form">
 						<div class="input-group">
-							<input type="text" name="baseSelectName" class="form-control" placeholder="搜索...">
+							<input type="text" name="baseSelectName" class="form-control" placeholder="商品搜索...">
 							<span class="input-group-btn">
 			                <button type="submit" name="search" id="search-btn" class="btn btn-flat">
 			                  <i class="fa fa-search"></i>
@@ -526,6 +526,8 @@
 		
 		<script src="{% static 'layer/layer.js' %}" type="text/javascript" charset="utf-8"></script>
 		
+		<script src="{% static 'js/recorder.js' %}"></script>
+		
 		<!-- 获取session -->
 		<script type="text/javascript">
 			
@@ -581,6 +583,8 @@
 				type: 'POST',
 				success: "success",
 				success: function(result) {
+					console.log("************")
+					console.log(result)
 					leavingMessageData = result["data"]
 					if (window.location.href.indexOf("/leavingMessage/") != -1) {
 						callLeavingFn(leavingMessageData);
@@ -590,16 +594,14 @@
 							var userName = result["data"][sss]["username"]
 							var userLeaveMessage = result["data"][sss]["leavemessage"]
 							var userHeading = result["data"][sss]["userHeading"]
+							console.log("&&&&&&&&&&&&&&&************")
+							console.log(sss)
+							console.log(userHeading)
 							var userLeavTime = result["data"][sss]["leavtime"]
 							unreadMess = unreadMess+1;
-							var spanAddss = '<li class = "mytr leavingMess"><a><div class="pull-left"><img src="" class="img-circle" alt="User Image"></div><h4>'+userName+'<small><i class="fa fa-clock-o"></i> '+userLeavTime+'</small></h4><p>'+userLeaveMessage+'</p></a></li>'
+							var spanAddss = '<li class = "mytr leavingMess"><a><div class="pull-left"><img src=' + HomeUrl + 'static/myfile/' + userHeading + ' class="img-circle" alt="User Image"></div><h4>'+userName+'<small><i class="fa fa-clock-o"></i> '+userLeavTime+'</small></h4><p>'+userLeaveMessage+'</p></a></li>'
 							
 							$("#messageRead").append(spanAddss)
-							$(".img-circle").each(function (i , item) {
-								if (i == sss) {
-									$(item).attr("src" , HomeUrl + "static/myfile/" + userHeading);
-								}
-							});
 						}
 					}
 					dianJi();

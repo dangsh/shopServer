@@ -132,12 +132,17 @@
                         <form id="myform" action="" enctype="multipart/form-data" method="post">
                             <div style="padding-top:20px">
                                 <label for="">商品id：</label><input type="text"   readonly= "true " name="goodsid" id="goodsid">
+							</div>
+							<div style="padding-top:20px">
+                                <label for="">商品：</label><input type="text"   readonly= "true " name="goodsname" id="goodsname">
                             </div>
                             <div style="padding-top:20px">
-                                <label for="">开始时间：</label><input  class="form-control only" type="datetime-local" name="starttime" id="prostart">
+                                <label for="">开始时间：</label><input   type="text" name="starttime" id="starttime"  onClick="WdatePicker({el:'starttime',dateFmt:'yyyy-MM-dd HH:mm:ss',minDate:'%y-%M-%d',maxDate: '#F{$dp.$D(\'stoptime\')}' })">
+                        <!-- <img onClick="WdatePicker({el:'starttime',dateFmt:'yyyy-MM-dd HH:mm:ss',maxDate: '#F{$dp.$D(\'stoptime\')}' })" src="{% static 'DatePicker/skin/datePicker.gif' %}" style =" width:30px; height:30px" align="absmiddle" > -->
                             </div>
                             <div style="padding-top:20px">
-                                <label for="">结束时间：</label><input  class="form-control only" type="datetime-local" name="stoptime" id="prostart">
+                                <label for="">结束时间：</label><input   type="text" name="stoptime" id="stoptime"  onClick="WdatePicker({el:'stoptime',dateFmt:'yyyy-MM-dd HH:mm:ss',minDate: '#F{$dp.$D(\'starttime\')}' })">
+                        <!-- <img onClick="WdatePicker({el:'stoptime',dateFmt:'yyyy-MM-dd HH:mm:ss',minDate: '#F{$dp.$D(\'starttime\')}' })" src="{% static 'DatePicker/skin/datePicker.gif' %}" style =" width:30px; height:30px" align="absmiddle"> -->
                             </div>
                         </form>
                         
@@ -165,6 +170,7 @@
 	{% endblock %} {% block contentLeft %} 商品列表
 	<small>Version 5.0</small> {% endblock %}
 {% block script %}
+<script src="{% static 'DatePicker/WdatePicker.js' %}"></script>
 <script src="{% static 'layer/layer.js' %}" type="text/javascript" charset="utf-8"></script>
 <script type="text/javascript">
 $('body').append("<div style='display:none;width:100%; margin:0 auto;position:fixed;left:0;top:0;bottom: 0;z-index: 111;opacity: 0.5;' id='loading'><a style='left: 50%;position: absolute;top:50%'><img src='http://localhost:8000/static/myfile/loading.gif' /></a></div>")
@@ -180,7 +186,7 @@ var thispage = 1
 var addGoodsIdRed = ""
 var commName = ""
 var timeBtnUp = 0
-
+var sellcountBtnUp = 0
 var fenye = $('#visible-pages-example');
 var defaultOptions = ""
 
@@ -199,7 +205,7 @@ function ajaxSubmitForm(){
 				layer.msg("修改成功");
                setTimeout(function(){
                 
-               history.go(0)
+               history.go(-1)
                } , 1000)
                 
             },
@@ -275,6 +281,8 @@ function goodsListToPage(data) {
         
                  var goodsid = $(this).parent().prev().prev().prev().prev().prev().html();
                  document.getElementById("goodsid").value=goodsid;
+				 var goodsname = $(this).parent().prev().prev().prev().prev().html();
+				 document.getElementById("goodsname").value = goodsname;
              
  
          
@@ -295,7 +303,7 @@ var luckyGoods = {}
 myflag=0
 function loaddata() {
 	$.ajax({
-		url: "http://localhost:8000/commodityQuery/?page=" + thispage + "&commName=" + commName + "&timeUP=" +timeBtnUp,
+		url: "http://localhost:8000/commodityQuery/?page=" + thispage + "&commName=" + commName + "&timeUP=" +timeBtnUp+"&sellcountBtnUp=" +sellcountBtnUp,
 		success: function (data) {
 			goodsCount = data.goodscount
 			goodsListPages = Math.ceil(parseInt(goodsCount) / 10 )

@@ -48,24 +48,44 @@
     .checkbox-one{
         float: left;
     }
+    
+    .form-header{
+        margin-left: 200px;
+        margin-top: 20px;
+
+    }
 	</style>
 
 {% endblock %}
 
 {% block content %}
-<button class="btn btn-default trash AllDelete" id ="deleteAll"><span class = "glyphicon glyphicon-trash">批量删除</span></button>
+<div class="form-header">
+<form class="form-inline searchForm" id="searchForm" role="form" method="post">
+    <div class="form-group">
+        <label class="">广告位置:</label>
+        <input type="text" class="form-control" name="position" id="exampleUsername" placeholder="请输入广告位置">
+    </div>
+    <input class="btn btn-default submit search" type="submit" value="查询会员">
+    <!-- <button type="submit" class="btn btn-default submit search"><span class = "glyphicon glyphicon-search">查询会员</span></button> -->
+</form>
+</div>
+<hr/>
+<button class="btn btn-default trash AllDelete"><span class = "glyphicon glyphicon-trash">批量删除</span></button>
 <button type="button" class="btn btn-default btn-primary addBtn" data-toggle="modal" data-target="#myModal" style="margin:5px;"><span class="glyphicon glyphicon-plus"></span>添加广告</button>
 <div id="xxx" class=" col-md-12" style="padding:0;">
     <a class="col-md-12" style="margin:5px; padding-left:0; color: black;margin-right:0;"><strong>广告列表</strong></a>
-    <table id="table" class="table table-bordered" >
+    <table id="tables" class="table table-bordered" >
         <tr name="row" class="heading">
             <td id="item" style="display:none"></td>
-            <th><input class="checkbox-one" id="checkbox-all" type="checkbox"/>自然序号</th>
+            <th><input class="checkbox-one" id="checkbox-all" type="checkbox"/>广告序号</th>
             <th>图片</th>
             <th>位置</th>
-            <th>广告状态</th>
+            <th>发布时间</th>
             <th>编辑</th>
         </tr>
+        <tbody id="table">
+            
+                    </tbody>
     </table>
     <div class="text-center pagediv">
         <ul id="visible-pages-example" class="page"></ul>
@@ -111,6 +131,7 @@
 <script src="{% static 'js/jquery.form.min.js' %}"></script>
 <script src="{% static 'layer/layer.js' %}" type="text/javascript" charset="utf-8"></script>
 <script type="text/javascript">
+var defaultPageOptioins = "";
     $('body').append("<div style='display:none;width:100%; margin:0 auto;position:fixed;left:0;top:0;bottom: 0;z-index: 111;opacity: 0.5;' id='loading'><a style='left: 50%;position: absolute;top:50%'><img src='http://localhost:8000/static/myfile/loading.gif' /></a></div>")
     $(document).ajaxStart(function(){
     　　$("#loading").show();
@@ -131,10 +152,12 @@
     };
 
     function adEleFn(data){
+        console.log(data)
         imgs = data.imgs;
         adid = data.adid;
+        position=data.position;
         adtime = data.adtime;
-        var Tr = '<tr name="row" adid='+ adid +' class="myrow"><td><input class="checkbox-one" name="checkbox-one" type="checkbox"/>' + adid + '</td><td><div id="imagesdiv"><img src="/static/myfile/'+ imgs +'"/></div></td><td>' + imgs + '</td><td>' + adtime + '</td><td><button class="btn btn-danger delete">删 除</button> </td></tr>';
+        var Tr = '<tr name="row" class="myrow"><td><input class="checkbox-one" name="checkbox-one" type="checkbox"/>' + adid + '</td><td><div id="imagesdiv"><img src="/static/myfile/'+ imgs +'"/></div></td><td>' + position + '</td><td>' + adtime + '</td><td><button class="btn btn-danger delete">删 除</button> </td></tr>';
         $("#table").append(Tr);
     }
     //解析数据函数
@@ -144,14 +167,15 @@
             perdata = data[i];
             adEleFn(perdata);
         }
-        addEvent();
     }
     //请求数据
     function ajaxfn(){
         Ajax("adManageJsonSelect/?page=" + currpage,function(result){
             $(".myrow").remove();
             $(".sumdiv").remove();
+            console.log(result)
             parseDataFn(result);
+            
             adcounts = result.adcounts;
             countPages = Math.ceil(parseInt(adcounts) / 8 );
             if(prePages!=countPages){  
@@ -205,52 +229,35 @@
             $img.attr('src',dataURL);
         }
     });
-    function addEvent(){
-        $(".delete").click(function(e){
-            e.preventDefault();
-            adsArr = [];
-            var that = $(this).parents("tr");
-            dataId= that.attr('adid')
-            adsArr.push(dataId)
-            myPost("adManageJsonDelete" , {adsIds:adsArr} , function(data){
-                    if(data["status"]=="ok"){
-                        layer.msg("删除成功")
-                        that.remove()
-                    }
-                    else{
-                        layer.msg("删除失败")
-                    }
-                })
-            }
-        );
-    };
-    
+    $("#table").delegate("button","click",function(){
+        if($(this).html() == "删 除"){
+            dataId= $(this).parent().prev().prev().prev().prev().text();
+            Ajax("adManageJsonDelete/?Id="+dataId , function(result){
+                if (result.status == "ok"){
+                        ajaxfn();
+                        layer.msg("删除成功");
+                }
+            });
+        }
+    });
     $(".AllDelete").click(function(){
-        var adsArr = []
-        var checkboxs = $('.checkbox-one')
-        for (var i = 0; i < checkboxs.length; i++) {
-            if($(checkboxs[i]).is(':checked')) {
-                var that=$(checkboxs[i]).parents("tr");
+        var isEmeptySelect = true;
+        $("[name = checkbox-one]:checkbox").each(function () {
+            if ($(this).is(":checked")) {
+                var objData = $(this).parent().text();
+                isEmeptySelect = false;
+            	Ajax("adManageJsonDelete/?Id="+objData , function(result){
+                    if (result.status == "ok"){
+                            ajaxfn();
+                            layer.msg("批量删除成功");
+                    }
+               });
+            }
+        });
 
-                var adidOne = that.attr("adid")
-                if (adidOne)
-                {
-                    adsArr.push(adidOne)
-                }
-                
-            } 
-        }
-        console.log(adsArr.length)
-        if (adsArr.length == 0) {
+        if (isEmeptySelect == true) {
+            console.log("000000");
             layer.msg("选择要删除的内容");
-        }
-        else{
-            myPost("adManageJsonDelete" , {adsIds:adsArr} , function(data){
-                if(data["status"]=="ok"){
-                    ajaxfn();
-                    layer.msg("批量删除成功")
-                }
-            })
         }
     });
     $('#checkbox-all').click(function () {
@@ -262,6 +269,78 @@
             $(".checkbox-one").prop("checked",false);
         }
     })
+ 
+
+       
+        var selectpage = 1
+        $('#searchForm').on('submit', function(e) {
+            e.preventDefault(); 
+            console.log("*********************")
+            ajaxSubmitFormss()
+		}); 
+        function ajaxSubmitFormss() {
+			var option = {
+				url: HomeUrl + "adManageSelect/",
+				type: 'POST',
+				dataType: 'json',
+				success: function(data) {
+					if(data.data != "") {
+						layer.msg("查找成功")
+						mainData = data
+                        $("#visible-pages-example").empty();
+
+                        $(".myrow").remove();
+                        $(".sumdiv").remove();
+						createList(1);
+						var totalPages = mainData.data.length / 8 + 1;
+						var currentPageOption = {
+							totalPages: totalPages,
+							first: "首页",
+							last: "尾页",
+							prev: '上一页',
+							next: '下一页',
+							startPage: 1,
+							visiblePages: totalPages > 5 ? 5 : totalPages ,
+							version: '1.1',
+							onPageClick: function(event, page) {
+								createList(page);
+							}
+						};
+						$('#visible-pages-example').twbsPagination('destroy');
+						$('#visible-pages-example').twbsPagination($.extend({}, defaultPageOptioins, currentPageOption));
+						defaultPageOptioins = currentPageOption;
+
+					} else {
+						layer.msg("没有查找到数据")
+					}
+
+				},
+				error: function(data) {
+					console.log("chucuole ");
+				}
+			};
+			var _form = document.getElementsByClassName("searchForm")[0]
+			$(".searchForm").ajaxSubmit(option);
+		}
+		function createList(page) {
+			$("#table").empty()
+			for(i = 0; i < mainData.data.length; i++) {
+				if(i >= (page - 1) * 8 && i <= page * 8 - 1) {
+					mydata = mainData.data[i]
+					var NO = i + 1;
+					var imgs = mydata["imgs"];
+					var adid = mydata["adid"];
+					var position = mydata["position"];
+					var adtime = mydata["adtime"];
+                    var Tr = '<tr name="row"  NO="' + NO + '" class="myrow"><td><input class="checkbox-one" name="checkbox-one" type="checkbox"/>' + adid + '</td><td><div id="imagesdiv"><img src="/static/myfile/'+ imgs +'"/></div></td><td>' + position + '</td><td>' + adtime + '</td><td><button class="btn btn-danger delete">删 除</button> </td></tr>';
+					// $(".myModal").empty();
+
+					$("#table").append(Tr);
+					console.log("98888888888888");
+				}
+
+			}
+		}
 </script>
 {% endblock %}
 

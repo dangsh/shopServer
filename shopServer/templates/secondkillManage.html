@@ -50,8 +50,8 @@
     <table id="table" class="table table-bordered" >
         <tr name="row">
             <td id="item" style="display:none"></td>
-            <th>活动id</th>
-            <th>商品id</th>
+           <th>活动id</th>
+            <th>商品</th>
             <th>状态</th>
             <th>开始时间</th>
             <th>截止时间</th>
@@ -76,20 +76,21 @@
             </div>
             <div class="modal-body">
                 <form id="myform" action="" enctype="multipart/form-data" method="post">
+                   <input type="hidden"   readonly= "true " name="killid" id="killid">
+                   
                     <div style="padding-top:20px">
-                        <label for="">活动id：</label><input type="text"   readonly= "true " name="killid" id="killid">
-                    </div>
-                    <div style="padding-top:20px">
-                        <label for="">商品id：</label><input type="text"   readonly= "true " name="goodsid" id="goodsid">
+                        <label for="">商品：</label><input type="text"   readonly= "true " name="goodsname" id="goodsname">
                     </div>
                     <div style="padding-top:20px">
                         <label for="">状态：</label><input type="text"   readonly= "true " name="goodstatus" id="goodstatus">
                     </div>
                     <div style="padding-top:20px">
-                        <label for="">开始时间：</label><input  class="form-control only" type="datetime-local" name="starttime" id="prostart">
+                        <label for="">开始时间：</label><input   type="text" name="starttime" id="starttime"  onClick="WdatePicker({el:'starttime',dateFmt:'yyyy-MM-dd HH:mm:ss',minDate:'%y-%M-%d',maxDate: '#F{$dp.$D(\'stoptime\')}' })">
+                        <!-- <img onClick="WdatePicker({el:'starttime',dateFmt:'yyyy-MM-dd HH:mm:ss',maxDate: '#F{$dp.$D(\'stoptime\')}' })" src="{% static 'DatePicker/skin/datePicker.gif' %}" style =" width:30px; height:30px" align="absmiddle" > -->
                     </div>
                     <div style="padding-top:20px">
-                        <label for="">结束时间：</label><input  class="form-control only" type="datetime-local" name="stoptime" id="prostart">
+                        <label for="">结束时间：</label><input   type="text" name="stoptime" id="stoptime"  onClick="WdatePicker({el:'stoptime',dateFmt:'yyyy-MM-dd HH:mm:ss',minDate: '#F{$dp.$D(\'starttime\')}' })">
+                        <!-- <img onClick="WdatePicker({el:'stoptime',dateFmt:'yyyy-MM-dd HH:mm:ss',minDate: '#F{$dp.$D(\'starttime\')}' })" src="{% static 'DatePicker/skin/datePicker.gif' %}" style =" width:30px; height:30px" align="absmiddle"> -->
                     </div>
                 </form>
                 
@@ -109,6 +110,7 @@
 {% block script %}
 <script src="{% static 'layer/layer.js' %}"></script>
 <script src="{% static 'js/jquery.form.min.js' %}"></script>
+<script src="{% static 'DatePicker/WdatePicker.js' %}"></script>
 <script type="text/javascript">
 
 var currpage = 1;
@@ -119,6 +121,8 @@ var thispage = 1
 var addGoodsIdRed = ""
 var commName = ""
 var timeBtnUp = 0
+var goodstatus1 = "未开始"
+ 
     //添加item函数
 function adEleFn(data){
         killid = data.killid;
@@ -126,8 +130,30 @@ function adEleFn(data){
         stoptime = data.stoptime;
         goodstatus = data.goodstatus;
         goodsid = data.goodsid;
-        var Tr = '<tr name="row" class="myrow"><td>' + killid + '</td><td>' + goodsid + '</td><td>' + goodstatus + '</td><td>' + starttime + '</td><td>'+stoptime+'</td><td><button class="btn btn-success edit">编 辑</button>  <button class="btn btn-danger delete">删 除</button> </td></tr>';
-        $("#table").append(Tr);
+        goodsname =data.goodsname;
+    myPost('getdatatime' , {"starttime":starttime,"stoptime":stoptime , "killid":killid},function(result){
+              goodstatus1 =result["datatime"] 
+
+    })
+    if(goodstatus1=='1'){
+        console.log("1")
+        myPost('secondkillManageJsonUpdata' , {"goodstatus":1,"killid":killid} , function(data){
+            if(data["status"]=="ok"){
+                goodstatus1 = "正进行"
+            }
+        })
+    }   
+    if(goodstatus1=='2'){
+        console.log("2")
+        myPost('secondkillManageJsonUpdata' , {"goodstatus":2,"killid":killid} , function(data){
+            if(data["status"]=="ok"){
+                goodstatus1 = "已结束"
+            }
+        })
+    } 
+    var Tr = '<tr name="row" class="myrow"><td>'+killid+'</td><td>' + goodsname + '</td><td>' + goodstatus1 + '</td><td>' + starttime + '</td><td>'+stoptime+'</td><td><button class="btn btn-success edit">编 辑</button>  <button class="btn btn-danger delete">删 除</button> </td></tr>';
+    $("#table").append(Tr);
+
     }
     //当modal关闭的时候数据清除
     $('#myModal').on('hide.bs.modal', function ()
@@ -139,9 +165,10 @@ function adEleFn(data){
     //解析数据函数
     function parseDataFn(result){
         data = result.data;
-        
+        console.log(data)
         for (var i = 0; i < data.length; i++){
             perdata = data[i];
+            console.log(perdata)
             adEleFn(perdata);
         }
         
@@ -149,7 +176,6 @@ function adEleFn(data){
     //请求数据
 function ajaxfn(){
     myPost('secondkillcommodityQuery', {"page":currpage} ,function (result){
-                console.log(result);
                 parseDataFn(result);
                 adcounts = result.adcounts;
                 countPages = Math.ceil(parseInt(adcounts) / 8 );
@@ -171,40 +197,7 @@ function ajaxfn(){
                         ajaxfn();
                     }
                 });
-            })
-        // $.ajax({
-        //     type: "post",
-        //     url: 'http://localhost:8000/secondkillcommodityQuery/',
-        //     data:{"page":currpage},
-        //     success: function (result){
-        //         console.log(result);
-        //         parseDataFn(result);
-        //         adcounts = result.adcounts;
-        //         countPages = Math.ceil(parseInt(adcounts) / 8 );
-        //         var spanele = '<span class="sumdiv">共' + countPages + '页,当前第' + countPages + '页,共' + adcounts + '条数据</span>';
-        //         $("#visible-pages-example").append(spanele);
-        //             $('#visible-pages-example').twbsPagination({
-        //             totalPages:countPages,
-        //             first: "首页",
-        //             last: "尾页",
-        //             prev: '上一页',
-        //             next: '下一页',
-        //             startPage: 1,
-        //             visiblePages: countPages>5?5:countPages,
-        //             version: '1.1',
-        //             onPageClick: function (event, page) {
-        //                 currpage  = page;
-        //                 $(".myrow").remove();
-        //                 $(".sumdiv").remove();
-        //                 ajaxfn();
-        //             }
-        //         });
-        //     },
-        //     error: function (err){
-        //         layer.msg("请求失败");
-        //         console.log(err);
-        //     }
-        // });
+            });
     }
     ajaxfn();
     
@@ -219,8 +212,8 @@ function ajaxfn(){
             success : function(data) 
             {
                 layer.msg("修改成功");
+
                setTimeout(function(){
-                
                history.go(0)
                } , 1000)
 
@@ -239,18 +232,15 @@ function ajaxfn(){
     $(document).ready(function(){
         $("#table").delegate("button","click",function(){
             if($(this).html() == '编 辑'){
-
                 $("#myModal").modal("show");
                 var killid = $(this).parent().prev().prev().prev().prev().prev().html();
                 document.getElementById("killid").value=killid;
-                var goodsid = $(this).parent().prev().prev().prev().prev().html();
-                document.getElementById("goodsid").value=goodsid;
+                var goodsname = $(this).parent().prev().prev().prev().prev().html();
+                document.getElementById("goodsname").value=goodsname;
                 var goodstatus = $(this).parent().prev().prev().prev().html();
                 document.getElementById("goodstatus").value=goodstatus;
             }
             if($(this).html() == "删 除"){
-                console.log("hahhah");
-                // dataId = {"id":""};
                 dataId= $(this).parent().prev().prev().prev().prev().prev().html();
                 that = this;
                 console.log(dataId);
