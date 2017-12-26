@@ -212,7 +212,22 @@
 				aa=result.status;
 				console.log(aa);
 				if (aa == "codeError") {
-					layer.msg("验证码错误")
+					a = document.getElementById("pwd").value;
+					b = document.getElementById("code").value;
+					c= document.getElementById("name").value;
+					if ((a == "") && (b == "") && (c == "")){
+						layer.msg("请输入用户名");
+					}
+					else if((a == "") && (b == "")){
+						layer.msg("请输入密码");
+					}
+					else if(b == ""){
+						layer.msg("验证码不能为空");
+					}
+					else {
+						layer.msg("哎呦我去，登录失败了！");
+					}
+					changeCode()
 				}
 				else if (aa=="ok") {
 					console.log("1111111111111111111")

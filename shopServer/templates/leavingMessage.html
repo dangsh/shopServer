@@ -38,7 +38,7 @@
 			<form class="form-inline" action="http://localhost:8000/leavingMessageSelectAll/" id="searchForm" method="post">
 				<div class="form-group">
 					<label for="exampleInputName2">用户名:</label>
-					<input type="text" class="form-control" id="userid" name="userid" placeholder="用户名">
+					<input type="text" class="form-control" id="exampleUsername" name="userid" placeholder="用户名">
 					<label for="exampleInputName2">留言状态:</label>
 					<select name="status" class="form-control" id="myStatus">
 						<option value="0">未知</option>
@@ -76,9 +76,12 @@
 					<th>编辑</th>
 				</tr>
 			</thead>
-			<tbody id="mytbody" class="myListTable">
+			<tbody id="userTable">
 
 			</tbody>
+			<!--<tbody id="mytbody" class="myListTable">
+
+			</tbody>-->
 		</table>
 		
 		<div class="text-center">
@@ -150,8 +153,11 @@
 	{% block script %}
 	<script type="text/javascript">
 		console.log("******************")
+		var mainData = ""
 		function callLeavingFn(leavingMessageData){
 			console.log(leavingMessageData)
+			mainData = leavingMessageData
+			dataParse(leavingMessageData)
 			var allDataNumber = leavingMessageData.length;
 			var ssss = '<label id="userNumber" class="count" style="float: right; padding-right: 4%;">共有'+ allDataNumber +'条数据</label>'
 			$('#dataShuJu').append(ssss)
@@ -180,6 +186,27 @@
 			
 			
 			
+		}
+		function createList(page) {
+			$("#userTable").empty()
+			for(sss = 0; sss < mainData.length; sss++) {
+				if(sss >= (page - 1) * 10 && sss <= page * 10 - 1) {
+					var userName = mainData[sss]["username"]
+					var userLeaveMessage = mainData[sss]["leavemessage"]
+					var userid = mainData[sss]["userid"]
+					var userLeavTime = mainData[sss]["leavtime"]
+					var userStatus = mainData[sss]["status"]
+					var guestbookid = mainData[sss]["guestbookid"]
+					if (userStatus == "unread"){
+						userStatus = "未读";
+					}else{
+						userStatus = "已读"
+					}
+					var myHtml = '<tr class="mytr" guestbookid="' + guestbookid + '"><td class="info ele"><input class="checkbox-one" name="checkbox-one" type="checkbox"/></td><td>' + guestbookid + '</td><td>' + userid + '</td><td>' + userName + '</td><td>' + userLeaveMessage + '</td><td>' + userLeavTime + '</td><td>' + userStatus + '</td><td > <button class="btn btn-default delete guestbookidButton">编辑</button></td></tr>'
+					
+					$("#userTable").append(myHtml);
+				}
+			}
 		}
 		
 		
@@ -238,7 +265,7 @@
 		        }
 			})
 			
-			// 根据id删除一条数据
+		
 		function deleteOneDataById(objId, ele) {
 			console.log("&&&&&&&&&&&&&8888888888888888888888^^^^^^^^^^^^^")
 			console.log(ele.length)
@@ -262,6 +289,7 @@
 			})
 		}
 		
+		//留言查询分页 有bug
 		$('#searchForm').on('submit', function(e) {
 			e.preventDefault();
 			$(this).ajaxSubmit({
@@ -269,6 +297,30 @@
 					console.log(data)
 					if (data.status == "ok"){
 						layer.msg(data.message);
+						mainData = data.data
+
+						$('.mytr').remove();
+						document.getElementById("exampleUsername").value = "";
+						createList(1);
+						var currentPageOption = {
+							totalPages: Math.ceil(mainData.length / 10),
+							first: "首页",
+							last: "尾页",
+							prev: '上一页',
+							next: '下一页',
+							startPage: 1,
+							visiblePages: 5,
+							version: '1.1',
+							onPageClick: function(event, page) {
+								console.log("---------------------" , page);
+								createList(page);
+							}
+						}
+						console.log("##############################")
+						$('#visible-pages-example').twbsPagination('destroy');
+						$('#visible-pages-example').twbsPagination($.extend({}, defaultPageOptioins, currentPageOption));
+						defaultPageOptioins = currentPageOption;
+//						$('#visible-pages-example').twbsPagination(defaultPageOptioins);
 						
 					}else{
 						layer.msg(data.message);
@@ -277,6 +329,31 @@
 				}
 			})
 		});
+		
+		//分页页面进来
+		var defaultPageOptioins = "";
+		function dataParse(data) {
+			console.log(data);
+			createList(1)
+
+			
+			defaultPageOptioins = {
+				totalPages: Math.ceil(data.length / 10),
+				first: "首页",
+				last: "尾页",
+				prev: '上一页',
+				next: '下一页',
+				startPage: 1,
+				visiblePages: 5,
+				version: '1.1',
+				onPageClick: function(event, page) {
+					console.log("---------------------" , page);
+					createList(page);
+				}
+			}
+			$('#visible-pages-example').twbsPagination(defaultPageOptioins);
+		}
+		
 		
 	</script>
 	{% endblock %}

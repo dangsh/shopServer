@@ -999,7 +999,7 @@ def activeManageJsonSelect(request):
     myData=[]
     cursor=connection.cursor()
 
-    cursor.execute("SELECT * FROM activetable")
+    cursor.execute("SELECT * FROM activetable ORDER BY activeid DESC")
     try:
         for data in cursor.fetchall():
             activeid=data[0]
@@ -1020,11 +1020,9 @@ def activeManageJsonSelect(request):
 
 # 活动添加接口 刘斌
 def activetableManageJsonAdd(request):
-    print("active *** --- +++")
     datas = request.POST
     imagesName = "None"
     #前台传过来的图片
-    print(request.FILES.get('imgs',False))
     if request.FILES.get('imgs',False):
         print("gygygygygygygy")
         images = request.FILES["imgs"];
@@ -1073,8 +1071,20 @@ def activetableManageJsonAdd(request):
     cursor=connection.cursor()
     try:
         cursor.execute(sql)
+        cursor.execute("SELECT * FROM activetable WHERE activeid='%s'" %activeid)
+        data = cursor.fetchall()[0]
+        activeid=data[0]
+        activedetail=data[1]
+        starttime=data[2].strftime('%Y-%m-%d %H:%M:%S')
+        imgs = data[3]
+        stoptime = data[4].strftime('%Y-%m-%d %H:%M:%S')
+        activetitle = data[5]
+        activeName = data[6]
+        activePosition = data[7]
+        tempDic={"activeid":activeid,"activedetail":activedetail,"starttime":starttime,"imgs":imgs,"stoptime":stoptime,"activetitle":activetitle, "activeName":activeName,"activePosition":activePosition}
+        # cursor.execute("INSERT INTO order (activeid,activetime,activedetail) VALUES (%d,%s,%s)"% (activeid,str(activetime),activedetail))
+        statusDis={"status":"ok","message":"添加成功","addactive":tempDic};
         
-        statusDis=MyTool.resultOk("添加成功")
         return HttpResponse(json.dumps(statusDis),content_type="application/json");
     except Exception as e :
         raise e
@@ -1095,6 +1105,15 @@ def activetableManageJsonDelete(request):
     active_id = request.GET["dataId"];
     print(active_id)
     try:
+        cursor.execute("SELECT imgs FROM activetable WHERE activeid='%s'" % active_id)
+        data = cursor.fetchall();
+        if data[0][0]:
+            print(data[0][0])
+            tempimg = data[0][0];
+            if os.path.exists("../shopServer/shopApp/static/myfile/"+tempimg)==True:
+                os.remove("../shopServer/shopApp/static/myfile/"+tempimg);
+            else:
+                pass;
         cursor.execute("DELETE FROM activetable WHERE activeid='%s'"% (active_id))
         cursor.close()
         return HttpResponse(json.dumps({"message":"删除成功","status":"ok"}),content_type="application/json")
@@ -1103,6 +1122,35 @@ def activetableManageJsonDelete(request):
 def redpack(request):
     
     return render(request,"redpack.html")
+
+# 活动批量删除接口 胡亚洲
+def activesManageJsonDelete(request):
+    activeidsDict =  request.POST
+    activeids = activeidsDict.getlist("activeids")
+    cursor=connection.cursor();
+    result = 0
+    try:
+        for activeid in activeids:
+            cursor.execute("SELECT imgs FROM activetable WHERE activeid='%s'" % activeid)
+            data = cursor.fetchall();
+            if data[0][0]:
+                print(data[0][0])
+                tempimg = data[0][0];
+                if os.path.exists("../shopServer/shopApp/static/myfile/"+tempimg)==True:
+                    os.remove("../shopServer/shopApp/static/myfile/"+tempimg);
+                else:
+                    pass;
+            result += cursor.execute("DELETE FROM activetable where activeid = '%s'"%(activeid))
+        cursor.close();
+        if result != 0:
+            return HttpResponse(json.dumps({'message': '删除成功','status':'ok', 'deleteCount':result}), content_type="application/json");
+        else: 
+            return HttpResponse(json.dumps({"message":'删除失败' , "status":"error"}) , content_type="application/json");
+
+    except Exception as e:   
+        return HttpResponse(json.dumps({"message":'删除失败' , "status":"error"}) , content_type="application/json");
+
+
 
 #浏览记录添加接口 有待测试  韩乐天(OK)
 def  lookhistorytableManageJsonAdd(request):
@@ -2392,28 +2440,85 @@ def shortMsgFromPhone(request):
         
         statusDic=MyTool.resultError("手机号码格式出错")
         return HttpResponse(json.dumps(statusDic) , content_type="application/json")
-def activetableManageJsonchange(request):     
-    imgs = request.FILES["sb"];
-    activeid = request.POST["activeid"]
-    activeidw = randomString()
-    imgsName = activeidw + ".jpg";
-    imagePath = imgsName;
-    filepath = "./shopApp/static/myfile";
-    filename = os.path.join(filepath,imgsName)
-    filename = open(filename , "wb");
-    filename.write(imgs.__dict__["file"].read());
-    filename.close();
-    sqlfilename = imgsName
-    print(sqlfilename)
-    cursor = connection.cursor();
-    result = cursor.execute("UPDATE activetable SET imgs='%s' WHERE activeid='%s'" % (sqlfilename , activeid));
-    statusDic = "";
-    if result == 1:
-        statusDis=MyTool.resultOk("添加成功");
-    else :
-        statusDic=MyTool.resultError("添加失败")
-    return HttpResponse(json.dumps(statusDic) , content_type = "application/json");
 
+#活动修改接口
+# def activetableManageJsonchange(request):     
+#     imgs = request.FILES["sb"];
+#     activeid = request.POST["activeid"]
+#     activeidw = randomString()
+#     imgsName = activeidw + ".jpg";
+#     imagePath = imgsName;
+#     filepath = "./shopApp/static/myfile";
+#     filename = os.path.join(filepath,imgsName)
+#     filename = open(filename , "wb");
+#     filename.write(imgs.__dict__["file"].read());
+#     filename.close();
+#     sqlfilename = imgsName
+#     print(sqlfilename)
+#     cursor = connection.cursor();
+#     result = cursor.execute("UPDATE activetable SET imgs='%s' WHERE activeid='%s'" % (sqlfilename , activeid));
+#     statusDic = "";
+#     if result == 1:
+#         statusDic = {"status" : "ok" , "message" : "编辑成功" };
+#     else :
+#         statusDic = {"status" : "error" , "message" : "添加失败"};
+#     return HttpResponse(json.dumps(statusDic) , content_type = "application/json");
+
+#活动修改接口
+def activetableManageJsonchange(request):
+    try:
+        print("activetableManageJsonchange ******** ")
+        datas = request.POST
+        # print(datas)
+        cursor=connection.cursor();
+        if request.FILES:
+            #前台传过来的图片
+            Imgs = request.FILES["imgs"];
+            print("*-*-*-*-*-*-*-*", Imgs)
+            #随机字符串存取图片名字
+            ImgsName = randomString() + ".jpg";
+            print (ImgsName)
+            #当上传头像的时候必然会传过来用户的Id,方法根据前台来决定
+            
+            cursor.execute("SELECT imgs FROM activetable WHERE activeid='%s'" % datas["activeid"])
+            data = cursor.fetchall();
+            if data[0][0]:
+                print(data[0][0])
+                tempimg = data[0][0];
+                if os.path.exists("../shopServer/shopApp/static/myfile/"+tempimg)==True:
+                    os.remove("../shopServer/shopApp/static/myfile/"+tempimg);
+                else:
+                    pass;
+            filepath = "./shopApp/static/myfile/";
+            #路径组合
+            filepath = os.path.join(filepath,ImgsName)
+            #在路径中创建图片名字
+            fileobj = open(filepath , "wb");
+            #并把前端传过来的数据写到文件中
+            fileobj.write(Imgs.__dict__["file"].read());
+            cursor.execute("update activetable set imgs='%s' where activeid=%s"%(ImgsName , datas["activeid"]))
+        for key in list(datas):
+            if key != "imgs":
+                cursor.execute("update activetable set %s='%s' where activeid='%s'"%(key , datas[key] , datas["activeid"]))
+        cursor.execute("SELECT * FROM activetable WHERE activeid='%s'" % datas["activeid"])
+        data = cursor.fetchall()[0]
+        activeid=data[0]
+        activedetail=data[1]
+        starttime=data[2].strftime('%Y-%m-%d %H:%M:%S')
+        imgs = data[3]
+        stoptime = data[4].strftime('%Y-%m-%d %H:%M:%S')
+        activetitle = data[5]
+        activeName = data[6]
+        activePosition = data[7]
+        tempDic={"activeid":activeid,"activedetail":activedetail,"starttime":starttime,"imgs":imgs,"stoptime":stoptime,"activetitle":activetitle, "activeName":activeName,"activePosition":activePosition}
+        data = {'data':'success', 'status':'ok','addactive':tempDic}
+        cursor.close();
+        return HttpResponse(json.dumps(data) , content_type="application/json");
+    except Exception as e :
+        cursor.close();
+        raise e
+        statusDis={'data':'error', 'status':'error'};
+        return HttpResponse(json.dumps(statusDis),content_type="application/json");
 
 
 def audioToStr(request):
@@ -2430,7 +2535,6 @@ def audioToStrApi(request):
 
     dic = {"statu":"ok"};
     return HttpResponse(json.dumps(dic) , content_type = "application/json");
-
 
 
 #留言删除接口

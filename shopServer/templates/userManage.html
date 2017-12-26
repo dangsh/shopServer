@@ -159,7 +159,6 @@
 		var defaultPageOptioins = "";
 
 		$('.addform').on('submit', function(e) {
-			console.log("jjjjjj");
 			e.preventDefault();
 			$(this).ajaxSubmit({
 				success: function(result) {
@@ -170,6 +169,14 @@
 				}
 			})
 		});
+
+		$('.addform').keydown(function(e){
+			var key = window.event?e.keyCode:e.which;
+    		if(key.toString() == "13"){
+        		return false;
+    		}
+		})
+
 
 		myPost("userManageJsonSelect",{},function(result){
 			console.log("88888888");
@@ -403,6 +410,7 @@
 						ajaxSubmitForm();
 					}
 		});
+		
 
 
 		function ajaxFn(urlString, postdata, fn) {

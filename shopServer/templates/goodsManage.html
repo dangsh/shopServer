@@ -510,8 +510,9 @@ function goodsListToPage(data) {
 				myPostGoodsManage("goodsManageJsonDelete",{goodsids:goodsArr , images:imageArr} , function(data){
 					if (data["status"] == "ok") {
 							var deleteCount = data['deleteCount']
-							loaddata()
 							layer.msg('删除' + deleteCount + "条记录成功");
+							$("#visible-pages-example").twbsPagination("destroy") //销毁分页栏
+							loaddata()
 					}else{
 							layer.msg('删除失败');
 					}
@@ -535,9 +536,9 @@ function goodsListToPage(data) {
 					myPostGoodsManage("goodsManageJsonDelete" , {goodsids:goodsArr} , function (data) {
 						if (data["status"] == "ok") {
 							var deleteCount = data['deleteCount']
-							loaddata()
 							$("#exampleModal-confirm").modal("hide");
 							layer.msg("删除" + deleteCount + "条记录成功");
+							
 						} else {
 							layer.msg("删除失败")
 						}
@@ -575,7 +576,8 @@ $("#goodsSelectBtn").click(function(){
 	}
 	else{
 		layer.msg("请稍候");
-		loaddata();
+		var myflag=1
+		loaddata(myflag);
 	}
 	loaddata()
 });
@@ -596,8 +598,9 @@ $('#deleteBtn').click(function () {
 			myPostGoodsManage("goodsManageJsonDelete" , {goodsids:goodsArr} , function (data) {
 				if (data["status"] == "ok") {
 					var deleteCount = data['deleteCount']
-					loaddata()
 					layer.msg("删除" + deleteCount + "条记录成功");
+					$("#visible-pages-example").twbsPagination("destroy") //销毁分页栏
+					loaddata()
 				}
 				else{
 					layer.msg("删除失败")
@@ -684,62 +687,9 @@ $('#checkbox-all').click(function () {
 	}
 });
 
-myflag=0
 
 
-// function addFenyeHtml (yeNumber) {
-// 	console.log("******************addFenyeHtml");
-// 	if (defaultOptions != "") {
-		
-// 		var currentPage = fenye.twbsPagination('getCurrentPage');
-// 		if (currentPage > yeNumber) {
-// 			currentPage = 1;
-// 		}
-// 		var cucrrentOptioins = {
-// 			totalPages:yeNumber,
-// 			first: "首页",
-// 			last: "尾页",
-// 			prev: '上一页',
-// 			next: '下一页',
-// 			startPage: currentPage,
-// 			visiblePages: yeNumber>5?5:yeNumber,
-// 			version: '1.1',
-// 			initiateStartPageClick:false ,
-// 			onPageClick: function (event, page) {
-// 				console.log("page",page)
-// 				thispage = page
-// 				loaddata(page);
-// 			}
-// 		};
-// 		fenye.twbsPagination('destroy');
-// 		fenye.twbsPagination($.extend({}, defaultOptions, cucrrentOptioins));
-// 		defaultOptions = cucrrentOptioins;
-// 	} else {
-// 		var page = 1 
-// 		defaultOptions = {
-// 			totalPages:yeNumber,
-// 			first: "首页",
-// 			last: "尾页",
-// 			prev: '上一页',
-// 			next: '下一页',
-// 			startPage: 1,
-// 			visiblePages: yeNumber>5?5:yeNumber,
-// 			version: '1.1',
-// 			initiateStartPageClick:false , 
-// 			onPageClick: function (event, page) {
-// 				console.log(")))))))))))))))))))))))");
-// 				thispage = page
-// 				// $('#pagination').empty()
-// 				loaddata();
-// 			}
-// 		};
-// 		fenye.twbsPagination(defaultOptions);
-// 	}
-// }
-
-
-
-function loaddata() {
+function loaddata(myflag) {
 	$.ajax({
 		url: "http://localhost:8000/commodityQuery/?page=" + thispage + "&commName=" + commName + "&timeUP=" +timeBtnUp+ "&sellcountBtnUp=" +sellcountBtnUp,
 		success: function (data) {
@@ -760,6 +710,8 @@ function loaddata() {
 			    }
             if(data.data=="" && myflag==1){
                     layer.msg("没有查找到数据")
+					history.go(0)
+					
                 }
 			//记录个数
 			$("#goodsNumber").text(goodsCount);
