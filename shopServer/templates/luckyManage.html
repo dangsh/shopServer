@@ -434,8 +434,10 @@ $("#timeBtn").click( function () {
 		$(this).append(ele)
 		timeBtnUp = 0
 	}
+	console.log("aaaaaaaaaaa")
 	thispage = 1
 	loaddata()
+	$("#visible-pages-example").twbsPagination("destroy") //销毁分页栏
 });
 $("#form-updataLucky").click(function(){
 	var updata_counts = $("#updataLucky-counts").val()
