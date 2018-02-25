@@ -173,6 +173,10 @@ urlpatterns = [
 
     url(r'^leavingMessDelete/$',leavingMessDelete), #l留言删除接口
     url(r'^leavingMessAdd/$',leavingMessAdd), #l留言接口
+
+
+    url(r'^newMessage/$',newMessage), #新消息提醒接口  
+
     
     url(r'^$' , login),
     url(r'^.' , error),

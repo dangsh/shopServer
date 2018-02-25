@@ -640,6 +640,7 @@ def adManageJsonDelete(request):
 # 商品添加接口
 def goodsManageJsonAdd(request):
     datas = request.POST
+    print(datas)
     goodsid = randomString()
     print(goodsid)
     sql = "INSERT INTO goods ("
@@ -2717,4 +2718,7 @@ def leavingMessageSelectAll(request):
                     else:
                         cursor.close();
                         return HttpResponse(json.dumps({'message': '查询成功','status':'ok' , "data":str(selectCount)}), content_type="application/json");
-                   
+
+#新消息提醒接口
+def newMessage(request):
+    pass
